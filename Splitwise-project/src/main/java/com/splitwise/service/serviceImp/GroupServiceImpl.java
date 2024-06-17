@@ -15,12 +15,11 @@ import com.splitwise.service.GroupService;
 import com.splitwise.service.UserService;
 
 @Service
+@@AllArgsConstructor
 public class GroupServiceImpl implements GroupService {
 
-	@Autowired
 	private GroupRepository groupRepository;
 
-	@Autowired
 	private UserService userService;
 
 	public GroupDto createGroup(GroupDto groupDTO) {
