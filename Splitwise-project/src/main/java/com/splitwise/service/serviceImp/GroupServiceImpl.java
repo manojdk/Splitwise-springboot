@@ -15,7 +15,7 @@ import com.splitwise.service.GroupService;
 import com.splitwise.service.UserService;
 
 @Service
-@@AllArgsConstructor
+@AllArgsConstructor
 public class GroupServiceImpl implements GroupService {
 
 	private GroupRepository groupRepository;
