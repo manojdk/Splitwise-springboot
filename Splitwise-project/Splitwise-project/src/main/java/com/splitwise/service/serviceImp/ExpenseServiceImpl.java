@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.splitwise.dto.ExpenseCreationDto;
 import com.splitwise.dto.ExpenseDto;
+import com.splitwise.dto.RecurringExpenseDto;
 import com.splitwise.entity.Expense;
+import com.splitwise.entity.RecurringExpense;
 import com.splitwise.entity.User;
 import com.splitwise.entity.UserExpense;
 import com.splitwise.repository.ExpenseRepository;
@@ -68,6 +70,25 @@ public class ExpenseServiceImpl {
 		}
 	}
 
+	public void addRecurringExpense(RecurringExpenseDto recurringExpenseDTO) {
+		try {
+			User user = userService.getUserEntityById(recurringExpenseDTO.getCreatedById());
+			RecurringExpense recurringExpense = new RecurringExpense();
+			recurringExpense.setRecurringDescription(recurringExpenseDTO.getRecurringDescription());
+			recurringExpense.setRecurringAmount(recurringExpenseDTO.getAmount());
+			recurringExpense.setStartDate(recurringExpenseDTO.getStartDate());
+			recurringExpense.setRecurringPeriod(recurringExpenseDTO.getRecurringPeriod());
+			// Set category and group
+			// recurringExpense.setCategory(categoryService.getCategoryById(recurringExpenseDTO.getCategoryId()));
+			// recurringExpense.setGroup(groupService.getGroupById(recurringExpenseDTO.getGroupId()));
+
+			recurringExpense.setCreatedBy(user);
+			// Save recurring expense
+		} catch (Exception e) {
+			throw new RuntimeException("Error adding recurring expense", e);
+		}
+	}
+
 	private ExpenseDto toDto(Expense expense) {
 		ExpenseDto expenseDTO = new ExpenseDto();
 		expenseDTO.setExpenseId(expense.getExpenseId());
@@ -76,4 +97,5 @@ public class ExpenseServiceImpl {
 		expenseDTO.setExpenseDate(expense.getExpenseDate());
 		return expenseDTO;
 	}
+
 }

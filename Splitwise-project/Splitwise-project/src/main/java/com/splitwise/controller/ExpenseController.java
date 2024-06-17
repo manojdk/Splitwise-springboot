@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.splitwise.dto.ExpenseCreationDto;
 import com.splitwise.dto.ExpenseDto;
+import com.splitwise.dto.RecurringExpenseDto;
 import com.splitwise.service.ExpenseService;
 
 @RestController
@@ -26,7 +27,7 @@ public class ExpenseController {
 	@Autowired
 	private ExpenseService expenseService;
 
-	@PostMapping
+	@PostMapping("/saveorupdate")
 	public ResponseEntity<ExpenseDto> createExpense(@RequestBody ExpenseCreationDto expenseCreationDTO) {
 		try {
 			ExpenseDto expense = expenseService.addExpense(expenseCreationDTO);
@@ -38,11 +39,10 @@ public class ExpenseController {
 		}
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/list/{id}")
 	public ResponseEntity<ExpenseDto> getExpenseById(@PathVariable Long id) {
 		try {
-			ExpenseDto expense = expenseService.getExpensesByUserAndDate(id, new Date(0), new Date()).get(0); // Simplified
-																												// logic
+			ExpenseDto expense = expenseService.getExpensesByUserAndDate(id, new Date(0), new Date()).get(0);
 			return new ResponseEntity<>(expense, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -65,10 +65,20 @@ public class ExpenseController {
 			@RequestParam int year) {
 		try {
 			List<ExpenseDto> expenses = expenseService.getExpensesByUserAndDate(userId,
-					new Date(year - 1900, month - 1, 1), new Date(year - 1900, month, 0)); // Simplified logic
+					new Date(year - 1900, month - 1, 1), new Date(year - 1900, month, 0));
 			return new ResponseEntity<>(expenses, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PostMapping("/recurring")
+	public ResponseEntity<Void> addRecurringExpense(@RequestBody RecurringExpenseDto recurringExpenseDTO) {
+		try {
+			expenseService.addRecurringExpense(recurringExpenseDTO);
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }
