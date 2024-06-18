@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Expenses</title>
+<link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+	<div class="container">
+		<h1>Manage Expenses</h1>
+		<form th:action="@{/expenses}" method="post">
+			<div>
+				<label for="description">Description:</label> <input type="text"
+					id="description" name="description" required />
+			</div>
+			<div>
+				<label for="amount">Amount:</label> <input type="number" step="0.01"
+					id="amount" name="amount" required />
+			</div>
+			<div>
+				<label for="userId">User ID:</label> <input type="number"
+					id="userId" name="userId" required />
+			</div>
+			<div>
+				<label for="members">Members (comma-separated user IDs):</label> <input
+					type="text" id="members" name="members" required />
+			</div>
+			<div>
+				<label for="shares">Shares (comma-separated amounts):</label> <input
+					type="text" id="shares" name="shares" required />
+			</div>
+			<button type="submit">Add Expense</button>
+		</form>
+		<h2>Expenses</h2>
+		<ul>
+			<li th:each="expense : ${expenses}"><span
+				th:text="${expense.description}">Description</span> - <span
+				th:text="${expense.amount}">Amount</span> - <span
+				th:text="${expense.date}">Date</span></li>
+		</ul>
+	</div>
+</body>
+</html>

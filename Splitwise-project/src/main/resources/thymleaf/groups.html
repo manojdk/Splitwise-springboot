@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Groups</title>
+<link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+	<div class="container">
+		<h1>Manage Groups</h1>
+		<form th:action="@{/groups}" method="post">
+			<div>
+				<label for="name">Group Name:</label> <input type="text" id="name"
+					name="name" required />
+			</div>
+			<div>
+				<label for="currency">Currency:</label> <input type="text"
+					id="currency" name="currency" required />
+			</div>
+			<div>
+				<label for="members">Members (comma-separated user IDs):</label> <input
+					type="text" id="members" name="members" required />
+			</div>
+			<button type="submit">Create Group</button>
+		</form>
+		<h2>Existing Groups</h2>
+		<ul>
+			<li th:each="group : ${groups}"><span th:text="${group.name}">Group
+					Name</span> - <span th:text="${group.currency}">Currency</span> - <span
+				th:text="${group.memberIds}">Members</span></li>
+		</ul>
+	</div>
+</body>
+</html>

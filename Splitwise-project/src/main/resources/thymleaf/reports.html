@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Reports</title>
+<link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+	<div class="container">
+		<h1>View Reports</h1>
+		<form th:action="@{/reports/daily}" method="get">
+			<div>
+				<label for="userId">User ID:</label> <input type="number"
+					id="userId" name="userId" required />
+			</div>
+			<div>
+				<label for="date">Date:</label> <input type="date" id="date"
+					name="date" required />
+			</div>
+			<button type="submit">Get Daily Report</button>
+		</form>
+		<form th:action="@{/reports/monthly}" method="get">
+			<div>
+				<label for="userId">User ID:</label> <input type="number"
+					id="userId" name="userId" required />
+			</div>
+			<div>
+				<label for="month">Month:</label> <input type="number" id="month"
+					name="month" min="1" max="12" required />
+			</div>
+			<div>
+				<label for="year">Year:</label> <input type="number" id="year"
+					name="year" required />
+			</div>
+			<button type="submit">Get Monthly Report</button>
+		</form>
+		<h2>Reports</h2>
+		<ul>
+			<li th:each="expense : ${expenses}"><span
+				th:text="${expense.description}">Description</span> - <span
+				th:text="${expense.amount}">Amount</span> - <span
+				th:text="${expense.date}">Date</span></li>
+		</ul>
+	</div>
+</body>
+</html>

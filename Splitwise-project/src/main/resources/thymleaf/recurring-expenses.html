@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Recurring Expenses</title>
+<link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+	<div class="container">
+		<h1>Manage Recurring Expenses</h1>
+		<form th:action="@{/recurring-expenses}" method="post">
+			<div>
+				<label for="description">Description:</label> <input type="text"
+					id="description" name="description" required />
+			</div>
+			<div>
+				<label for="amount">Amount:</label> <input type="number" step="0.01"
+					id="amount" name="amount" required />
+			</div>
+			<div>
+				<label for="userId">User ID:</label> <input type="number"
+					id="userId" name="userId" required />
+			</div>
+			<div>
+				<label for="categoryId">Category ID:</label> <input type="number"
+					id="categoryId" name="categoryId" required />
+			</div>
+			<div>
+				<label for="groupId">Group ID:</label> <input type="number"
+					id="groupId" name="groupId" required />
+			</div>
+			<div>
+				<label for="startDate">Start Date:</label> <input type="date"
+					id="startDate" name="startDate" required />
+			</div>
+			<div>
+				<label for="recurrencePeriod">Recurrence Period:</label> <input
+					type="text" id="recurrencePeriod" name="recurrencePeriod" required />
+			</div>
+			<button type="submit">Add Recurring Expense</button>
+		</form>
+		<h2>Recurring Expenses</h2>
+		<ul>
+			<li th:each="expense : ${recurringExpenses}"><span
+				th:text="${expense.description}">Description</span> - <span
+				th:text="${expense.amount}">Amount</span> - <span
+				th:text="${expense.startDate}">Start Date</span> - <span
+				th:text="${expense.recurrencePeriod}">Recurrence Period</span></li>
+		</ul>
+	</div>
+</body>
+</html>

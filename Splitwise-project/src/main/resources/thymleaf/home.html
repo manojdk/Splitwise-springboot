@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Splitwise App</title>
+<link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+	<div class="container">
+		<h1>Welcome to Splitwise</h1>
+		<nav>
+			<ul>
+				<li><a th:href="@{/groups}">Manage Groups</a></li>
+				<li><a th:href="@{/expenses}">Manage Expenses</a></li>
+				<li><a th:href="@{/recurring-expenses}">Manage Recurring Expenses</a></li>
+				<li><a th:href="@{/reports}">View Reports</a></li>
+			</ul>
+		</nav>
+	</div>
+</body>
+</html>
