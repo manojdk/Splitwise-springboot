@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,35 +19,35 @@ import com.splitwise.service.UserService;
 @AllArgsConstructor
 public class GroupServiceImpl implements GroupService {
 
-	private GroupRepository groupRepository;
+    private GroupRepository groupRepository;
 
-	private UserService userService;
+    private UserService userService;
 
-	public GroupDto createGroup(GroupDto groupDTO) {
-		try {
-			Group group = new Group();
-			group.setGroupName(groupDTO.getGroupName());
-			group.setCurrency(groupDTO.getCurrency());
+    public GroupDto createGroup(GroupDto groupDTO) {
+        try {
+            Group group = new Group();
+            group.setGroupName(groupDTO.getGroupName());
+            group.setCurrency(groupDTO.getCurrency());
 
-			Set<User> members = new HashSet<>();
-			for (Long memberId : groupDTO.getMemberIds()) {
-				members.add(userService.getUserEntityById(memberId));
-			}
-			group.setMembers(members);
+            Set<User> members = new HashSet<>();
+            for (Long memberId : groupDTO.getMemberIds()) {
+                members.add(userService.getUserEntityById(memberId));
+            }
+            group.setMembers(members);
 
-			Group savedGroup = groupRepository.save(group);
-			return toDto(savedGroup);
-		} catch (Exception e) {
-			throw new RuntimeException("Error creating group", e);
-		}
-	}
+            Group savedGroup = groupRepository.save(group);
+            return toDto(savedGroup);
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating group", e);
+        }
+    }
 
-	private GroupDto toDto(Group group) {
-		GroupDto groupDTO = new GroupDto();
-		groupDTO.setGroupId(group.getGroupId());
-		groupDTO.setGroupName(group.getGroupName());
-		groupDTO.setCurrency(group.getCurrency());
-		groupDTO.setMemberIds(group.getMembers().stream().map(User::getUserId).collect(Collectors.toSet()));
-		return groupDTO;
-	}
+    private GroupDto toDto(Group group) {
+        GroupDto groupDTO = new GroupDto();
+        groupDTO.setGroupId(group.getGroupId());
+        groupDTO.setGroupName(group.getGroupName());
+        groupDTO.setCurrency(group.getCurrency());
+        groupDTO.setMemberIds(group.getMembers().stream().map(User::getUserId).collect(Collectors.toSet()));
+        return groupDTO;
+    }
 }
