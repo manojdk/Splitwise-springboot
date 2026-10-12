@@ -56,4 +56,8 @@ public class ExpenseShare {
     public BigDecimal getAmount() {
         return amount;
     }
+
+    void setAmount(BigDecimal amount) {
+        this.amount = Money.of(amount);
+    }
 }

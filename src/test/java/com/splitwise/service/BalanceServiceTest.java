@@ -156,8 +156,8 @@ class BalanceServiceTest {
 
     private void givenGroupData(List<Expense> expenses, List<Settlement> settlements) {
         when(groupService.requireMemberGroup(GROUP_ID, alice.getId())).thenReturn(group);
-        when(expenseRepository.findByGroupIdOrderByExpenseDateDescIdDesc(GROUP_ID)).thenReturn(expenses);
-        when(settlementRepository.findByGroupIdOrderBySettledOnDescIdDesc(GROUP_ID)).thenReturn(settlements);
+        when(expenseRepository.findByGroupIdAndDeletedAtIsNullOrderByExpenseDateDescIdDesc(GROUP_ID)).thenReturn(expenses);
+        when(settlementRepository.findByGroupIdAndDeletedAtIsNullOrderBySettledOnDescIdDesc(GROUP_ID)).thenReturn(settlements);
     }
 
     private Expense expense(User payer, String amount, Map<User, String> shares) {

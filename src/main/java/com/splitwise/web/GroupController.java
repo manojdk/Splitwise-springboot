@@ -89,6 +89,13 @@ public class GroupController {
         return groupService.addMember(CurrentUser.id(jwt), groupId, request);
     }
 
+    @DeleteMapping("/{groupId}/members/{userId}")
+    @Operation(summary = "Remove a member (creator only) or leave (your own id); the balance in the group must be zero")
+    public GroupResponse removeMember(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId,
+                                      @PathVariable Long userId) {
+        return groupService.removeMember(CurrentUser.id(jwt), groupId, userId);
+    }
+
     @GetMapping("/{groupId}/expenses")
     public List<ExpenseResponse> expenses(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId) {
         return expenseService.listForGroup(CurrentUser.id(jwt), groupId);

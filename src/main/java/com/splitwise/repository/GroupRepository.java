@@ -1,5 +1,7 @@
 package com.splitwise.repository;
 
+import org.springframework.data.jpa.repository.Lock;
+import jakarta.persistence.LockModeType;
 import com.splitwise.domain.Group;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +15,16 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     @EntityGraph(attributePaths = {"members", "createdBy"})
     Optional<Group> findWithMembersById(Long id);
+
+    /**
+     * Loads the group and locks its row (SELECT ... FOR UPDATE) until the transaction ends. Writes that depend on
+     * who is a member (adding an expense, removing a member) take this lock first, so they cannot interleave.
+     * No fetch join here: PostgreSQL does not allow FOR UPDATE on the nullable side of an outer join; members are
+     * loaded afterwards, under the lock.
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select g from Group g where g.id = :id")
+    Optional<Group> findByIdForUpdate(@Param("id") Long id);
 
     @Query("""
             select distinct g from Group g
