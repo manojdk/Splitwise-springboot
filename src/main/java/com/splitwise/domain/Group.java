@@ -1,0 +1,84 @@
+package com.splitwise.domain;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "expense_group")
+public class Group {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 100)
+    private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
+
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
+
+    @ManyToMany
+    @JoinTable(name = "group_member",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> members = new LinkedHashSet<>();
+
+    protected Group() {
+    }
+
+    public Group(String name, User createdBy) {
+        this.name = name;
+        this.createdBy = createdBy;
+        this.createdAt = Instant.now();
+        this.members.add(createdBy);
+    }
+
+    public boolean hasMember(Long userId) {
+        return members.stream().anyMatch(m -> m.getId().equals(userId));
+    }
+
+    public void addMember(User user) {
+        members.add(user);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Set<User> getMembers() {
+        return members;
+    }
+}
