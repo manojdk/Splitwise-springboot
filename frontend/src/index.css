@@ -1,0 +1,338 @@
+@import 'tailwindcss';
+
+/*
+ * Three themes, switched by <html data-theme="...">. Every colour and font is a CSS variable, so components never
+ * know which theme is active. Tailwind utilities (bg-surface, text-muted, font-head, ...) read the same variables.
+ */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-ink: var(--primary-ink);
+  --color-accent: var(--accent);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --color-warn: var(--warn);
+  --font-head: var(--ff-head);
+  --font-body: var(--ff-body);
+}
+
+/* ------------------------------------------------------------------ Aurora (default) */
+:root,
+:root[data-theme='aurora'] {
+  --ff-head: 'Unbounded', 'Segoe UI', sans-serif;
+  --ff-body: 'Manrope', 'Segoe UI', sans-serif;
+  --bg: #0b0820;
+  --bg-grid: transparent;
+  --surface: rgb(255 255 255 / 0.07);
+  --surface-2: rgb(255 255 255 / 0.1);
+  --surface-solid: #160f36;
+  --border: rgb(255 255 255 / 0.16);
+  --text: #f6f3ff;
+  --muted: #bdb6dd;
+  --primary: #7cf5d0;
+  --primary-ink: #06201a;
+  --accent: #ff7ac6;
+  --accent-ink: #ffffff;
+  --positive: #5dffb0;
+  --negative: #ff6b8b;
+  --warn: #ffd36b;
+  --glow: 0 0 22px rgb(124 245 208 / 0.35);
+  --glow-accent: 0 0 26px rgb(255 122 198 / 0.4);
+  --shadow: 0 18px 40px rgb(5 2 20 / 0.45);
+  --radius: 22px;
+  --pill: 999px;
+  --hero: linear-gradient(120deg, #7cf5d0 0%, #7aa8ff 40%, #c77dff 70%, #ff7ac6 100%);
+  --hero-ink: #12082e;
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------ Neon Night */
+:root[data-theme='neon'] {
+  --ff-head: 'Orbitron', 'Segoe UI', sans-serif;
+  --ff-body: 'Exo 2', 'Segoe UI', sans-serif;
+  --bg: #060a14;
+  --bg-grid: rgb(0 229 255 / 0.06);
+  --surface: rgb(14 22 42 / 0.82);
+  --surface-2: #101a33;
+  --surface-solid: #0e162a;
+  --border: rgb(0 229 255 / 0.18);
+  --text: #e8f1ff;
+  --muted: #8fa3c7;
+  --primary: #00e5ff;
+  --primary-ink: #001018;
+  --accent: #ff2bd6;
+  --accent-ink: #ffffff;
+  --positive: #b6ff3b;
+  --negative: #ff4d6d;
+  --warn: #ffd23f;
+  --glow: 0 0 18px rgb(0 229 255 / 0.35);
+  --glow-accent: 0 0 18px rgb(255 43 214 / 0.35);
+  --shadow: 0 10px 30px rgb(0 0 0 / 0.45);
+  --radius: 14px;
+  --pill: 12px;
+  --hero: linear-gradient(135deg, #00e5ff 0%, #7b5cff 50%, #ff2bd6 100%);
+  --hero-ink: #ffffff;
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------ Solar Day */
+:root[data-theme='solar'] {
+  --ff-head: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --ff-body: 'Sora', 'Segoe UI', sans-serif;
+  --bg: #f4f7ff;
+  --bg-grid: rgb(37 99 255 / 0.05);
+  --surface: #ffffff;
+  --surface-2: #eef3ff;
+  --surface-solid: #ffffff;
+  --border: #dde5f7;
+  --text: #0d1530;
+  --muted: #5a6788;
+  --primary: #2563ff;
+  --primary-ink: #ffffff;
+  --accent: #e8246f;
+  --accent-ink: #ffffff;
+  --positive: #00875f;
+  --negative: #d42a40;
+  --warn: #b37a00;
+  --glow: 0 6px 18px rgb(37 99 255 / 0.25);
+  --glow-accent: 0 6px 18px rgb(232 36 111 / 0.25);
+  --shadow: 0 10px 28px rgb(13 21 48 / 0.08);
+  --radius: 16px;
+  --pill: 12px;
+  --hero: linear-gradient(135deg, #2563ff 0%, #8b5cf6 55%, #e8246f 100%);
+  --hero-ink: #ffffff;
+  color-scheme: light;
+}
+
+/* ------------------------------------------------------------------ base */
+@layer base {
+  html,
+  body {
+    min-height: 100%;
+  }
+  body {
+    margin: 0;
+    font-family: var(--ff-body);
+    color: var(--text);
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--ff-head);
+    letter-spacing: 0.02em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ components */
+@layer components {
+  .card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(12px);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    border-radius: var(--pill);
+    padding: 11px 18px;
+    font-weight: 700;
+    background: var(--primary);
+    color: var(--primary-ink);
+    box-shadow: var(--glow);
+    cursor: pointer;
+    transition:
+      transform 0.15s,
+      opacity 0.15s;
+  }
+  .btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .btn-ghost {
+    background: none;
+    color: var(--primary);
+    border: 1px solid var(--border);
+    box-shadow: none;
+  }
+  .btn-accent {
+    background: var(--accent);
+    color: var(--accent-ink);
+    box-shadow: var(--glow-accent);
+  }
+  .input {
+    width: 100%;
+    padding: 11px 13px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+  }
+  .input:focus {
+    border-color: var(--primary);
+    box-shadow: var(--glow);
+  }
+  .input[aria-invalid='true'] {
+    border-color: var(--negative);
+  }
+  .label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .brand {
+    font-family: var(--ff-head);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    background: var(--hero);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  .avatar {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-family: var(--ff-head);
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--hero);
+    color: var(--hero-ink);
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .nav-item:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+  .nav-item[aria-current='page'] {
+    color: var(--primary);
+    border-color: var(--border);
+    background: var(--surface-2);
+    box-shadow: var(--glow);
+  }
+  .alert {
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .alert-error {
+    color: var(--negative);
+    background: color-mix(in srgb, var(--negative) 14%, transparent);
+  }
+  .alert-info {
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 14%, transparent);
+  }
+  .hero-panel {
+    background: var(--hero);
+    color: var(--hero-ink);
+  }
+}
+
+/* ------------------------------------------------------------------ Aurora extras: moving light + glass */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+:root[data-theme='aurora'] body::before {
+  content: '';
+  position: fixed;
+  inset: -25%;
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(70px);
+  opacity: 0.75;
+  background:
+    radial-gradient(40% 35% at 20% 25%, #1fd1a5 0%, transparent 70%),
+    radial-gradient(35% 30% at 75% 20%, #7a5cff 0%, transparent 70%),
+    radial-gradient(45% 40% at 60% 80%, #ff4fa8 0%, transparent 70%),
+    radial-gradient(30% 30% at 15% 85%, #3a7bff 0%, transparent 70%);
+  animation: aurora-drift 22s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(4%, -3%) rotate(8deg) scale(1.08);
+  }
+  100% {
+    transform: translate(-4%, 3%) rotate(-6deg) scale(1.02);
+  }
+}
+:root[data-theme='aurora'] .card {
+  border-color: transparent;
+  backdrop-filter: blur(18px) saturate(140%);
+}
+:root[data-theme='aurora'] .card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: conic-gradient(from var(--angle), #7cf5d0, #7aa8ff, #c77dff, #ff7ac6, #ffd36b, #7cf5d0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0.55;
+  animation: iridescent 8s linear infinite;
+}
+@keyframes iridescent {
+  to {
+    --angle: 360deg;
+  }
+}
+:root[data-theme='aurora'] .btn-accent {
+  background: linear-gradient(120deg, #ff7ac6, #c77dff);
+}
