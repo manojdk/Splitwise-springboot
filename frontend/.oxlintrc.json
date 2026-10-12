@@ -15,7 +15,8 @@
         "allowConstantExport": true,
         "allowExportNames": [
           "useAuth",
-          "useTheme"
+          "useTheme",
+          "useToast"
         ]
       }
     ],

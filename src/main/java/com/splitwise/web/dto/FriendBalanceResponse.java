@@ -1,5 +1,7 @@
 package com.splitwise.web.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -13,6 +15,6 @@ import java.util.List;
  */
 public record FriendBalanceResponse(Long userId, String name, List<CurrencyAmount> balances, List<Item> breakdown) {
 
-    public record Item(Long groupId, String groupName, String currency, BigDecimal amount) {
+    public record Item(@Schema(nullable = true) Long groupId, @Schema(nullable = true) String groupName, String currency, BigDecimal amount) {
     }
 }

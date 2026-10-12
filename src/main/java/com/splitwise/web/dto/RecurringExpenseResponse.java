@@ -4,6 +4,7 @@ import com.splitwise.domain.Category;
 import com.splitwise.domain.Frequency;
 import com.splitwise.domain.RecurringExpense;
 import com.splitwise.domain.SplitType;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -15,10 +16,10 @@ import java.util.List;
  * @param stoppedReason why it is no longer active (ended, stopped by someone, or paused because someone left)
  */
 public record RecurringExpenseResponse(Long id, String description, BigDecimal amount, String currency,
-                                       Long paidById, Long groupId, SplitType splitType, Category category,
-                                       String notes, List<ShareRequest> shares, Frequency frequency,
-                                       LocalDate startDate, LocalDate endDate, LocalDate nextDate, boolean active,
-                                       String stoppedReason, Long createdById, Instant createdAt) {
+                                       Long paidById, @Schema(nullable = true) Long groupId, SplitType splitType, Category category,
+                                       @Schema(nullable = true) String notes, List<ShareRequest> shares, Frequency frequency,
+                                       LocalDate startDate, @Schema(nullable = true) LocalDate endDate, @Schema(nullable = true) LocalDate nextDate, boolean active,
+                                       @Schema(nullable = true) String stoppedReason, Long createdById, Instant createdAt) {
 
     public static RecurringExpenseResponse from(RecurringExpense r) {
         List<ShareRequest> shares = r.getShares().entrySet().stream()

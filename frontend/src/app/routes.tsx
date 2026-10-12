@@ -4,6 +4,8 @@ import { RegisterPage } from '../auth/RegisterPage'
 import { RequireAuth } from '../auth/RequireAuth'
 import { AppShell } from '../layout/AppShell'
 import { DashboardPage } from '../pages/DashboardPage'
+import { GroupPage } from '../pages/GroupPage'
+import { GroupsPage } from '../pages/GroupsPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 import { PlaceholderPage } from '../pages/PlaceholderPage'
 
@@ -17,10 +19,8 @@ export const routes: RouteObject[] = [
         element: <AppShell />,
         children: [
           { index: true, element: <DashboardPage /> },
-          {
-            path: 'groups',
-            element: <PlaceholderPage title="Groups" description="Your groups and their balances will be listed here." />,
-          },
+          { path: 'groups', element: <GroupsPage /> },
+          { path: 'groups/:groupId', element: <GroupPage /> },
           {
             path: 'activity',
             element: <PlaceholderPage title="Activity" description="Every change to your expenses will show up here." />,
