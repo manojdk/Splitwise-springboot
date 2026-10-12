@@ -1,5 +1,7 @@
 package com.splitwise.service;
 
+import java.util.TreeMap;
+import com.splitwise.web.dto.CurrencyAmount;
 import com.splitwise.balance.FriendBalanceCalculator;
 import com.splitwise.balance.FriendBalanceCalculator.Entry;
 import com.splitwise.balance.FriendBalanceCalculator.Item;
@@ -60,7 +62,10 @@ public class FriendBalanceService {
         this.settlementService = settlementService;
     }
 
-    /** Everyone the user has an open balance with, largest amounts first, plus totals. */
+    /**
+     * Everyone the user has an open balance with (largest amount first) plus totals per currency. Amounts in
+     * different currencies are never added together.
+     */
     public FriendBalancesResponse balances(Long userId) {
         Ledger ledger = loadLedger(userId);
         Map<Long, List<Item>> byFriend = new LinkedHashMap<>();
@@ -69,20 +74,29 @@ public class FriendBalanceService {
 
         List<FriendBalanceResponse> friends = new ArrayList<>();
         byFriend.forEach((friendId, items) -> friends.add(toResponse(friendId, items, ledger)));
-        friends.sort(Comparator.comparing((FriendBalanceResponse f) -> f.balance().abs()).reversed()
+        friends.sort(Comparator.comparing(FriendBalanceService::largestAmount).reversed()
                 .thenComparing(FriendBalanceResponse::userId));
 
-        BigDecimal owedToYou = Money.ZERO;
-        BigDecimal youOwe = Money.ZERO;
+        Map<String, BigDecimal[]> sums = new TreeMap<>(); // currency -> [owed to you, you owe]
         for (FriendBalanceResponse friend : friends) {
-            if (friend.balance().signum() > 0) {
-                owedToYou = owedToYou.add(friend.balance());
-            } else {
-                youOwe = youOwe.add(friend.balance().negate());
+            for (CurrencyAmount balance : friend.balances()) {
+                BigDecimal[] sum = sums.computeIfAbsent(balance.currency(), c -> new BigDecimal[] {Money.ZERO, Money.ZERO});
+                if (balance.amount().signum() > 0) {
+                    sum[0] = sum[0].add(balance.amount());
+                } else {
+                    sum[1] = sum[1].add(balance.amount().negate());
+                }
             }
         }
-        return new FriendBalancesResponse(owedToYou, youOwe, owedToYou.subtract(youOwe), Money.DEFAULT_CURRENCY,
-                friends);
+        List<FriendBalancesResponse.Totals> totals = new ArrayList<>();
+        sums.forEach((currency, sum) -> totals.add(
+                new FriendBalancesResponse.Totals(currency, sum[0], sum[1], sum[0].subtract(sum[1]))));
+        return new FriendBalancesResponse(totals, friends);
+    }
+
+    private static BigDecimal largestAmount(FriendBalanceResponse friend) {
+        return friend.breakdown().stream().map(i -> i.amount().abs()).max(Comparator.naturalOrder())
+                .orElse(BigDecimal.ZERO);
     }
 
     /** The balance with one friend (zero and an empty breakdown when settled up). */
@@ -128,7 +142,8 @@ public class FriendBalanceService {
                     item.amount().abs(),
                     item.groupId(),
                     null,
-                    "Settle up")));
+                    "Settle up",
+                    item.currency())));
         }
         Ledger after = loadLedger(userId);
         return new SettleUpResponse(recorded, toResponse(friendId, itemsWith(userId, friendId, after), after));
@@ -169,12 +184,12 @@ public class FriendBalanceService {
                 names.put(share.getUser().getId(), share.getUser().getName());
             }
             names.put(e.getPaidBy().getId(), e.getPaidBy().getName());
-            entries.add(new Entry(groupId(e.getGroup()), e.getPaidBy().getId(), debts));
+            entries.add(new Entry(groupId(e.getGroup()), e.getCurrency(), e.getPaidBy().getId(), debts));
         }
         for (Settlement s : settlements) {
             names.put(s.getPayer().getId(), s.getPayer().getName());
             names.put(s.getPayee().getId(), s.getPayee().getName());
-            entries.add(new Entry(groupId(s.getGroup()), s.getPayer().getId(),
+            entries.add(new Entry(groupId(s.getGroup()), s.getCurrency(), s.getPayer().getId(),
                     Map.of(s.getPayee().getId(), s.getAmount())));
         }
         return new Ledger(entries, names, groupNames, groups);
@@ -206,16 +221,23 @@ public class FriendBalanceService {
     }
 
     private FriendBalanceResponse toResponse(Long friendId, List<Item> items, Ledger ledger) {
-        BigDecimal total = Money.ZERO;
+        Map<String, BigDecimal> totals = new TreeMap<>();
         List<FriendBalanceResponse.Item> breakdown = new ArrayList<>();
         for (Item item : items) {
-            total = total.add(item.amount());
+            totals.merge(item.currency(), item.amount(), BigDecimal::add);
             breakdown.add(new FriendBalanceResponse.Item(item.groupId(),
-                    item.groupId() == null ? null : ledger.groupNames().get(item.groupId()), item.amount()));
+                    item.groupId() == null ? null : ledger.groupNames().get(item.groupId()), item.currency(),
+                    item.amount()));
         }
+        List<CurrencyAmount> balances = new ArrayList<>();
+        totals.forEach((currency, amount) -> {
+            if (amount.signum() != 0) {
+                balances.add(new CurrencyAmount(currency, amount));
+            }
+        });
         String name = ledger.userNames().containsKey(friendId)
                 ? ledger.userNames().get(friendId)
                 : userService.getById(friendId).getName();
-        return new FriendBalanceResponse(friendId, name, total, Money.DEFAULT_CURRENCY, breakdown);
+        return new FriendBalanceResponse(friendId, name, balances, breakdown);
     }
 }

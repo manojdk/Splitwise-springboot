@@ -1,5 +1,6 @@
 package com.splitwise.repository;
 
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.Collection;
 import com.splitwise.domain.Expense;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -10,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface ExpenseRepository extends JpaRepository<Expense, Long> {
+public interface ExpenseRepository extends JpaRepository<Expense, Long>, JpaSpecificationExecutor<Expense> {
 
     @EntityGraph(attributePaths = {"paidBy", "group", "shares", "shares.user"})
     Optional<Expense> findDetailedById(Long id);

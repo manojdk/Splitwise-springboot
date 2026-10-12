@@ -1,11 +1,16 @@
 package com.splitwise.service;
 
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Sort;
+import com.splitwise.web.dto.PageResponse;
+import com.splitwise.query.Paging;
+import com.splitwise.query.ExpenseSpecs;
+import com.splitwise.query.ExpenseFilter;
 import com.splitwise.domain.RecurringExpense;
 import com.splitwise.activity.ExpenseSnapshot;
 import com.splitwise.activity.ActivityRecorder;
 import com.splitwise.domain.Expense;
 import com.splitwise.domain.Group;
-import com.splitwise.domain.Money;
 import com.splitwise.domain.SplitType;
 import com.splitwise.domain.User;
 import com.splitwise.exception.BadRequestException;
@@ -45,6 +50,9 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class ExpenseService {
+
+    /** Newest expense date first; the id makes the order total, so pages are stable. */
+    private static final Sort NEWEST_FIRST = Sort.by(Sort.Direction.DESC, "expenseDate", "id");
 
     private final ExpenseRepository expenseRepository;
     private final GroupService groupService;
@@ -180,15 +188,22 @@ public class ExpenseService {
         return saved;
     }
 
-    public List<ExpenseResponse> listForGroup(Long callerId, Long groupId) {
+    /** A group's expenses (not deleted), newest first, filtered and paged. */
+    public PageResponse<ExpenseResponse> listForGroup(Long callerId, Long groupId, ExpenseFilter filter, int page,
+                                                      int size) {
         groupService.requireMemberGroup(groupId, callerId);
-        return expenseRepository.findByGroupIdAndDeletedAtIsNullOrderByExpenseDateDescIdDesc(groupId).stream()
-                .map(ExpenseResponse::from)
-                .toList();
+        Specification<Expense> spec = ExpenseSpecs.notDeleted().and(ExpenseSpecs.inGroup(groupId))
+                .and(ExpenseSpecs.matching(filter));
+        return PageResponse.of(expenseRepository.findAll(spec, Paging.of(page, size, NEWEST_FIRST)),
+                ExpenseResponse::from);
     }
 
-    public List<ExpenseResponse> listForUser(Long callerId) {
-        return expenseRepository.findInvolvingUser(callerId).stream().map(ExpenseResponse::from).toList();
+    /** Every expense the user paid for or shares in, across groups, newest first, filtered and paged. */
+    public PageResponse<ExpenseResponse> listForUser(Long callerId, ExpenseFilter filter, int page, int size) {
+        Specification<Expense> spec = ExpenseSpecs.notDeleted().and(ExpenseSpecs.involving(callerId))
+                .and(ExpenseSpecs.matching(filter));
+        return PageResponse.of(expenseRepository.findAll(spec, Paging.of(page, size, NEWEST_FIRST)),
+                ExpenseResponse::from);
     }
 
     /** Also returns deleted expenses (flagged), so they can be shown and restored. */
@@ -215,7 +230,7 @@ public class ExpenseService {
             throw new ForbiddenException("You can only record non-group expenses that you paid for or share in");
         }
 
-        String currency = resolveCurrency(requestedCurrency);
+        String currency = CurrencyRules.resolve(requestedCurrency, group);
         List<SplitParticipant> participants = shareRequests.stream()
                 .map(s -> new SplitParticipant(s.userId(), s.value()))
                 .toList();
@@ -263,15 +278,5 @@ public class ExpenseService {
 
     private LocalDate dateOrToday(LocalDate date) {
         return date != null ? date : LocalDate.now(clock);
-    }
-
-    public static String resolveCurrency(String requested) {
-        if (requested == null || requested.isBlank()) {
-            return Money.DEFAULT_CURRENCY;
-        }
-        if (!Money.DEFAULT_CURRENCY.equals(requested)) {
-            throw new BadRequestException("Only " + Money.DEFAULT_CURRENCY + " is supported at the moment");
-        }
-        return requested;
     }
 }

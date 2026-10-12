@@ -35,6 +35,10 @@ public class Group {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+    /** ISO 4217 code; everything recorded in the group is in this currency. */
+    @Column(nullable = false, length = 3)
+    private String currency = Money.DEFAULT_CURRENCY;
+
     @ManyToMany
     @JoinTable(name = "group_member",
             joinColumns = @JoinColumn(name = "group_id"),
@@ -50,6 +54,11 @@ public class Group {
     }
 
     public Group(String name, User createdBy) {
+        this(name, createdBy, Money.DEFAULT_CURRENCY);
+    }
+
+    public Group(String name, User createdBy, String currency) {
+        this.currency = currency;
         this.name = name;
         this.createdBy = createdBy;
         this.createdAt = Instant.now();
@@ -90,6 +99,10 @@ public class Group {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public String getCurrency() {
+        return currency;
     }
 
     public Set<User> getMembers() {

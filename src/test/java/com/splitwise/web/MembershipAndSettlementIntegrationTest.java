@@ -92,7 +92,7 @@ class MembershipAndSettlementIntegrationTest extends ApiTestSupport {
 
         // The old expense still names Bob, and the group's numbers still work
         call(alice, get("/api/groups/" + groupId + "/expenses"))
-                .andExpect(jsonPath("$[0].shares[?(@.userId == " + bob.id() + ")].name").value("Bob"));
+                .andExpect(jsonPath("$.content[0].shares[?(@.userId == " + bob.id() + ")].name").value("Bob"));
         assertThat(balances(alice, groupId)).containsEntry(alice.id(), money("0.00"));
 
         call(alice, postJson("/api/groups/" + groupId + "/members", java.util.Map.of("email", bob.email())))
@@ -115,8 +115,8 @@ class MembershipAndSettlementIntegrationTest extends ApiTestSupport {
         call(alice, delete("/api/settlements/" + settlementId)).andExpect(status().isNoContent());
 
         assertThat(balances(alice, groupId)).containsEntry(bob.id(), money("-50.00"));
-        call(bob, get("/api/groups/" + groupId + "/settlements")).andExpect(jsonPath("$", hasSize(0)));
-        call(bob, get("/api/users/me/settlements")).andExpect(jsonPath("$", hasSize(0)));
+        call(bob, get("/api/groups/" + groupId + "/settlements")).andExpect(jsonPath("$.content", hasSize(0)));
+        call(bob, get("/api/users/me/settlements")).andExpect(jsonPath("$.content", hasSize(0)));
         call(bob, get("/api/settlements/" + settlementId)).andExpect(jsonPath("$.deleted").value(true));
 
         call(bob, post("/api/settlements/" + settlementId + "/restore"))

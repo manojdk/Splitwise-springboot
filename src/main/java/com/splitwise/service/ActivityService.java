@@ -1,10 +1,9 @@
 package com.splitwise.service;
 
-import com.splitwise.exception.BadRequestException;
+import com.splitwise.query.Paging;
 import com.splitwise.repository.ActivityRepository;
 import com.splitwise.web.dto.ActivityResponse;
 import com.splitwise.web.dto.PageResponse;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ActivityService {
 
-    public static final int MAX_PAGE_SIZE = 100;
     /** Newest first; the id breaks ties between entries written in the same instant. */
     private static final Sort NEWEST_FIRST = Sort.by(Sort.Direction.DESC, "createdAt", "id");
 
@@ -53,12 +51,6 @@ public class ActivityService {
     }
 
     static Pageable pageable(int page, int size) {
-        if (page < 0) {
-            throw new BadRequestException("page must be 0 or more");
-        }
-        if (size < 1 || size > MAX_PAGE_SIZE) {
-            throw new BadRequestException("size must be between 1 and " + MAX_PAGE_SIZE);
-        }
-        return PageRequest.of(page, size, NEWEST_FIRST);
+        return Paging.of(page, size, NEWEST_FIRST);
     }
 }

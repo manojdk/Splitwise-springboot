@@ -152,7 +152,7 @@ class ApiIntegrationTest {
 
         mvc.perform(auth(get("/api/groups/" + groupId + "/expenses"), carol))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$.content", hasSize(2)));
 
         // Alice +170, Bob -40, Carol -130
         mvc.perform(auth(get("/api/groups/" + groupId + "/balances"), bob))
@@ -184,13 +184,14 @@ class ApiIntegrationTest {
                 .andExpect(jsonPath("$[0].amount").value(40.00));
 
         mvc.perform(auth(get("/api/groups/" + groupId + "/settlements"), bob))
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$.content", hasSize(1)));
 
         mvc.perform(auth(get("/api/users/me/balance"), alice))
-                .andExpect(jsonPath("$.netBalance").value(40.00));
+                .andExpect(jsonPath("$.balances[0].currency").value("INR"))
+                .andExpect(jsonPath("$.balances[0].amount").value(40.00));
 
         mvc.perform(auth(get("/api/users/me/expenses"), carol))
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$.content", hasSize(2)));
     }
 
     // ------------------------------------------------------------------ access control & validation
@@ -241,7 +242,7 @@ class ApiIntegrationTest {
                 .andExpect(jsonPath("$.message").value("Exact shares add up to 90.00 but the expense amount is 100.00"));
 
         mvc.perform(auth(get("/api/groups/" + groupId + "/expenses"), a))
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpect(jsonPath("$.content", hasSize(0)));
     }
 
     @Test
@@ -269,9 +270,9 @@ class ApiIntegrationTest {
                 .andExpect(jsonPath("$.groupId").doesNotExist());
 
         mvc.perform(auth(get("/api/users/me/balance"), b))
-                .andExpect(jsonPath("$.netBalance").value(-50.00));
+                .andExpect(jsonPath("$.balances[0].amount").value(-50.00));
         mvc.perform(auth(get("/api/users/me/balance"), a))
-                .andExpect(jsonPath("$.netBalance").value(50.00));
+                .andExpect(jsonPath("$.balances[0].amount").value(50.00));
     }
 
     // ------------------------------------------------------------------ helpers

@@ -74,7 +74,9 @@ public class GroupService {
     @Transactional
     public GroupResponse create(Long callerId, CreateGroupRequest request) {
         User creator = userService.getById(callerId);
-        Group group = new Group(request.name().trim(), creator);
+        String currency = request.currency() == null ? Money.DEFAULT_CURRENCY
+                : CurrencyRules.requireValid(request.currency());
+        Group group = new Group(request.name().trim(), creator, currency);
         if (request.memberIds() != null && !request.memberIds().isEmpty()) {
             userService.getAllById(request.memberIds()).values().forEach(group::addMember);
         }

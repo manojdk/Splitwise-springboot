@@ -1,5 +1,10 @@
 package com.splitwise.service;
 
+import java.util.TreeSet;
+import java.util.ArrayList;
+import com.splitwise.web.dto.CurrencyAmount;
+import com.splitwise.domain.Settlement;
+import com.splitwise.domain.Expense;
 import com.splitwise.balance.BalanceCalculator;
 import com.splitwise.balance.DebtSimplifier;
 import com.splitwise.balance.Transfer;
@@ -46,7 +51,8 @@ public class BalanceService {
         Map<Long, BigDecimal> net = netForGroup(group);
         Map<Long, User> members = membersById(group);
         return net.entrySet().stream()
-                .map(e -> new BalanceResponse(e.getKey(), members.get(e.getKey()).getName(), e.getValue()))
+                .map(e -> new BalanceResponse(e.getKey(), members.get(e.getKey()).getName(), e.getValue(),
+                        group.getCurrency()))
                 .toList();
     }
 
@@ -55,16 +61,30 @@ public class BalanceService {
         Group group = groupService.requireMemberGroup(groupId, callerId);
         Map<Long, User> members = membersById(group);
         return DebtSimplifier.simplify(netForGroup(group)).stream()
-                .map(t -> toResponse(t, members))
+                .map(t -> toResponse(t, members, group.getCurrency()))
                 .toList();
     }
 
-    /** The caller's overall net balance across all groups and non-group expenses. */
+    /**
+     * The caller's overall net balance across all groups and non-group expenses, one figure per currency
+     * (currencies are never added together); currencies where the caller is square are left out.
+     */
     public UserBalanceResponse overallBalance(Long callerId) {
-        Map<Long, BigDecimal> net = BalanceCalculator.netBalances(
-                expenseRepository.findInvolvingUser(callerId),
-                settlementRepository.findInvolvingUser(callerId));
-        return new UserBalanceResponse(callerId, net.getOrDefault(callerId, Money.ZERO), Money.DEFAULT_CURRENCY);
+        Map<String, List<Expense>> expenses = expenseRepository.findInvolvingUser(callerId).stream()
+                .collect(Collectors.groupingBy(Expense::getCurrency));
+        Map<String, List<Settlement>> settlements = settlementRepository.findInvolvingUser(callerId).stream()
+                .collect(Collectors.groupingBy(Settlement::getCurrency));
+        TreeSet<String> currencies = new TreeSet<>(expenses.keySet());
+        currencies.addAll(settlements.keySet());
+        List<CurrencyAmount> balances = new ArrayList<>();
+        for (String currency : currencies) {
+            BigDecimal net = BalanceCalculator.netBalances(expenses.getOrDefault(currency, List.of()),
+                    settlements.getOrDefault(currency, List.of())).getOrDefault(callerId, Money.ZERO);
+            if (net.signum() != 0) {
+                balances.add(new CurrencyAmount(currency, net));
+            }
+        }
+        return new UserBalanceResponse(callerId, balances);
     }
 
     private Map<Long, BigDecimal> netForGroup(Group group) {
@@ -82,8 +102,8 @@ public class BalanceService {
         return group.getMembers().stream().collect(Collectors.toMap(User::getId, Function.identity()));
     }
 
-    private static TransferResponse toResponse(Transfer t, Map<Long, User> members) {
+    private static TransferResponse toResponse(Transfer t, Map<Long, User> members, String currency) {
         return new TransferResponse(t.fromUserId(), members.get(t.fromUserId()).getName(),
-                t.toUserId(), members.get(t.toUserId()).getName(), t.amount());
+                t.toUserId(), members.get(t.toUserId()).getName(), t.amount(), currency);
     }
 }

@@ -56,6 +56,11 @@ docs in Swagger UI.
 - **Reports and CSV export**: per group and date range - total spent, per category, and per member (paid, own
   share, net). CSV export with one column per person (like Splitwise), properly quoted, with a UTF-8 BOM for
   Excel, and protected against CSV / formula injection (an expense called `=HYPERLINK(...)` is written as text).
+- **Multiple currencies**: one currency per group (EUR for a Paris trip), any currency outside groups,
+  balances and settle-ups kept per currency and never added together.
+- **Paged, filterable lists**: expenses by date range, category, payer and text search (with LIKE wildcards
+  escaped, so the search is literal); settlements by date range. Pages load their rows' shares, payers and
+  groups in batches, a fixed handful of queries per page instead of one per expense (tested).
 - **Access control**: only members of a group can see or change its data (others get `403`).
 - **Safe under concurrent requests**: writes that depend on group membership lock the group row first, so
   "remove a member" and "add an expense for that member" cannot interleave.
@@ -199,18 +204,18 @@ All endpoints except register, login, the API docs and `/actuator/health` need
 | POST | `/api/auth/register` | Create an account |
 | POST | `/api/auth/login` | Get an access token |
 | GET | `/api/users/me` | Current user |
-| GET | `/api/users/me/expenses` | Expenses I paid for or share in |
-| GET | `/api/users/me/settlements` | Settlements I paid or received |
-| GET | `/api/users/me/balance` | My overall net balance |
+| GET | `/api/users/me/expenses` | Expenses I paid for or share in (paged, filterable) |
+| GET | `/api/users/me/settlements` | Settlements I paid or received (paged, `from` / `to`) |
+| GET | `/api/users/me/balance` | My overall net balance, one figure per currency |
 | GET | `/api/users/me/friends` | Everyone I have an open balance with, per group, plus totals |
 | GET | `/api/users/me/friends/{userId}` | My balance with one friend, per group |
 | POST | `/api/users/me/friends/{userId}/settle-up` | Record the payments that settle everything with a friend |
-| POST | `/api/groups` | Create a group (caller becomes a member) |
+| POST | `/api/groups` | Create a group (caller becomes a member; optional `currency`, default INR) |
 | GET | `/api/groups` | My groups |
 | GET / PUT / DELETE | `/api/groups/{id}` | Get, rename, delete a group |
 | POST | `/api/groups/{id}/members` | Add a member by email |
-| GET | `/api/groups/{id}/expenses` | Group expenses |
-| GET | `/api/groups/{id}/settlements` | Group settlements |
+| GET | `/api/groups/{id}/expenses` | Group expenses (paged; `from`, `to`, `category`, `paidBy`, `q`) |
+| GET | `/api/groups/{id}/settlements` | Group settlements (paged, `from` / `to`) |
 | GET | `/api/groups/{id}/balances` | Net balance per member |
 | GET | `/api/groups/{id}/debts/simplified` | Suggested transfers to settle the group |
 | POST | `/api/expenses` | Record an expense |
@@ -252,8 +257,23 @@ curl -s -X POST localhost:8080/api/expenses -H "Authorization: Bearer $TOKEN" \
 
 For `EQUAL` splits the `value` of each share is ignored; for `EXACT` it is the amount owed; for
 `PERCENTAGE` it is the percentage; for `SHARES` the number of shares; for `ADJUSTMENT` the extra amount on
-top of an equal split (may be left out = 0). `category` and `notes` are optional. `currency` is optional and defaults to `INR`. Only a single
-currency is supported for now.
+top of an equal split (may be left out = 0). `category` and `notes` are optional.
+
+**Currency.** A group has one currency, chosen when it is created (`{"name": "Paris", "currency": "EUR"}`,
+default INR). Group expenses and payments are in that currency: leave `currency` out, or send the same code;
+another code is a `400`. Outside groups any ISO 4217 code works (default INR). Balances are kept per currency
+and never added together: `/users/me/balance` and the friends screen return one figure per currency, and
+settling up with a friend records one payment per group plus one per currency outside groups.
+
+**Lists** (group and personal expenses, settlements) are paged and filterable:
+
+```
+GET /api/groups/{id}/expenses?page=0&size=20&from=2026-09-01&to=2026-09-30&category=GROCERIES&paidBy=2&q=pizza
+-> {"content": [...], "page": 0, "size": 20, "totalElements": 57, "totalPages": 3, "last": false}
+```
+
+`size` is 1-100; `q` is a case-insensitive search in the description, taken literally (`50%` finds "50%").
+Settlement lists take `from` / `to`.
 
 Error example:
 
@@ -296,6 +316,12 @@ PostgreSQL mode.
 - **Reports** (`GroupReportPropertyTest`, `ExpenseCsvTest`, `ReportIntegrationTest`): property-based checks that
   categories, payments and shares each add up to the total and nets to zero; CSV quoting, formula-injection
   defence, duplicate names; date ranges, deleted expenses excluded, the download headers.
+- **Lists and currency** (`ExpenseListIntegrationTest`, `ExpenseListQueryCountTest`, `CurrencyIntegrationTest`):
+  paging without overlap, every filter alone and combined, literal search, parameter validation; a page of 20
+  expenses takes at most 8 SQL statements (23 without batch fetching - the test catches the N+1); group currency
+  rules, invalid codes, and per-currency balances, friends and settle-up. The friend-balance property tests run
+  across two currencies; mixing currencies in the calculator was caught with "user 2 owes user 1 0.01 USD
+  outside any group" as the minimal example.
 - **Activity** (`ExpenseDiffTest`, `ActivityFeedIntegrationTest`): each kind of change described exactly, the
   full story of a group, an expense's history after deletion, who sees what (former members, non-group,
   outsiders), failed changes leaving no trace, deleted groups, paging. Removing the "people involved" rule from
@@ -323,7 +349,6 @@ and once against a real PostgreSQL 16 service container.
 
 ## Roadmap
 
-- Pagination and filtering for expense and settlement lists
-- Multiple currencies with per-group base currency
+- Currency conversion (showing a total in one currency at an exchange rate)
 - Refresh tokens and rate limiting on the auth endpoints
 - Editing a recurring template (today: stop it and create a new one)

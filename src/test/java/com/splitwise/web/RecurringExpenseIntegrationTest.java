@@ -258,6 +258,7 @@ class RecurringExpenseIntegrationTest extends ApiTestSupport {
     }
 
     private JsonNode groupExpenses(Session caller, long groupId) throws Exception {
-        return read(call(caller, get("/api/groups/" + groupId + "/expenses")).andExpect(status().isOk()));
+        return read(call(caller, get("/api/groups/" + groupId + "/expenses").param("size", "100"))
+                .andExpect(status().isOk())).get("content");
     }
 }

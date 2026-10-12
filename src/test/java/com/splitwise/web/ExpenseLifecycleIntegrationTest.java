@@ -142,8 +142,8 @@ class ExpenseLifecycleIntegrationTest extends ApiTestSupport {
 
         call(bob, delete("/api/expenses/" + id)).andExpect(status().isNoContent());
 
-        call(alice, get("/api/groups/" + groupId + "/expenses")).andExpect(jsonPath("$", hasSize(1)));
-        call(alice, get("/api/users/me/expenses")).andExpect(jsonPath("$[?(@.id == " + id + ")]").isEmpty());
+        call(alice, get("/api/groups/" + groupId + "/expenses")).andExpect(jsonPath("$.content", hasSize(1)));
+        call(alice, get("/api/users/me/expenses")).andExpect(jsonPath("$.content[?(@.id == " + id + ")]").isEmpty());
         assertThat(balances(alice, groupId)).containsEntry(bob.id(), money("20.00"));
         assertThat(myOverallBalance(bob)).isEqualByComparingTo("20.00");
         call(alice, get("/api/expenses/" + id))

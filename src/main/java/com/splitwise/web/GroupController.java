@@ -1,5 +1,7 @@
 package com.splitwise.web;
 
+import com.splitwise.query.ExpenseFilter;
+import com.splitwise.domain.Category;
 import java.time.LocalDate;
 import java.nio.charset.StandardCharsets;
 import org.springframework.http.ResponseEntity;
@@ -143,13 +145,27 @@ public class GroupController {
     }
 
     @GetMapping("/{groupId}/expenses")
-    public List<ExpenseResponse> expenses(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId) {
-        return expenseService.listForGroup(CurrentUser.id(jwt), groupId);
+    @Operation(summary = "The group's expenses, newest first; filter by date range, category, payer or text (q)")
+    public PageResponse<ExpenseResponse> expenses(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId,
+                                                @RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "20") int size,
+                                                @RequestParam(required = false) LocalDate from,
+                                                @RequestParam(required = false) LocalDate to,
+                                                @RequestParam(required = false) Category category,
+                                                @RequestParam(required = false) Long paidBy,
+                                                @RequestParam(required = false) String q) {
+        return expenseService.listForGroup(CurrentUser.id(jwt), groupId,
+                new ExpenseFilter(from, to, category, paidBy, q), page, size);
     }
 
     @GetMapping("/{groupId}/settlements")
-    public List<SettlementResponse> settlements(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId) {
-        return settlementService.listForGroup(CurrentUser.id(jwt), groupId);
+    @Operation(summary = "The group's settlements, newest first, optionally within dates")
+    public PageResponse<SettlementResponse> settlements(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId,
+                                                      @RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "20") int size,
+                                                      @RequestParam(required = false) LocalDate from,
+                                                      @RequestParam(required = false) LocalDate to) {
+        return settlementService.listForGroup(CurrentUser.id(jwt), groupId, from, to, page, size);
     }
 
     @GetMapping("/{groupId}/balances")
