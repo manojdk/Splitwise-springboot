@@ -1,5 +1,6 @@
 package com.splitwise.web.dto;
 
+import com.splitwise.domain.Category;
 import com.splitwise.domain.SplitType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
@@ -22,5 +23,7 @@ public record CreateExpenseRequest(
         Long groupId,
         LocalDate date,
         @NotNull SplitType splitType,
+        Category category,
+        @Size(max = 1000) String notes,
         @NotEmpty List<@Valid @NotNull ShareRequest> shares) {
 }

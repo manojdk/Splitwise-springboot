@@ -1,5 +1,6 @@
 package com.splitwise.web.dto;
 
+import com.splitwise.domain.Category;
 import com.splitwise.domain.Expense;
 import com.splitwise.domain.SplitType;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public record ExpenseResponse(Long id, String description, BigDecimal amount, String currency,
                               UserSummary paidBy, Long groupId, LocalDate date, SplitType splitType,
-                              List<ShareResponse> shares, long version, Long createdById, Instant createdAt,
+                              Category category, String notes, List<ShareResponse> shares, long version, Long createdById, Instant createdAt,
                               Long updatedById, Instant updatedAt, boolean deleted) {
 
     public record UserSummary(Long id, String name) {
@@ -28,7 +29,7 @@ public record ExpenseResponse(Long id, String description, BigDecimal amount, St
         return new ExpenseResponse(e.getId(), e.getDescription(), e.getAmount(), e.getCurrency(),
                 new UserSummary(e.getPaidBy().getId(), e.getPaidBy().getName()),
                 e.getGroup() == null ? null : e.getGroup().getId(),
-                e.getExpenseDate(), e.getSplitType(), shares, e.getVersion(),
+                e.getExpenseDate(), e.getSplitType(), e.getCategory(), e.getNotes(), shares, e.getVersion(),
                 e.getCreatedBy().getId(), e.getCreatedAt(),
                 e.getUpdatedBy() == null ? null : e.getUpdatedBy().getId(), e.getUpdatedAt(), e.isDeleted());
     }

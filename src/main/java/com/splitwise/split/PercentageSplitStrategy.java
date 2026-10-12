@@ -1,15 +1,10 @@
 package com.splitwise.split;
 
-import com.splitwise.domain.Money;
 import com.splitwise.domain.SplitType;
 import com.splitwise.exception.InvalidSplitException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,32 +44,7 @@ public class PercentageSplitStrategy extends AbstractSplitStrategy {
             throw new InvalidSplitException("Percentages add up to " + percentSum.stripTrailingZeros().toPlainString()
                     + " but must add up to 100");
         }
-
-        record Draft(Long userId, BigDecimal floor, BigDecimal fraction) {
-        }
-        List<Draft> drafts = new ArrayList<>();
-        BigDecimal allocated = Money.ZERO;
-        for (SplitParticipant p : participants) {
-            BigDecimal exact = total.multiply(p.value()).divide(HUNDRED); // exact: dividing by 100 always terminates
-            BigDecimal floor = exact.setScale(Money.SCALE, RoundingMode.DOWN);
-            drafts.add(new Draft(p.userId(), floor, exact.subtract(floor)));
-            allocated = allocated.add(floor);
-        }
-
-        int leftoverCents = total.subtract(allocated).unscaledValue().intValueExact();
-        List<Draft> byFraction = drafts.stream()
-                .sorted(Comparator.comparing(Draft::fraction).reversed().thenComparing(Draft::userId))
-                .toList();
-
-        Map<Long, BigDecimal> extra = new LinkedHashMap<>();
-        for (int i = 0; i < leftoverCents; i++) {
-            extra.put(byFraction.get(i).userId(), new BigDecimal("0.01"));
-        }
-
-        Map<Long, BigDecimal> result = new LinkedHashMap<>();
-        for (Draft d : drafts) {
-            result.put(d.userId(), d.floor().add(extra.getOrDefault(d.userId(), Money.ZERO)));
-        }
-        return result;
+        return Allocation.proportional(total, participants.stream().map(SplitParticipant::userId).toList(),
+                participants.stream().map(SplitParticipant::value).toList());
     }
 }

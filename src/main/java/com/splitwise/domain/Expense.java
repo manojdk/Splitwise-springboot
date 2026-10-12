@@ -58,6 +58,13 @@ public class Expense {
     @Column(name = "split_type", nullable = false, length = 20)
     private SplitType splitType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private Category category = Category.GENERAL;
+
+    @Column(length = 1000)
+    private String notes;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
@@ -107,6 +114,12 @@ public class Expense {
 
     public void addShare(User user, BigDecimal shareAmount) {
         shares.add(new ExpenseShare(this, user, shareAmount));
+    }
+
+    /** Category (null = GENERAL) and notes (blank = none). */
+    public void describe(Category category, String notes) {
+        this.category = category == null ? Category.GENERAL : category;
+        this.notes = notes == null || notes.isBlank() ? null : notes.trim();
     }
 
     /** Replaces every editable field. The caller has already validated the split. */
@@ -216,6 +229,14 @@ public class Expense {
 
     public long getVersion() {
         return version;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public String getNotes() {
+        return notes;
     }
 
     public Instant getUpdatedAt() {
