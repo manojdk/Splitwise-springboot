@@ -10,17 +10,27 @@ docs in Swagger UI.
 ## Features
 
 - **Accounts**: register and log in; passwords hashed with BCrypt; stateless JWT (HS256) access tokens.
-- **Groups**: create, rename, delete (creator only, and only while empty), add members by email.
+- **Groups**: create, rename, delete (creator only, and only while empty), add members by email,
+  **leave or remove members** - only with a zero balance in the group, so nobody walks away owing money or
+  being owed. Members can leave; only the creator removes others; the creator cannot leave.
 - **Expenses**: three split strategies, all exact to the cent:
   - `EQUAL`: leftover cents go one each to the lowest user ids (100.00 / 3 = 33.34 + 33.33 + 33.33).
   - `EXACT`: given amounts must add up to the expense amount exactly.
   - `PERCENTAGE`: percentages must add up to 100; rounding uses the largest-remainder method, so the
     shares always add up to the total.
   - Expenses can belong to a group, or sit outside any group (for example, two friends sharing a cab).
+- **Edit, delete and restore**: any group member can fix a group expense (as in Splitwise); for non-group
+  expenses, anyone involved. Edits use **optimistic locking**: the client sends the `version` it read, and an
+  edit based on an older version gets `409` instead of silently overwriting someone else's change. Deletes
+  are soft - the expense leaves lists and balances, stays visible by id (`deleted: true`) and can be restored
+  (only while everyone in it is still in the group). Settlements recorded by mistake can be undone and
+  restored the same way.
 - **Balances**: net balance per member of a group, plus each user's overall balance.
 - **Debt simplification**: turns a group's balances into a short list of "X pays Y amount" transfers.
 - **Settle up**: record payments between users; balances and suggested transfers update immediately.
 - **Access control**: only members of a group can see or change its data (others get `403`).
+- **Safe under concurrent requests**: writes that depend on group membership lock the group row first, so
+  "remove a member" and "add an expense for that member" cannot interleave.
 - **Consistent errors**: every error returns `{timestamp, status, error, message, path}` with an
   appropriate `400 / 401 / 403 / 404 / 409` status.
 
@@ -172,8 +182,14 @@ All endpoints except register, login, the API docs and `/actuator/health` need
 | GET | `/api/groups/{id}/balances` | Net balance per member |
 | GET | `/api/groups/{id}/debts/simplified` | Suggested transfers to settle the group |
 | POST | `/api/expenses` | Record an expense |
-| GET | `/api/expenses/{id}` | One expense |
+| GET | `/api/expenses/{id}` | One expense (also a deleted one, flagged `deleted: true`) |
+| PUT | `/api/expenses/{id}` | Edit an expense; body as for create (without `groupId`) plus `version` |
+| DELETE | `/api/expenses/{id}` | Delete (soft; idempotent) |
+| POST | `/api/expenses/{id}/restore` | Restore a deleted expense |
 | POST | `/api/settlements` | Record a payment (settle up) |
+| GET / DELETE | `/api/settlements/{id}` | Get, or undo, a settlement |
+| POST | `/api/settlements/{id}/restore` | Restore an undone settlement |
+| DELETE | `/api/groups/{id}/members/{userId}` | Remove a member (creator) or leave (your own id); balance must be zero |
 
 Example session:
 
@@ -226,6 +242,15 @@ PostgreSQL mode.
 - **Integration tests** (MockMvc, full Spring context): register/login, auth errors, creating
   groups and adding members, all three split types, balances, simplified debts, settlements,
   `403` for non-members, `404`, `409` and validation errors.
+- **Expense life cycle** (`ExpenseLifecycleIntegrationTest`): edits change balances, shares updated in place,
+  stale versions rejected, invalid edits change nothing, delete / restore and their effect on lists and
+  balances, restore refused once a participant has left.
+- **Membership and settlements** (`MembershipAndSettlementIntegrationTest`): leaving only at a zero balance,
+  creator rules, re-adding a former member, undoing and restoring settlements, access rules.
+- **Concurrency** (`ConcurrentEditsIntegrationTest`): four simultaneous edits of the same version give exactly
+  one success; a member leaving while an expense for them is added never ends with both succeeding. Both tests
+  were checked against the code with the safeguard removed (they fail: lost updates, and a member leaving while
+  owing money).
 
 GitHub Actions runs `./mvnw -B verify` on every push to `main` and on pull requests, twice: once on H2
 and once against a real PostgreSQL 16 service container.
@@ -233,8 +258,7 @@ and once against a real PostgreSQL 16 service container.
 ## Roadmap
 
 - Pagination and filtering for expense and settlement lists
-- Edit and delete expenses (with an audit trail)
-- Remove members or let them leave a group (only when their balance is zero)
+- Activity feed / audit trail of who changed what
 - Multiple currencies with per-group base currency
 - Refresh tokens and rate limiting on the auth endpoints
 - Testcontainers-based tests against a real PostgreSQL

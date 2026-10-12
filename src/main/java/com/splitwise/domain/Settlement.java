@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -53,6 +54,18 @@ public class Settlement {
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
+
+    @Version
+    @Column(nullable = false)
+    private long version;
+
+    /** Soft delete, like expenses: excluded from lists and balances, can be restored. */
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deleted_by")
+    private User deletedBy;
 
     protected Settlement() {
     }
@@ -108,5 +121,35 @@ public class Settlement {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public void markDeleted(User by, Instant now) {
+        this.deletedBy = by;
+        this.deletedAt = now;
+    }
+
+    public void restore() {
+        this.deletedBy = null;
+        this.deletedAt = null;
+    }
+
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
+
+    public boolean involves(Long userId) {
+        return payer.getId().equals(userId) || payee.getId().equals(userId);
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public Instant getDeletedAt() {
+        return deletedAt;
+    }
+
+    public User getDeletedBy() {
+        return deletedBy;
     }
 }

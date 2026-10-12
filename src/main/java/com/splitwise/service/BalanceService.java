@@ -71,8 +71,10 @@ public class BalanceService {
         Map<Long, BigDecimal> net = new TreeMap<>();
         group.getMembers().forEach(m -> net.put(m.getId(), Money.ZERO));
         net.putAll(BalanceCalculator.netBalances(
-                expenseRepository.findByGroupIdOrderByExpenseDateDescIdDesc(group.getId()),
-                settlementRepository.findByGroupIdOrderBySettledOnDescIdDesc(group.getId())));
+                expenseRepository.findByGroupIdAndDeletedAtIsNullOrderByExpenseDateDescIdDesc(group.getId()),
+                settlementRepository.findByGroupIdAndDeletedAtIsNullOrderBySettledOnDescIdDesc(group.getId())));
+        // A former member can only have left with a zero balance; keep the list to current members
+        net.keySet().retainAll(membersById(group).keySet());
         return net;
     }
 

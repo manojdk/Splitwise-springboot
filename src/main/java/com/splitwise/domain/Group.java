@@ -11,6 +11,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 import java.time.Instant;
 import java.util.LinkedHashSet;
@@ -40,6 +41,11 @@ public class Group {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> members = new LinkedHashSet<>();
 
+    /** Membership changes bump the version too, so they cannot silently overwrite each other. */
+    @Version
+    @Column(nullable = false)
+    private long version;
+
     protected Group() {
     }
 
@@ -56,6 +62,14 @@ public class Group {
 
     public void addMember(User user) {
         members.add(user);
+    }
+
+    public void removeMember(Long userId) {
+        members.removeIf(m -> m.getId().equals(userId));
+    }
+
+    public boolean isCreator(Long userId) {
+        return createdBy.getId().equals(userId);
     }
 
     public Long getId() {
