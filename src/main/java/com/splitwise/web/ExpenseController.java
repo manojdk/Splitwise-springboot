@@ -1,5 +1,8 @@
 package com.splitwise.web;
 
+import java.util.List;
+import com.splitwise.web.dto.ActivityResponse;
+import com.splitwise.service.ActivityService;
 import com.splitwise.security.CurrentUser;
 import com.splitwise.service.ExpenseService;
 import com.splitwise.web.dto.CreateExpenseRequest;
@@ -27,9 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExpenseController {
 
     private final ExpenseService expenseService;
+    private final ActivityService activityService;
 
-    public ExpenseController(ExpenseService expenseService) {
+    public ExpenseController(ExpenseService expenseService, ActivityService activityService) {
         this.expenseService = expenseService;
+        this.activityService = activityService;
     }
 
     @PostMapping
@@ -43,6 +48,12 @@ public class ExpenseController {
     @Operation(summary = "Get an expense, including a deleted one (flagged deleted=true)")
     public ExpenseResponse get(@AuthenticationPrincipal Jwt jwt, @PathVariable Long expenseId) {
         return expenseService.get(CurrentUser.id(jwt), expenseId);
+    }
+
+    @GetMapping("/{expenseId}/activity")
+    @Operation(summary = "The expense's history, oldest first: who added, edited (with each change) or deleted it")
+    public List<ActivityResponse> history(@AuthenticationPrincipal Jwt jwt, @PathVariable Long expenseId) {
+        return activityService.expenseHistory(CurrentUser.id(jwt), expenseId);
     }
 
     @PutMapping("/{expenseId}")

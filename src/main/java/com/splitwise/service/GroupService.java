@@ -1,5 +1,6 @@
 package com.splitwise.service;
 
+import com.splitwise.activity.ActivityRecorder;
 import com.splitwise.balance.BalanceCalculator;
 import com.splitwise.domain.Group;
 import com.splitwise.domain.Money;
@@ -28,13 +29,16 @@ public class GroupService {
     private final ExpenseRepository expenseRepository;
     private final SettlementRepository settlementRepository;
     private final UserService userService;
+    private final ActivityRecorder activity;
 
     public GroupService(GroupRepository groupRepository, ExpenseRepository expenseRepository,
-                        SettlementRepository settlementRepository, UserService userService) {
+                        SettlementRepository settlementRepository, UserService userService,
+                        ActivityRecorder activity) {
         this.groupRepository = groupRepository;
         this.expenseRepository = expenseRepository;
         this.settlementRepository = settlementRepository;
         this.userService = userService;
+        this.activity = activity;
     }
 
     /**
@@ -74,7 +78,9 @@ public class GroupService {
         if (request.memberIds() != null && !request.memberIds().isEmpty()) {
             userService.getAllById(request.memberIds()).values().forEach(group::addMember);
         }
-        return GroupResponse.from(groupRepository.save(group));
+        Group saved = groupRepository.save(group);
+        activity.groupCreated(callerId, saved);
+        return GroupResponse.from(saved);
     }
 
     public List<GroupResponse> listForUser(Long callerId) {
@@ -88,7 +94,11 @@ public class GroupService {
     @Transactional
     public GroupResponse rename(Long callerId, Long groupId, UpdateGroupRequest request) {
         Group group = requireMemberGroup(groupId, callerId);
+        String oldName = group.getName();
         group.setName(request.name().trim());
+        if (!oldName.equals(group.getName())) {
+            activity.groupRenamed(callerId, group, oldName);
+        }
         return GroupResponse.from(group);
     }
 
@@ -100,6 +110,7 @@ public class GroupService {
             throw new ConflictException("User is already a member of this group");
         }
         group.addMember(user);
+        activity.memberAdded(callerId, group, user);
         return GroupResponse.from(group);
     }
 
@@ -133,7 +144,9 @@ public class GroupService {
             throw new ConflictException("User " + memberId + " still has a balance of " + balance
                     + " in this group; settle up first");
         }
+        User member = userService.getById(memberId);
         group.removeMember(memberId);
+        activity.memberRemoved(callerId, group, member);
         return GroupResponse.from(group);
     }
 
@@ -147,6 +160,7 @@ public class GroupService {
         if (expenseRepository.existsByGroupId(groupId) || settlementRepository.existsByGroupId(groupId)) {
             throw new ConflictException("Group has expenses or settlements and cannot be deleted");
         }
+        activity.groupDeleted(callerId, group);
         groupRepository.delete(group);
     }
 }

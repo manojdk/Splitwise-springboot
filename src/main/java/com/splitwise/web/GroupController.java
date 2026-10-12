@@ -1,5 +1,9 @@
 package com.splitwise.web;
 
+import org.springframework.web.bind.annotation.RequestParam;
+import com.splitwise.web.dto.PageResponse;
+import com.splitwise.web.dto.ActivityResponse;
+import com.splitwise.service.ActivityService;
 import com.splitwise.security.CurrentUser;
 import com.splitwise.service.BalanceService;
 import com.splitwise.service.ExpenseService;
@@ -41,13 +45,16 @@ public class GroupController {
     private final ExpenseService expenseService;
     private final SettlementService settlementService;
     private final BalanceService balanceService;
+    private final ActivityService activityService;
 
     public GroupController(GroupService groupService, ExpenseService expenseService,
-                           SettlementService settlementService, BalanceService balanceService) {
+                           SettlementService settlementService, BalanceService balanceService,
+                           ActivityService activityService) {
         this.groupService = groupService;
         this.expenseService = expenseService;
         this.settlementService = settlementService;
         this.balanceService = balanceService;
+        this.activityService = activityService;
     }
 
     @PostMapping
@@ -94,6 +101,14 @@ public class GroupController {
     public GroupResponse removeMember(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId,
                                       @PathVariable Long userId) {
         return groupService.removeMember(CurrentUser.id(jwt), groupId, userId);
+    }
+
+    @GetMapping("/{groupId}/activity")
+    @Operation(summary = "The group's activity, newest first (members only)")
+    public PageResponse<ActivityResponse> activity(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId,
+                                                   @RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "20") int size) {
+        return activityService.feedForGroup(CurrentUser.id(jwt), groupId, page, size);
     }
 
     @GetMapping("/{groupId}/expenses")

@@ -1,5 +1,7 @@
 package com.splitwise.service;
 
+import com.splitwise.activity.ExpenseSnapshot;
+import com.splitwise.activity.ActivityRecorder;
 import com.splitwise.domain.Expense;
 import com.splitwise.domain.Group;
 import com.splitwise.domain.Money;
@@ -48,14 +50,17 @@ public class ExpenseService {
     private final UserService userService;
     private final SplitStrategyResolver splitStrategies;
     private final Clock clock;
+    private final ActivityRecorder activity;
 
     public ExpenseService(ExpenseRepository expenseRepository, GroupService groupService,
-                          UserService userService, SplitStrategyResolver splitStrategies, Clock clock) {
+                          UserService userService, SplitStrategyResolver splitStrategies, Clock clock,
+                          ActivityRecorder activity) {
         this.expenseRepository = expenseRepository;
         this.groupService = groupService;
         this.userService = userService;
         this.splitStrategies = splitStrategies;
         this.clock = clock;
+        this.activity = activity;
     }
 
     /**
@@ -76,7 +81,9 @@ public class ExpenseService {
                 split.payer(), group, dateOrToday(request.date()), request.splitType(), caller);
         expense.describe(request.category(), request.notes());
         split.shares().forEach(expense::addShare);
-        return ExpenseResponse.from(expenseRepository.save(expense));
+        Expense saved = expenseRepository.save(expense);
+        activity.expenseAdded(callerId, saved);
+        return ExpenseResponse.from(saved);
     }
 
     /**
@@ -95,13 +102,16 @@ public class ExpenseService {
         }
         ValidatedSplit split = validate(callerId, expense.getGroup(), request.paidById(), request.currency(),
                 request.amount(), request.splitType(), request.shares());
+        ExpenseSnapshot before = ExpenseSnapshot.of(expense);
 
         expense.update(request.description().trim(), request.amount(), split.currency(), split.payer(),
                 dateOrToday(request.date()), request.splitType(), split.shares(), userService.getById(callerId),
                 Instant.now(clock));
         expense.describe(request.category(), request.notes());
         // Flush so the new version is in the response and a lost race fails here, inside the transaction
-        return ExpenseResponse.from(expenseRepository.saveAndFlush(expense));
+        Expense saved = expenseRepository.saveAndFlush(expense);
+        activity.expenseUpdated(callerId, saved, before);
+        return ExpenseResponse.from(saved);
     }
 
     /** Soft delete: the expense leaves lists and balances but can be restored. Deleting twice is a no-op. */
@@ -110,6 +120,7 @@ public class ExpenseService {
         Expense expense = requireAccessibleForWrite(callerId, expenseId);
         if (!expense.isDeleted()) {
             expense.markDeleted(userService.getById(callerId), Instant.now(clock));
+            activity.expenseDeleted(callerId, expense);
         }
     }
 
@@ -133,6 +144,7 @@ public class ExpenseService {
             }
         }
         expense.restore();
+        activity.expenseRestored(callerId, expense);
         return ExpenseResponse.from(expenseRepository.saveAndFlush(expense));
     }
 
