@@ -40,6 +40,12 @@ docs in Swagger UI.
   simultaneous settle-ups between the same people never pay twice: both users are locked first.
 - **Debt simplification**: turns a group's balances into a short list of "X pays Y amount" transfers.
 - **Settle up**: record payments between users; balances and suggested transfers update immediately.
+- **Activity feed**: every change is recorded in the same transaction as the change itself, so the history
+  can never disagree with the data - added, edited, deleted and restored expenses and payments, members joining,
+  leaving or being removed, groups created, renamed or deleted. Edits list exactly what changed
+  (`Amount: 300.00 -> 400.00`, `Carol removed from the split (was 100.00)`, `Bob's share: 100.00 -> 200.00`).
+  A group's feed is visible to its members; people involved in an entry keep seeing it after leaving the group;
+  non-group entries are visible only to the people involved. Paginated, newest first.
 - **Access control**: only members of a group can see or change its data (others get `403`).
 - **Safe under concurrent requests**: writes that depend on group membership lock the group row first, so
   "remove a member" and "add an expense for that member" cannot interleave.
@@ -198,6 +204,9 @@ All endpoints except register, login, the API docs and `/actuator/health` need
 | GET | `/api/groups/{id}/debts/simplified` | Suggested transfers to settle the group |
 | POST | `/api/expenses` | Record an expense |
 | GET | `/api/expenses/{id}` | One expense (also a deleted one, flagged `deleted: true`) |
+| GET | `/api/expenses/{id}/activity` | The expense's history, oldest first, with every change |
+| GET | `/api/groups/{id}/activity` | The group's activity, newest first (`?page=0&size=20`) |
+| GET | `/api/users/me/activity` | My feed: my groups plus everything I was involved in |
 | PUT | `/api/expenses/{id}` | Edit an expense; body as for create (without `groupId`) plus `version` |
 | DELETE | `/api/expenses/{id}` | Delete (soft; idempotent) |
 | POST | `/api/expenses/{id}/restore` | Restore a deleted expense |
@@ -263,6 +272,10 @@ PostgreSQL mode.
   balances, restore refused once a participant has left.
 - **Membership and settlements** (`MembershipAndSettlementIntegrationTest`): leaving only at a zero balance,
   creator rules, re-adding a former member, undoing and restoring settlements, access rules.
+- **Activity** (`ExpenseDiffTest`, `ActivityFeedIntegrationTest`): each kind of change described exactly, the
+  full story of a group, an expense's history after deletion, who sees what (former members, non-group,
+  outsiders), failed changes leaving no trace, deleted groups, paging. Removing the "people involved" rule from
+  the feed query made three of these tests fail, as it should.
 - **Property-based tests for every split type** (jqwik, `SplitStrategyPropertyTest`): random totals from
   0.01 to 10,000,000.00, 1-8 people and valid values for each of the five types; checks that the parts add up
   to the total exactly, are whole cents, never negative, independent of input order, and fair (EQUAL within one
@@ -287,7 +300,6 @@ and once against a real PostgreSQL 16 service container.
 ## Roadmap
 
 - Pagination and filtering for expense and settlement lists
-- Activity feed / audit trail of who changed what
 - Multiple currencies with per-group base currency
 - Refresh tokens and rate limiting on the auth endpoints
 - Testcontainers-based tests against a real PostgreSQL

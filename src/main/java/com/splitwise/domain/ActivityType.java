@@ -1,0 +1,18 @@
+package com.splitwise.domain;
+
+/** What happened. */
+public enum ActivityType {
+    GROUP_CREATED,
+    GROUP_RENAMED,
+    GROUP_DELETED,
+    MEMBER_ADDED,
+    MEMBER_REMOVED,
+    MEMBER_LEFT,
+    EXPENSE_ADDED,
+    EXPENSE_UPDATED,
+    EXPENSE_DELETED,
+    EXPENSE_RESTORED,
+    SETTLEMENT_ADDED,
+    SETTLEMENT_DELETED,
+    SETTLEMENT_RESTORED
+}

@@ -1,5 +1,9 @@
 package com.splitwise.web;
 
+import org.springframework.web.bind.annotation.RequestParam;
+import com.splitwise.web.dto.PageResponse;
+import com.splitwise.web.dto.ActivityResponse;
+import com.splitwise.service.ActivityService;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,15 +41,25 @@ public class UserController {
     private final SettlementService settlementService;
     private final BalanceService balanceService;
     private final FriendBalanceService friendBalanceService;
+    private final ActivityService activityService;
 
     public UserController(UserService userService, ExpenseService expenseService,
                           SettlementService settlementService, BalanceService balanceService,
-                          FriendBalanceService friendBalanceService) {
+                          FriendBalanceService friendBalanceService, ActivityService activityService) {
         this.userService = userService;
         this.expenseService = expenseService;
         this.settlementService = settlementService;
         this.balanceService = balanceService;
         this.friendBalanceService = friendBalanceService;
+        this.activityService = activityService;
+    }
+
+    @GetMapping("/activity")
+    @Operation(summary = "Activity feed: your groups plus everything you were involved in, newest first")
+    public PageResponse<ActivityResponse> activity(@AuthenticationPrincipal Jwt jwt,
+                                                   @RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "20") int size) {
+        return activityService.feedForUser(CurrentUser.id(jwt), page, size);
     }
 
     @GetMapping

@@ -1,5 +1,6 @@
 package com.splitwise.service;
 
+import com.splitwise.activity.ActivityRecorder;
 import com.splitwise.domain.Group;
 import com.splitwise.domain.Money;
 import com.splitwise.domain.Settlement;
@@ -29,13 +30,15 @@ public class SettlementService {
     private final GroupService groupService;
     private final UserService userService;
     private final Clock clock;
+    private final ActivityRecorder activity;
 
     public SettlementService(SettlementRepository settlementRepository, GroupService groupService,
-                             UserService userService, Clock clock) {
+                             UserService userService, Clock clock, ActivityRecorder activity) {
         this.settlementRepository = settlementRepository;
         this.groupService = groupService;
         this.userService = userService;
         this.clock = clock;
+        this.activity = activity;
     }
 
     @Transactional
@@ -63,7 +66,9 @@ public class SettlementService {
         Settlement settlement = new Settlement(users.get(request.fromUserId()), users.get(request.toUserId()),
                 request.amount(), Money.DEFAULT_CURRENCY, group, date,
                 request.note() == null ? null : request.note().trim(), users.get(callerId));
-        return SettlementResponse.from(settlementRepository.save(settlement));
+        Settlement saved = settlementRepository.save(settlement);
+        activity.settlementAdded(callerId, saved);
+        return SettlementResponse.from(saved);
     }
 
     public List<SettlementResponse> listForGroup(Long callerId, Long groupId) {
@@ -90,6 +95,7 @@ public class SettlementService {
         Settlement settlement = requireAccessibleForWrite(callerId, settlementId);
         if (!settlement.isDeleted()) {
             settlement.markDeleted(userService.getById(callerId), Instant.now(clock));
+            activity.settlementDeleted(callerId, settlement);
         }
     }
 
@@ -110,6 +116,7 @@ public class SettlementService {
             }
         }
         settlement.restore();
+        activity.settlementRestored(callerId, settlement);
         return SettlementResponse.from(settlementRepository.saveAndFlush(settlement));
     }
 
