@@ -1,5 +1,13 @@
 package com.splitwise.web;
 
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.HttpStatus;
+import com.splitwise.web.dto.SettleUpResponse;
+import com.splitwise.web.dto.FriendBalancesResponse;
+import com.splitwise.web.dto.FriendBalanceResponse;
+import com.splitwise.service.FriendBalanceService;
 import com.splitwise.security.CurrentUser;
 import com.splitwise.service.BalanceService;
 import com.splitwise.service.ExpenseService;
@@ -28,13 +36,16 @@ public class UserController {
     private final ExpenseService expenseService;
     private final SettlementService settlementService;
     private final BalanceService balanceService;
+    private final FriendBalanceService friendBalanceService;
 
     public UserController(UserService userService, ExpenseService expenseService,
-                          SettlementService settlementService, BalanceService balanceService) {
+                          SettlementService settlementService, BalanceService balanceService,
+                          FriendBalanceService friendBalanceService) {
         this.userService = userService;
         this.expenseService = expenseService;
         this.settlementService = settlementService;
         this.balanceService = balanceService;
+        this.friendBalanceService = friendBalanceService;
     }
 
     @GetMapping
@@ -59,5 +70,24 @@ public class UserController {
     @Operation(summary = "Overall net balance across all groups and non-group expenses (positive = owed to you)")
     public UserBalanceResponse myBalance(@AuthenticationPrincipal Jwt jwt) {
         return balanceService.overallBalance(CurrentUser.id(jwt));
+    }
+
+    @GetMapping("/friends")
+    @Operation(summary = "Everyone you have an open balance with, per group, plus totals (positive = owed to you)")
+    public FriendBalancesResponse friends(@AuthenticationPrincipal Jwt jwt) {
+        return friendBalanceService.balances(CurrentUser.id(jwt));
+    }
+
+    @GetMapping("/friends/{friendId}")
+    @Operation(summary = "Your balance with one friend, per group")
+    public FriendBalanceResponse friend(@AuthenticationPrincipal Jwt jwt, @PathVariable Long friendId) {
+        return friendBalanceService.balanceWith(CurrentUser.id(jwt), friendId);
+    }
+
+    @PostMapping("/friends/{friendId}/settle-up")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Record the payments that clear every open balance with a friend (one per group)")
+    public SettleUpResponse settleUp(@AuthenticationPrincipal Jwt jwt, @PathVariable Long friendId) {
+        return friendBalanceService.settleUp(CurrentUser.id(jwt), friendId);
     }
 }

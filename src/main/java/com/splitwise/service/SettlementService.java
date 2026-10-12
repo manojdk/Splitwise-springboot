@@ -55,7 +55,10 @@ public class SettlementService {
                 }
             }
         }
-        Map<Long, User> users = userService.getAllById(Set.of(request.fromUserId(), request.toUserId()));
+        // Non-group: lock both users, the same lock a friend settle-up takes, so the two cannot race
+        Map<Long, User> users = group == null
+                ? userService.lockAll(Set.of(request.fromUserId(), request.toUserId()))
+                : userService.getAllById(Set.of(request.fromUserId(), request.toUserId()));
         LocalDate date = request.date() != null ? request.date() : LocalDate.now(clock);
         Settlement settlement = new Settlement(users.get(request.fromUserId()), users.get(request.toUserId()),
                 request.amount(), Money.DEFAULT_CURRENCY, group, date,

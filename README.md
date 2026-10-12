@@ -26,6 +26,12 @@ docs in Swagger UI.
   (only while everyone in it is still in the group). Settlements recorded by mistake can be undone and
   restored the same way.
 - **Balances**: net balance per member of a group, plus each user's overall balance.
+- **Friends**: the Splitwise home screen - everyone you have an open balance with ("you owe Bob 40",
+  "Carol owes you 30"), with a per-group breakdown and totals that always equal your overall balance. Group
+  parts come from the group's simplified debts, the same transfers the group suggests.
+- **Settle up with a friend**: one call records the payments that clear every open balance with that friend,
+  one settlement per group (so each group's balances stay right) plus one for non-group expenses. Two
+  simultaneous settle-ups between the same people never pay twice: both users are locked first.
 - **Debt simplification**: turns a group's balances into a short list of "X pays Y amount" transfers.
 - **Settle up**: record payments between users; balances and suggested transfers update immediately.
 - **Access control**: only members of a group can see or change its data (others get `403`).
@@ -173,6 +179,9 @@ All endpoints except register, login, the API docs and `/actuator/health` need
 | GET | `/api/users/me/expenses` | Expenses I paid for or share in |
 | GET | `/api/users/me/settlements` | Settlements I paid or received |
 | GET | `/api/users/me/balance` | My overall net balance |
+| GET | `/api/users/me/friends` | Everyone I have an open balance with, per group, plus totals |
+| GET | `/api/users/me/friends/{userId}` | My balance with one friend, per group |
+| POST | `/api/users/me/friends/{userId}/settle-up` | Record the payments that settle everything with a friend |
 | POST | `/api/groups` | Create a group (caller becomes a member) |
 | GET | `/api/groups` | My groups |
 | GET / PUT / DELETE | `/api/groups/{id}` | Get, rename, delete a group |
@@ -247,6 +256,13 @@ PostgreSQL mode.
   balances, restore refused once a participant has left.
 - **Membership and settlements** (`MembershipAndSettlementIntegrationTest`): leaving only at a zero balance,
   creator rules, re-adding a former member, undoing and restoring settlements, access rules.
+- **Property-based tests** (jqwik, `FriendBalanceCalculatorPropertyTest`): thousands of random ledgers
+  (up to 6 people, groups and non-group, expenses and settlements) check that friend balances add up to the
+  overall balance, that A's balance with B is exactly minus B's with A, that settling every bucket leaves
+  nothing, and that amounts are never zero or fractional cents. A failing case is shrunk to a minimal example.
+- **Friends** (`FriendBalanceIntegrationTest`, `FriendSettleUpConcurrencyTest`): the friends screen, per-group
+  breakdown, settle-up per group, deleted expenses ignored, strangers rejected, and simultaneous settle-ups
+  paying only once (also without any group, where only the user lock protects; checked by removing it).
 - **Concurrency** (`ConcurrentEditsIntegrationTest`): four simultaneous edits of the same version give exactly
   one success; a member leaving while an expense for them is added never ends with both succeeding. Both tests
   were checked against the code with the safeguard removed (they fail: lost updates, and a member leaving while

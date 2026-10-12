@@ -1,5 +1,6 @@
 package com.splitwise.repository;
 
+import java.util.Collection;
 import java.util.Optional;
 import com.splitwise.domain.Settlement;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -27,6 +28,10 @@ public interface SettlementRepository extends JpaRepository<Settlement, Long> {
     List<Settlement> findInvolvingUser(@Param("userId") Long userId);
 
     boolean existsByGroupId(Long groupId);
+
+    /** Non-deleted settlements of several groups at once. */
+    @EntityGraph(attributePaths = {"payer", "payee", "group"})
+    List<Settlement> findByGroupIdInAndDeletedAtIsNull(Collection<Long> groupIds);
 
     /** The settlement's group id (empty for a non-group or unknown settlement), read without loading it. */
     @Query("select s.group.id from Settlement s where s.id = :id and s.group is not null")

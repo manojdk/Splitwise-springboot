@@ -44,3 +44,6 @@ Thumbs.db
 *.log
 logs/
 HELP.md
+
+# jqwik property-test failure database (local)
+.jqwik-database
