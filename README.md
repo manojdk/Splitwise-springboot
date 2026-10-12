@@ -69,8 +69,9 @@ docs in Swagger UI.
 
 ## Frontend
 
-A React + TypeScript app in [`frontend/`](frontend/README.md), being built screen by screen. Sign-in, sign-up
-and the app shell are done, in three themes (Aurora is the default). The screens were designed first as a
+A React + TypeScript app in [`frontend/`](frontend/README.md), being built screen by screen. Sign-in, sign-up,
+the dashboard (per-currency balances, friends, settle-up) and groups (create, members) are done, in three
+themes (Aurora is the default). The screens were designed first as a
 clickable prototype in [`docs/prototype`](docs/prototype/README.md): open `docs/prototype/index.html` in a
 browser, no build needed.
 

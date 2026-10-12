@@ -1,5 +1,6 @@
 package com.splitwise.web;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -9,6 +10,10 @@ import org.junit.jupiter.api.Test;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,6 +45,34 @@ class OpenApiSpecTest extends ApiTestSupport {
         assertThat(Files.readString(SPEC, StandardCharsets.UTF_8).replace("\r\n", "\n"))
                 .as("%s is out of date; run with -Dopenapi.update=true and regenerate the frontend types", SPEC)
                 .isEqualTo(spec);
+    }
+
+    @Test
+    void responseFieldsAreRequiredAndOnlyTheNullableOnesAcceptNull() throws Exception {
+        JsonNode schemas = read(mvc.perform(get("/v3/api-docs")).andExpect(status().isOk()))
+                .path("components").path("schemas");
+
+        // Response schemas: every field is always sent, so every field is required
+        JsonNode expense = schemas.path("ExpenseResponse");
+        assertThat(names(expense.path("required"))).containsAll(names(expense.path("properties").properties()));
+        assertThat(expense.path("properties").path("groupId").path("type").toString()).contains("null");
+        assertThat(expense.path("properties").path("amount").path("type").toString()).doesNotContain("null");
+        assertThat(names(schemas.path("Item").path("required"))).contains("groupId", "groupName", "amount");
+
+        // Request schemas keep only the fields the API really demands
+        assertThat(names(schemas.path("CreateExpenseRequest").path("required")))
+                .doesNotContain("groupId", "notes", "category");
+        assertThat(names(schemas.path("ShareRequest").path("required"))).containsExactly("userId");
+    }
+
+    private static List<String> names(JsonNode array) {
+        List<String> names = new ArrayList<>();
+        array.forEach(node -> names.add(node.asText()));
+        return names;
+    }
+
+    private static List<String> names(Set<Map.Entry<String, JsonNode>> fields) {
+        return fields.stream().map(Map.Entry::getKey).toList();
     }
 
     /** Stable text: keys sorted, two-space indent, LF line endings, no environment-specific server URL. */

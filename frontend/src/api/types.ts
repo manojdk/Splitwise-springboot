@@ -3,14 +3,18 @@ import type { components } from './schema'
 /** Generated from frontend/openapi.json (npm run api:types); never edit schema.d.ts by hand. */
 type Schemas = components['schemas']
 
-/**
- * The spec marks every response field optional because the Java records carry no "required" annotations, yet the
- * API always sends these fields with a value. Present<T> states that for DTOs where it holds; DTOs with
- * genuinely nullable fields must not use it.
- */
-type Present<T> = { [K in keyof T]-?: NonNullable<T[K]> }
-
-export type User = Present<Schemas['UserResponse']>
-export type TokenResponse = Present<Schemas['TokenResponse']>
+export type User = Schemas['UserResponse']
+export type TokenResponse = Schemas['TokenResponse']
 export type LoginRequest = Schemas['LoginRequest']
 export type RegisterRequest = Schemas['RegisterRequest']
+
+export type CurrencyAmount = Schemas['CurrencyAmount']
+export type FriendBalances = Schemas['FriendBalancesResponse']
+export type FriendTotals = Schemas['Totals']
+export type FriendBalance = Schemas['FriendBalanceResponse']
+/** One open balance with a friend: in a group, or outside groups (groupId null). */
+export type FriendBalanceItem = Schemas['Item']
+export type SettleUpResult = Schemas['SettleUpResponse']
+
+export type Group = Schemas['GroupResponse']
+export type CreateGroupRequest = Schemas['CreateGroupRequest']

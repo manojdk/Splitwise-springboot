@@ -526,40 +526,40 @@ export interface components {
     schemas: {
         ActivityResponse: {
             /** Format: int64 */
-            actorId?: number;
-            actorName?: string;
+            actorId: number;
+            actorName: string;
             /** Format: date-time */
-            createdAt?: string;
-            details?: string[];
+            createdAt: string;
+            details: string[];
             /** Format: int64 */
-            expenseId?: number;
+            expenseId: number | null;
             /** Format: int64 */
-            groupId?: number;
+            groupId: number | null;
             /** Format: int64 */
-            id?: number;
+            id: number;
             /** Format: int64 */
-            settlementId?: number;
-            summary?: string;
+            settlementId: number | null;
+            summary: string;
             /** @enum {string} */
-            type?: "GROUP_CREATED" | "GROUP_RENAMED" | "GROUP_DELETED" | "MEMBER_ADDED" | "MEMBER_REMOVED" | "MEMBER_LEFT" | "EXPENSE_ADDED" | "EXPENSE_UPDATED" | "EXPENSE_DELETED" | "EXPENSE_RESTORED" | "SETTLEMENT_ADDED" | "SETTLEMENT_DELETED" | "SETTLEMENT_RESTORED" | "RECURRING_CREATED" | "RECURRING_STOPPED" | "RECURRING_PAUSED";
+            type: "GROUP_CREATED" | "GROUP_RENAMED" | "GROUP_DELETED" | "MEMBER_ADDED" | "MEMBER_REMOVED" | "MEMBER_LEFT" | "EXPENSE_ADDED" | "EXPENSE_UPDATED" | "EXPENSE_DELETED" | "EXPENSE_RESTORED" | "SETTLEMENT_ADDED" | "SETTLEMENT_DELETED" | "SETTLEMENT_RESTORED" | "RECURRING_CREATED" | "RECURRING_STOPPED" | "RECURRING_PAUSED";
         };
         AddMemberRequest: {
             /** Format: email */
             email: string;
         };
         BalanceResponse: {
-            currency?: string;
-            name?: string;
-            netBalance?: number;
+            currency: string;
+            name: string;
+            netBalance: number;
             /** Format: int64 */
-            userId?: number;
+            userId: number;
         };
         CategoryTotal: {
             /** @enum {string} */
-            category?: "GENERAL" | "FOOD_AND_DRINK" | "GROCERIES" | "RENT" | "UTILITIES" | "TRANSPORT" | "TRAVEL" | "ENTERTAINMENT" | "SHOPPING" | "HEALTH";
+            category: "GENERAL" | "FOOD_AND_DRINK" | "GROCERIES" | "RENT" | "UTILITIES" | "TRANSPORT" | "TRAVEL" | "ENTERTAINMENT" | "SHOPPING" | "HEALTH";
             /** Format: int32 */
-            count?: number;
-            total?: number;
+            count: number;
+            total: number;
         };
         CreateExpenseRequest: {
             amount: number;
@@ -618,162 +618,162 @@ export interface components {
             toUserId: number;
         };
         CurrencyAmount: {
-            amount?: number;
-            currency?: string;
+            amount: number;
+            currency: string;
         };
         ExpenseResponse: {
-            amount?: number;
+            amount: number;
             /** @enum {string} */
-            category?: "GENERAL" | "FOOD_AND_DRINK" | "GROCERIES" | "RENT" | "UTILITIES" | "TRANSPORT" | "TRAVEL" | "ENTERTAINMENT" | "SHOPPING" | "HEALTH";
+            category: "GENERAL" | "FOOD_AND_DRINK" | "GROCERIES" | "RENT" | "UTILITIES" | "TRANSPORT" | "TRAVEL" | "ENTERTAINMENT" | "SHOPPING" | "HEALTH";
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
             /** Format: int64 */
-            createdById?: number;
-            currency?: string;
+            createdById: number;
+            currency: string;
             /** Format: date */
-            date?: string;
-            deleted?: boolean;
-            description?: string;
+            date: string;
+            deleted: boolean;
+            description: string;
             /** Format: int64 */
-            groupId?: number;
+            groupId: number | null;
             /** Format: int64 */
-            id?: number;
-            notes?: string;
-            paidBy?: components["schemas"]["UserSummary"];
+            id: number;
+            notes: string | null;
+            paidBy: components["schemas"]["UserSummary"];
             /** Format: int64 */
-            recurringExpenseId?: number;
-            shares?: components["schemas"]["ShareResponse"][];
+            recurringExpenseId: number | null;
+            shares: components["schemas"]["ShareResponse"][];
             /** @enum {string} */
-            splitType?: "EQUAL" | "EXACT" | "PERCENTAGE" | "SHARES" | "ADJUSTMENT";
+            splitType: "EQUAL" | "EXACT" | "PERCENTAGE" | "SHARES" | "ADJUSTMENT";
             /** Format: date-time */
-            updatedAt?: string;
+            updatedAt: string | null;
             /** Format: int64 */
-            updatedById?: number;
+            updatedById: number | null;
             /** Format: int64 */
-            version?: number;
+            version: number;
         };
         FriendBalanceResponse: {
-            balances?: components["schemas"]["CurrencyAmount"][];
-            breakdown?: components["schemas"]["Item"][];
-            name?: string;
+            balances: components["schemas"]["CurrencyAmount"][];
+            breakdown: components["schemas"]["Item"][];
+            name: string;
             /** Format: int64 */
-            userId?: number;
+            userId: number;
         };
         FriendBalancesResponse: {
-            friends?: components["schemas"]["FriendBalanceResponse"][];
-            totals?: components["schemas"]["Totals"][];
+            friends: components["schemas"]["FriendBalanceResponse"][];
+            totals: components["schemas"]["Totals"][];
         };
         GroupReportResponse: {
-            byCategory?: components["schemas"]["CategoryTotal"][];
-            byMember?: components["schemas"]["MemberTotal"][];
-            currency?: string;
+            byCategory: components["schemas"]["CategoryTotal"][];
+            byMember: components["schemas"]["MemberTotal"][];
+            currency: string;
             /** Format: int32 */
-            expenseCount?: number;
+            expenseCount: number;
             /** Format: date */
-            from?: string;
+            from: string | null;
             /** Format: int64 */
-            groupId?: number;
-            groupName?: string;
+            groupId: number;
+            groupName: string;
             /** Format: date */
-            to?: string;
-            totalSpent?: number;
+            to: string | null;
+            totalSpent: number;
         };
         GroupResponse: {
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
             /** Format: int64 */
-            createdById?: number;
-            currency?: string;
+            createdById: number;
+            currency: string;
             /** Format: int64 */
-            id?: number;
-            members?: components["schemas"]["UserResponse"][];
-            name?: string;
+            id: number;
+            members: components["schemas"]["UserResponse"][];
+            name: string;
         };
         Item: {
-            amount?: number;
-            currency?: string;
+            amount: number;
+            currency: string;
             /** Format: int64 */
-            groupId?: number;
-            groupName?: string;
+            groupId: number | null;
+            groupName: string | null;
         };
         LoginRequest: {
             email: string;
             password: string;
         };
         MemberTotal: {
-            name?: string;
-            net?: number;
-            paid?: number;
-            share?: number;
+            name: string;
+            net: number;
+            paid: number;
+            share: number;
             /** Format: int64 */
-            userId?: number;
+            userId: number;
         };
         PageResponseActivityResponse: {
-            content?: components["schemas"]["ActivityResponse"][];
-            last?: boolean;
+            content: components["schemas"]["ActivityResponse"][];
+            last: boolean;
             /** Format: int32 */
-            page?: number;
+            page: number;
             /** Format: int32 */
-            size?: number;
+            size: number;
             /** Format: int64 */
-            totalElements?: number;
+            totalElements: number;
             /** Format: int32 */
-            totalPages?: number;
+            totalPages: number;
         };
         PageResponseExpenseResponse: {
-            content?: components["schemas"]["ExpenseResponse"][];
-            last?: boolean;
+            content: components["schemas"]["ExpenseResponse"][];
+            last: boolean;
             /** Format: int32 */
-            page?: number;
+            page: number;
             /** Format: int32 */
-            size?: number;
+            size: number;
             /** Format: int64 */
-            totalElements?: number;
+            totalElements: number;
             /** Format: int32 */
-            totalPages?: number;
+            totalPages: number;
         };
         PageResponseSettlementResponse: {
-            content?: components["schemas"]["SettlementResponse"][];
-            last?: boolean;
+            content: components["schemas"]["SettlementResponse"][];
+            last: boolean;
             /** Format: int32 */
-            page?: number;
+            page: number;
             /** Format: int32 */
-            size?: number;
+            size: number;
             /** Format: int64 */
-            totalElements?: number;
+            totalElements: number;
             /** Format: int32 */
-            totalPages?: number;
+            totalPages: number;
         };
         RecurringExpenseResponse: {
-            active?: boolean;
-            amount?: number;
+            active: boolean;
+            amount: number;
             /** @enum {string} */
-            category?: "GENERAL" | "FOOD_AND_DRINK" | "GROCERIES" | "RENT" | "UTILITIES" | "TRANSPORT" | "TRAVEL" | "ENTERTAINMENT" | "SHOPPING" | "HEALTH";
+            category: "GENERAL" | "FOOD_AND_DRINK" | "GROCERIES" | "RENT" | "UTILITIES" | "TRANSPORT" | "TRAVEL" | "ENTERTAINMENT" | "SHOPPING" | "HEALTH";
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
             /** Format: int64 */
-            createdById?: number;
-            currency?: string;
-            description?: string;
+            createdById: number;
+            currency: string;
+            description: string;
             /** Format: date */
-            endDate?: string;
+            endDate: string | null;
             /** @enum {string} */
-            frequency?: "WEEKLY" | "MONTHLY" | "YEARLY";
+            frequency: "WEEKLY" | "MONTHLY" | "YEARLY";
             /** Format: int64 */
-            groupId?: number;
+            groupId: number | null;
             /** Format: int64 */
-            id?: number;
+            id: number;
             /** Format: date */
-            nextDate?: string;
-            notes?: string;
+            nextDate: string | null;
+            notes: string | null;
             /** Format: int64 */
-            paidById?: number;
-            shares?: components["schemas"]["ShareRequest"][];
+            paidById: number;
+            shares: components["schemas"]["ShareRequest"][];
             /** @enum {string} */
-            splitType?: "EQUAL" | "EXACT" | "PERCENTAGE" | "SHARES" | "ADJUSTMENT";
+            splitType: "EQUAL" | "EXACT" | "PERCENTAGE" | "SHARES" | "ADJUSTMENT";
             /** Format: date */
-            startDate?: string;
-            stoppedReason?: string;
+            startDate: string;
+            stoppedReason: string | null;
         };
         RegisterRequest: {
             /** Format: email */
@@ -782,28 +782,28 @@ export interface components {
             password: string;
         };
         SettleUpResponse: {
-            balance?: components["schemas"]["FriendBalanceResponse"];
-            settlements?: components["schemas"]["SettlementResponse"][];
+            balance: components["schemas"]["FriendBalanceResponse"];
+            settlements: components["schemas"]["SettlementResponse"][];
         };
         SettlementResponse: {
-            amount?: number;
-            currency?: string;
+            amount: number;
+            currency: string;
             /** Format: date */
-            date?: string;
-            deleted?: boolean;
-            fromName?: string;
+            date: string;
+            deleted: boolean;
+            fromName: string;
             /** Format: int64 */
-            fromUserId?: number;
+            fromUserId: number;
             /** Format: int64 */
-            groupId?: number;
+            groupId: number | null;
             /** Format: int64 */
-            id?: number;
-            note?: string;
-            toName?: string;
+            id: number;
+            note: string | null;
+            toName: string;
             /** Format: int64 */
-            toUserId?: number;
+            toUserId: number;
             /** Format: int64 */
-            version?: number;
+            version: number;
         };
         ShareRequest: {
             /** Format: int64 */
@@ -811,32 +811,32 @@ export interface components {
             value?: number;
         };
         ShareResponse: {
-            amount?: number;
-            name?: string;
+            amount: number;
+            name: string;
             /** Format: int64 */
-            userId?: number;
+            userId: number;
         };
         TokenResponse: {
-            accessToken?: string;
+            accessToken: string;
             /** Format: int64 */
-            expiresInSeconds?: number;
-            tokenType?: string;
+            expiresInSeconds: number;
+            tokenType: string;
         };
         Totals: {
-            currency?: string;
-            net?: number;
-            youAreOwed?: number;
-            youOwe?: number;
+            currency: string;
+            net: number;
+            youAreOwed: number;
+            youOwe: number;
         };
         TransferResponse: {
-            amount?: number;
-            currency?: string;
-            fromName?: string;
+            amount: number;
+            currency: string;
+            fromName: string;
             /** Format: int64 */
-            fromUserId?: number;
-            toName?: string;
+            fromUserId: number;
+            toName: string;
             /** Format: int64 */
-            toUserId?: number;
+            toUserId: number;
         };
         UpdateExpenseRequest: {
             amount: number;
@@ -859,20 +859,20 @@ export interface components {
             name: string;
         };
         UserBalanceResponse: {
-            balances?: components["schemas"]["CurrencyAmount"][];
+            balances: components["schemas"]["CurrencyAmount"][];
             /** Format: int64 */
-            userId?: number;
+            userId: number;
         };
         UserResponse: {
-            email?: string;
+            email: string;
             /** Format: int64 */
-            id?: number;
-            name?: string;
+            id: number;
+            name: string;
         };
         UserSummary: {
             /** Format: int64 */
-            id?: number;
-            name?: string;
+            id: number;
+            name: string;
         };
     };
     responses: never;

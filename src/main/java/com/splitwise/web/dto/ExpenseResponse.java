@@ -3,6 +3,7 @@ package com.splitwise.web.dto;
 import com.splitwise.domain.Category;
 import com.splitwise.domain.Expense;
 import com.splitwise.domain.SplitType;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -15,9 +16,9 @@ import java.util.List;
  * @param recurringExpenseId the recurring template this expense was created from, if any
  */
 public record ExpenseResponse(Long id, String description, BigDecimal amount, String currency,
-                              UserSummary paidBy, Long groupId, LocalDate date, SplitType splitType,
-                              Category category, String notes, List<ShareResponse> shares, long version, Long createdById, Instant createdAt,
-                              Long updatedById, Instant updatedAt, boolean deleted, Long recurringExpenseId) {
+                              UserSummary paidBy, @Schema(nullable = true) Long groupId, LocalDate date, SplitType splitType,
+                              Category category, @Schema(nullable = true) String notes, List<ShareResponse> shares, long version, Long createdById, Instant createdAt,
+                              @Schema(nullable = true) Long updatedById, @Schema(nullable = true) Instant updatedAt, boolean deleted, @Schema(nullable = true) Long recurringExpenseId) {
 
     public record UserSummary(Long id, String name) {
     }

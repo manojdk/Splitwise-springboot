@@ -22,11 +22,11 @@
           },
           "expenseId" : {
             "format" : "int64",
-            "type" : "integer"
+            "type" : [ "integer", "null" ]
           },
           "groupId" : {
             "format" : "int64",
-            "type" : "integer"
+            "type" : [ "integer", "null" ]
           },
           "id" : {
             "format" : "int64",
@@ -34,7 +34,7 @@
           },
           "settlementId" : {
             "format" : "int64",
-            "type" : "integer"
+            "type" : [ "integer", "null" ]
           },
           "summary" : {
             "type" : "string"
@@ -44,6 +44,7 @@
             "type" : "string"
           }
         },
+        "required" : [ "actorId", "actorName", "createdAt", "details", "expenseId", "groupId", "id", "settlementId", "summary", "type" ],
         "type" : "object"
       },
       "AddMemberRequest" : {
@@ -73,6 +74,7 @@
             "type" : "integer"
           }
         },
+        "required" : [ "currency", "name", "netBalance", "userId" ],
         "type" : "object"
       },
       "CategoryTotal" : {
@@ -89,6 +91,7 @@
             "type" : "number"
           }
         },
+        "required" : [ "category", "count", "total" ],
         "type" : "object"
       },
       "CreateExpenseRequest" : {
@@ -267,6 +270,7 @@
             "type" : "string"
           }
         },
+        "required" : [ "amount", "currency" ],
         "type" : "object"
       },
       "ExpenseResponse" : {
@@ -301,21 +305,21 @@
           },
           "groupId" : {
             "format" : "int64",
-            "type" : "integer"
+            "type" : [ "integer", "null" ]
           },
           "id" : {
             "format" : "int64",
             "type" : "integer"
           },
           "notes" : {
-            "type" : "string"
+            "type" : [ "string", "null" ]
           },
           "paidBy" : {
             "$ref" : "#/components/schemas/UserSummary"
           },
           "recurringExpenseId" : {
             "format" : "int64",
-            "type" : "integer"
+            "type" : [ "integer", "null" ]
           },
           "shares" : {
             "items" : {
@@ -329,17 +333,18 @@
           },
           "updatedAt" : {
             "format" : "date-time",
-            "type" : "string"
+            "type" : [ "string", "null" ]
           },
           "updatedById" : {
             "format" : "int64",
-            "type" : "integer"
+            "type" : [ "integer", "null" ]
           },
           "version" : {
             "format" : "int64",
             "type" : "integer"
           }
         },
+        "required" : [ "amount", "category", "createdAt", "createdById", "currency", "date", "deleted", "description", "groupId", "id", "notes", "paidBy", "recurringExpenseId", "shares", "splitType", "updatedAt", "updatedById", "version" ],
         "type" : "object"
       },
       "FriendBalanceResponse" : {
@@ -364,6 +369,7 @@
             "type" : "integer"
           }
         },
+        "required" : [ "balances", "breakdown", "name", "userId" ],
         "type" : "object"
       },
       "FriendBalancesResponse" : {
@@ -381,6 +387,7 @@
             "type" : "array"
           }
         },
+        "required" : [ "friends", "totals" ],
         "type" : "object"
       },
       "GroupReportResponse" : {
@@ -406,7 +413,7 @@
           },
           "from" : {
             "format" : "date",
-            "type" : "string"
+            "type" : [ "string", "null" ]
           },
           "groupId" : {
             "format" : "int64",
@@ -417,12 +424,13 @@
           },
           "to" : {
             "format" : "date",
-            "type" : "string"
+            "type" : [ "string", "null" ]
           },
           "totalSpent" : {
             "type" : "number"
           }
         },
+        "required" : [ "byCategory", "byMember", "currency", "expenseCount", "from", "groupId", "groupName", "to", "totalSpent" ],
         "type" : "object"
       },
       "GroupResponse" : {
@@ -452,6 +460,7 @@
             "type" : "string"
           }
         },
+        "required" : [ "createdAt", "createdById", "currency", "id", "members", "name" ],
         "type" : "object"
       },
       "Item" : {
@@ -464,12 +473,13 @@
           },
           "groupId" : {
             "format" : "int64",
-            "type" : "integer"
+            "type" : [ "integer", "null" ]
           },
           "groupName" : {
-            "type" : "string"
+            "type" : [ "string", "null" ]
           }
         },
+        "required" : [ "amount", "currency", "groupId", "groupName" ],
         "type" : "object"
       },
       "LoginRequest" : {
@@ -505,6 +515,7 @@
             "type" : "integer"
           }
         },
+        "required" : [ "name", "net", "paid", "share", "userId" ],
         "type" : "object"
       },
       "PageResponseActivityResponse" : {
@@ -535,6 +546,7 @@
             "type" : "integer"
           }
         },
+        "required" : [ "content", "last", "page", "size", "totalElements", "totalPages" ],
         "type" : "object"
       },
       "PageResponseExpenseResponse" : {
@@ -565,6 +577,7 @@
             "type" : "integer"
           }
         },
+        "required" : [ "content", "last", "page", "size", "totalElements", "totalPages" ],
         "type" : "object"
       },
       "PageResponseSettlementResponse" : {
@@ -595,6 +608,7 @@
             "type" : "integer"
           }
         },
+        "required" : [ "content", "last", "page", "size", "totalElements", "totalPages" ],
         "type" : "object"
       },
       "RecurringExpenseResponse" : {
@@ -625,7 +639,7 @@
           },
           "endDate" : {
             "format" : "date",
-            "type" : "string"
+            "type" : [ "string", "null" ]
           },
           "frequency" : {
             "enum" : [ "WEEKLY", "MONTHLY", "YEARLY" ],
@@ -633,7 +647,7 @@
           },
           "groupId" : {
             "format" : "int64",
-            "type" : "integer"
+            "type" : [ "integer", "null" ]
           },
           "id" : {
             "format" : "int64",
@@ -641,10 +655,10 @@
           },
           "nextDate" : {
             "format" : "date",
-            "type" : "string"
+            "type" : [ "string", "null" ]
           },
           "notes" : {
-            "type" : "string"
+            "type" : [ "string", "null" ]
           },
           "paidById" : {
             "format" : "int64",
@@ -665,9 +679,10 @@
             "type" : "string"
           },
           "stoppedReason" : {
-            "type" : "string"
+            "type" : [ "string", "null" ]
           }
         },
+        "required" : [ "active", "amount", "category", "createdAt", "createdById", "currency", "description", "endDate", "frequency", "groupId", "id", "nextDate", "notes", "paidById", "shares", "splitType", "startDate", "stoppedReason" ],
         "type" : "object"
       },
       "RegisterRequest" : {
@@ -704,6 +719,7 @@
             "type" : "array"
           }
         },
+        "required" : [ "balance", "settlements" ],
         "type" : "object"
       },
       "SettlementResponse" : {
@@ -730,14 +746,14 @@
           },
           "groupId" : {
             "format" : "int64",
-            "type" : "integer"
+            "type" : [ "integer", "null" ]
           },
           "id" : {
             "format" : "int64",
             "type" : "integer"
           },
           "note" : {
-            "type" : "string"
+            "type" : [ "string", "null" ]
           },
           "toName" : {
             "type" : "string"
@@ -751,6 +767,7 @@
             "type" : "integer"
           }
         },
+        "required" : [ "amount", "currency", "date", "deleted", "fromName", "fromUserId", "groupId", "id", "note", "toName", "toUserId", "version" ],
         "type" : "object"
       },
       "ShareRequest" : {
@@ -779,6 +796,7 @@
             "type" : "integer"
           }
         },
+        "required" : [ "amount", "name", "userId" ],
         "type" : "object"
       },
       "TokenResponse" : {
@@ -794,6 +812,7 @@
             "type" : "string"
           }
         },
+        "required" : [ "accessToken", "expiresInSeconds", "tokenType" ],
         "type" : "object"
       },
       "Totals" : {
@@ -811,6 +830,7 @@
             "type" : "number"
           }
         },
+        "required" : [ "currency", "net", "youAreOwed", "youOwe" ],
         "type" : "object"
       },
       "TransferResponse" : {
@@ -836,6 +856,7 @@
             "type" : "integer"
           }
         },
+        "required" : [ "amount", "currency", "fromName", "fromUserId", "toName", "toUserId" ],
         "type" : "object"
       },
       "UpdateExpenseRequest" : {
@@ -913,6 +934,7 @@
             "type" : "integer"
           }
         },
+        "required" : [ "balances", "userId" ],
         "type" : "object"
       },
       "UserResponse" : {
@@ -928,6 +950,7 @@
             "type" : "string"
           }
         },
+        "required" : [ "email", "id", "name" ],
         "type" : "object"
       },
       "UserSummary" : {
@@ -940,6 +963,7 @@
             "type" : "string"
           }
         },
+        "required" : [ "id", "name" ],
         "type" : "object"
       }
     },

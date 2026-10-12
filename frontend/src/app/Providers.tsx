@@ -1,6 +1,7 @@
 import { QueryClientProvider, type QueryClient } from '@tanstack/react-query'
 import { useState, type ReactNode } from 'react'
 import { AuthProvider } from '../auth/AuthProvider'
+import { ToastProvider } from '../components/Toast'
 import { ThemeProvider } from '../theme/ThemeProvider'
 import { createQueryClient } from './queryClient'
 
@@ -10,7 +11,9 @@ export function Providers({ children, queryClient }: { children: ReactNode; quer
   return (
     <QueryClientProvider client={client}>
       <ThemeProvider>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   )

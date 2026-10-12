@@ -1,6 +1,7 @@
 package com.splitwise.web.dto;
 
 import com.splitwise.domain.Category;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Spending in a group over a date range (both ends inclusive; null = open).
  */
-public record GroupReportResponse(Long groupId, String groupName, LocalDate from, LocalDate to, String currency,
+public record GroupReportResponse(Long groupId, String groupName, @Schema(nullable = true) LocalDate from, @Schema(nullable = true) LocalDate to, String currency,
                                   int expenseCount, BigDecimal totalSpent, List<CategoryTotal> byCategory,
                                   List<MemberTotal> byMember) {
 

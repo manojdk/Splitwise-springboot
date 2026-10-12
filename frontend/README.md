@@ -35,6 +35,15 @@ backend needs no CORS setup.
 | `npm run build` | Type check, then the production bundle in `dist/` |
 | `npm run api:types` | Regenerates `src/api/schema.d.ts` from `openapi.json` |
 
+## Screens
+
+| Screen | What it does |
+|---|---|
+| Sign in / Create account | Validation as strict as the API's; server errors shown where they belong |
+| Dashboard | What you are owed and what you owe, **per currency** (never added together); friends with each balance and where it comes from; settle up with a friend after confirming the payments it records; your balance in each group |
+| Groups | Your groups with members and your balance; new group with a currency and people to add by email (people without an account are listed, the group is kept) |
+| Group | Members: add by email, remove (the creator) or leave (others), with the API's zero-balance rule explained when it refuses. Expenses come next |
+
 ## API types
 
 `openapi.json` is the backend's spec, committed. The backend test `OpenApiSpecTest` fails when the API changes
@@ -60,6 +69,12 @@ npm run api:types
 - Trade-off: script injected into the page could read `sessionStorage`. The app never renders raw HTML, which
   is the guard against that.
 
+## Tests
+
+The fake API in `src/test/server.ts` has the backend's paths, response shapes and error messages, over a small
+in-memory state that every test starts fresh. A request the fake API does not know fails the test that made it,
+so a test cannot pass while silently missing data.
+
 ## Layout
 
 ```
@@ -67,7 +82,10 @@ src/
   api/        fetch client (token, errors, 401), generated schema, type aliases
   app/        routes, providers, query client
   auth/       session storage, AuthProvider, sign-in / sign-up pages, route guard
+  components/ dialog, toast, money, loading and error states
+  features/   pieces of a screen with their own logic (settle-up, new group)
   layout/     app shell: sidebar on wide screens, bottom navigation on phones
+  lib/        money formatting, per-group balances, currencies
   pages/      screens
   theme/      themes, provider and switch
   test/       MSW fake API, test setup, renderApp helper
