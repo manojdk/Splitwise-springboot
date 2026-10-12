@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="en" data-theme="neon">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Splitwise Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&family=Orbitron:wght@500;700;900&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Unbounded:wght@500;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================== themes */
+:root[data-theme="neon"] {
+  --font-head: "Orbitron", "Segoe UI", sans-serif;
+  --font-body: "Exo 2", "Segoe UI", sans-serif;
+  --bg: #060a14;
+  --bg-grid: rgba(0, 229, 255, 0.06);
+  --surface: rgba(14, 22, 42, 0.82);
+  --surface-2: #101a33;
+  --border: rgba(0, 229, 255, 0.18);
+  --text: #e8f1ff;
+  --muted: #8fa3c7;
+  --primary: #00e5ff;
+  --primary-ink: #001018;
+  --accent: #ff2bd6;
+  --positive: #b6ff3b;
+  --negative: #ff4d6d;
+  --warn: #ffd23f;
+  --glow: 0 0 18px rgba(0, 229, 255, 0.35);
+  --glow-accent: 0 0 18px rgba(255, 43, 214, 0.35);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --radius: 14px;
+  --hero: linear-gradient(135deg, #00e5ff 0%, #7b5cff 50%, #ff2bd6 100%);
+}
+:root[data-theme="solar"] {
+  --font-head: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-body: "Sora", "Segoe UI", sans-serif;
+  --bg: #f4f7ff;
+  --bg-grid: rgba(37, 99, 255, 0.05);
+  --surface: #ffffff;
+  --surface-2: #eef3ff;
+  --border: #dde5f7;
+  --text: #0d1530;
+  --muted: #5a6788;
+  --primary: #2563ff;
+  --primary-ink: #ffffff;
+  --accent: #ff3d8b;
+  --positive: #00b383;
+  --negative: #f0384f;
+  --warn: #ffb400;
+  --glow: 0 6px 18px rgba(37, 99, 255, 0.25);
+  --glow-accent: 0 6px 18px rgba(255, 61, 139, 0.25);
+  --shadow: 0 10px 28px rgba(13, 21, 48, 0.08);
+  --radius: 16px;
+  --hero: linear-gradient(135deg, #2563ff 0%, #8b5cf6 55%, #ff3d8b 100%);
+}
+
+/* Aurora: frosted glass over moving northern lights, with iridescent card edges */
+:root[data-theme="aurora"] {
+  --font-head: "Unbounded", "Segoe UI", sans-serif;
+  --font-body: "Manrope", "Segoe UI", sans-serif;
+  --bg: #0b0820;
+  --bg-grid: transparent;
+  --surface: rgba(255, 255, 255, 0.07);
+  --surface-2: rgba(255, 255, 255, 0.10);
+  --border: rgba(255, 255, 255, 0.16);
+  --text: #f6f3ff;
+  --muted: #bdb6dd;
+  --primary: #7cf5d0;
+  --primary-ink: #06201a;
+  --accent: #ff7ac6;
+  --positive: #5dffb0;
+  --negative: #ff6b8b;
+  --warn: #ffd36b;
+  --glow: 0 0 22px rgba(124, 245, 208, 0.35);
+  --glow-accent: 0 0 26px rgba(255, 122, 198, 0.40);
+  --shadow: 0 18px 40px rgba(5, 2, 20, 0.45);
+  --radius: 22px;
+  --hero: linear-gradient(120deg, #7cf5d0 0%, #7aa8ff 40%, #c77dff 70%, #ff7ac6 100%);
+}
+@property --angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+:root[data-theme="aurora"] body::before {
+  content: ""; position: fixed; inset: -25%; z-index: -1; pointer-events: none; filter: blur(70px); opacity: .75;
+  background:
+    radial-gradient(40% 35% at 20% 25%, #1fd1a5 0%, transparent 70%),
+    radial-gradient(35% 30% at 75% 20%, #7a5cff 0%, transparent 70%),
+    radial-gradient(45% 40% at 60% 80%, #ff4fa8 0%, transparent 70%),
+    radial-gradient(30% 30% at 15% 85%, #3a7bff 0%, transparent 70%);
+  animation: aurora-drift 22s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+  50%  { transform: translate(4%, -3%) rotate(8deg) scale(1.08); }
+  100% { transform: translate(-4%, 3%) rotate(-6deg) scale(1.02); }
+}
+:root[data-theme="aurora"] .card, :root[data-theme="aurora"] .modal { position: relative; backdrop-filter: blur(18px) saturate(140%); }
+:root[data-theme="aurora"] .card::before, :root[data-theme="aurora"] .modal::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: conic-gradient(from var(--angle), #7cf5d0, #7aa8ff, #c77dff, #ff7ac6, #ffd36b, #7cf5d0);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: .55; animation: iridescent 8s linear infinite;
+}
+@keyframes iridescent { to { --angle: 360deg; } }
+:root[data-theme="aurora"] .card { border-color: transparent; }
+:root[data-theme="aurora"] .modal { background: rgba(18, 12, 46, 0.88); border-color: transparent; }
+:root[data-theme="aurora"] .stat.hero { background: var(--hero); background-size: 200% 200%; animation: shimmer 10s ease infinite; color: #12082e; }
+:root[data-theme="aurora"] .stat.hero .label, :root[data-theme="aurora"] .stat.hero .sub { color: rgba(18, 8, 46, .78); }
+@keyframes shimmer { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+:root[data-theme="aurora"] .btn { border-radius: 999px; }
+:root[data-theme="aurora"] .btn.accent { background: linear-gradient(120deg, #ff7ac6, #c77dff); }
+:root[data-theme="aurora"] .avatar { color: #12082e; }
+:root[data-theme="aurora"] .stat:not(.hero) .value:not(.neg):not(.pos) { background: var(--hero); -webkit-background-clip: text; background-clip: text; color: transparent; }
+:root[data-theme="aurora"] .donut::after { background: #160f36; }
+:root[data-theme="aurora"] .login-art { color: #12082e; }
+:root[data-theme="aurora"] .login-art .brand { color: #12082e !important; -webkit-text-fill-color: #12082e !important; }
+
+/* ============================================================== base */
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--bg-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+  color: var(--text);
+  min-height: 100vh;
+  transition: background-color .3s, color .3s;
+}
+h1, h2, h3, .brand, .num { font-family: var(--font-head); letter-spacing: .02em; }
+h1 { font-size: 22px; margin: 0; }
+h2 { font-size: 16px; margin: 0 0 12px; }
+h3 { font-size: 13px; margin: 0; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+input, select { font: inherit; color: var(--text); }
+.muted { color: var(--muted); }
+.pos { color: var(--positive); }
+.neg { color: var(--negative); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ============================================================== layout */
+.app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+.sidebar {
+  position: sticky; top: 0; height: 100vh;
+  padding: 22px 16px; border-right: 1px solid var(--border);
+  background: var(--surface); backdrop-filter: blur(12px);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.brand { font-size: 20px; font-weight: 900; margin: 0 8px 22px;
+  background: var(--hero); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.nav-btn {
+  display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px;
+  border: 1px solid transparent; background: none; color: var(--muted); text-align: left; font-weight: 600;
+}
+.nav-btn:hover { color: var(--text); background: var(--surface-2); }
+.nav-btn.active { color: var(--primary); border-color: var(--border); background: var(--surface-2); box-shadow: var(--glow); }
+.nav-btn .ico { width: 20px; text-align: center; }
+.sidebar .spacer { flex: 1; }
+.main { padding: 22px 28px 90px; max-width: 1180px; width: 100%; min-width: 0; }
+.topbar { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.topbar .title { flex: 1; }
+.search {
+  display: flex; align-items: center; gap: 8px; padding: 9px 14px; min-width: 240px;
+  border-radius: 999px; border: 1px solid var(--border); background: var(--surface);
+}
+.search input { border: 0; outline: 0; background: none; width: 100%; }
+.avatar {
+  width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex: none;
+  font-family: var(--font-head); font-weight: 700; font-size: 13px; color: #fff; background: var(--hero);
+}
+.avatar.sm { width: 28px; height: 28px; font-size: 11px; }
+
+/* theme switch */
+.theme-switch {
+  display: flex; gap: 4px; padding: 4px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--surface);
+}
+.theme-switch button {
+  border: 0; border-radius: 999px; padding: 6px 12px; background: none; color: var(--muted);
+  font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .08em;
+}
+.theme-switch button.on { background: var(--primary); color: var(--primary-ink); box-shadow: var(--glow); }
+
+/* ============================================================== components */
+.grid { display: grid; gap: 16px; }
+.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.g2 { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; box-shadow: var(--shadow); backdrop-filter: blur(10px);
+}
+.stat .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .14em; }
+.stat .value { font-size: 28px; font-weight: 700; margin-top: 8px; }
+.stat .sub { font-size: 13px; margin-top: 6px; color: var(--muted); }
+.stat.hero { background: var(--hero); border: 0; color: #fff; box-shadow: var(--glow-accent); }
+.stat.hero .label, .stat.hero .sub { color: rgba(255,255,255,.85); }
+
+.btn {
+  border: 0; border-radius: 12px; padding: 11px 18px; font-weight: 700;
+  background: var(--primary); color: var(--primary-ink); box-shadow: var(--glow);
+  transition: transform .15s;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn.ghost { background: none; color: var(--primary); border: 1px solid var(--border); box-shadow: none; }
+.btn.accent { background: var(--accent); color: #fff; box-shadow: var(--glow-accent); }
+.btn.sm { padding: 7px 12px; font-size: 13px; border-radius: 10px; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--surface-2); font-size: 12px; font-weight: 600; color: var(--muted);
+}
+.chip.on { color: var(--primary-ink); background: var(--primary); border-color: transparent; }
+.chip.cur { font-family: var(--font-head); font-size: 10px; letter-spacing: .08em; }
+
+.row { display: flex; align-items: center; gap: 12px; }
+.list { display: flex; flex-direction: column; }
+.item { display: flex; align-items: center; gap: 12px; padding: 12px 4px; border-bottom: 1px solid var(--border); }
+.item:last-child { border-bottom: 0; }
+.item .grow { flex: 1; min-width: 0; }
+.item .t { font-weight: 600; }
+.item .s { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.amount { font-family: var(--font-head); font-weight: 700; text-align: right; white-space: nowrap; }
+.amount small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 11px; color: var(--muted); }
+.cat {
+  width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; flex: none; font-size: 18px;
+  background: var(--surface-2); border: 1px solid var(--border);
+}
+.tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.screen { display: none; animation: fade .25s ease; }
+.screen.active { display: block; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* balance bars */
+.bar-row { display: grid; grid-template-columns: 90px 1fr 110px; align-items: center; gap: 12px; padding: 8px 0; }
+.bar-track { height: 10px; border-radius: 99px; background: var(--surface-2); position: relative; overflow: hidden; }
+.bar-fill { position: absolute; top: 0; bottom: 0; border-radius: 99px; }
+.bar-fill.pos { left: 50%; background: var(--positive); box-shadow: 0 0 10px var(--positive); }
+.bar-fill.neg { right: 50%; background: var(--negative); box-shadow: 0 0 10px var(--negative); }
+.bar-track::after { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 2px; background: var(--border); }
+
+.transfer { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 12px;
+  background: var(--surface-2); border: 1px solid var(--border); margin-bottom: 10px; }
+.arrow { flex: 1; height: 2px; background: linear-gradient(90deg, var(--negative), var(--positive)); position: relative; }
+.arrow::after { content: ""; position: absolute; right: -2px; top: -4px; border: 5px solid transparent; border-left-color: var(--positive); }
+
+/* timeline */
+.tl { position: relative; padding-left: 26px; }
+.tl::before { content: ""; position: absolute; left: 9px; top: 6px; bottom: 6px; width: 2px; background: var(--border); }
+.tl-item { position: relative; padding: 0 0 18px; }
+.tl-dot { position: absolute; left: -22px; top: 4px; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--primary); box-shadow: var(--glow); }
+.tl-dot.add { background: var(--positive); } .tl-dot.del { background: var(--negative); } .tl-dot.edit { background: var(--accent); }
+.diff { margin-top: 6px; padding: 8px 12px; border-radius: 10px; background: var(--surface-2); font-size: 13px;
+  border-left: 3px solid var(--accent); }
+.diff div { padding: 2px 0; }
+
+/* report chart */
+.donut { width: 180px; height: 180px; border-radius: 50%; position: relative; flex: none; }
+.donut::after { content: ""; position: absolute; inset: 34px; border-radius: 50%; background: var(--bg); }
+.donut-center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; z-index: 1; }
+.legend .dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 8px; }
+
+/* modal */
+.overlay { position: fixed; inset: 0; background: rgba(3, 6, 14, .6); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
+.overlay.open { display: flex; }
+.modal { width: min(760px, 100%); max-height: 92vh; overflow: auto; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 20px; box-shadow: var(--shadow), var(--glow); padding: 22px; }
+.form-top { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
+.input { padding: 11px 13px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); outline: none; }
+.input:focus { border-color: var(--primary); box-shadow: var(--glow); }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; padding: 5px; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); }
+.seg button { flex: 1; min-width: 90px; border: 0; padding: 9px 8px; border-radius: 10px; background: none; color: var(--muted);
+  font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+.seg button.on { background: var(--primary); color: var(--primary-ink); box-shadow: var(--glow); }
+.split-row { display: grid; grid-template-columns: 26px 1fr 120px 110px; gap: 10px; align-items: center; padding: 8px 0;
+  border-bottom: 1px dashed var(--border); }
+.split-row input[type=number] { width: 100%; }
+.split-row input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--primary); }
+.status { margin-top: 12px; padding: 10px 14px; border-radius: 12px; font-size: 14px; font-weight: 600; }
+.status.ok { background: color-mix(in srgb, var(--positive) 15%, transparent); color: var(--positive); }
+.status.bad { background: color-mix(in srgb, var(--negative) 15%, transparent); color: var(--negative); }
+
+/* login */
+.login { min-height: 100vh; display: grid; grid-template-columns: 1.1fr 1fr; }
+.login-art { background: var(--hero); color: #fff; padding: 56px; display: flex; flex-direction: column; justify-content: space-between;
+  position: relative; overflow: hidden; }
+.login-art::before { content: ""; position: absolute; inset: 0; background-image:
+  linear-gradient(rgba(255,255,255,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.12) 1px, transparent 1px);
+  background-size: 40px 40px; mask-image: linear-gradient(180deg, transparent, #000 40%, transparent); }
+.login-art h1 { font-size: 46px; line-height: 1.1; position: relative; }
+.login-art p { font-size: 18px; max-width: 420px; opacity: .92; position: relative; }
+.login-form { display: grid; place-items: center; padding: 32px; }
+.login-form .card { width: min(400px, 100%); display: grid; gap: 14px; padding: 28px; }
+.hidden { display: none !important; }
+
+/* mobile */
+.mobile-nav { display: none; }
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .main { padding: 16px 16px 96px; }
+  .g3, .g2 { grid-template-columns: minmax(0, 1fr); }
+  .search, .topbar > .avatar { display: none; }
+  .topbar { flex-wrap: wrap; }
+  .item { flex-wrap: wrap; }
+  .item .grow { flex-basis: 50%; }
+  .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 40; justify-content: space-around;
+    padding: 8px 6px 12px; background: var(--surface); border-top: 1px solid var(--border); backdrop-filter: blur(12px); }
+  .mobile-nav .nav-btn { flex-direction: column; gap: 2px; padding: 6px; font-size: 10px; }
+  .login { grid-template-columns: 1fr; }
+  .login-art { padding: 32px; min-height: 260px; }
+  .login-art h1 { font-size: 32px; }
+  .split-row { grid-template-columns: 22px 1fr 90px 84px; }
+  .form-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .form-top .field:first-child { grid-column: 1 / -1; }
+  .seg button { min-width: 70px; }
+  .bar-row { grid-template-columns: 70px 1fr 90px; }
+  .donut-wrap { flex-direction: column; }
+  .donut-wrap .legend { align-self: stretch; }
+  .legend .item { flex-wrap: nowrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================ LOGIN -->
+<section id="login" class="login">
+  <div class="login-art">
+    <div class="brand" style="color:#fff;-webkit-text-fill-color:#fff;font-size:22px">SPLITWISE//X</div>
+    <div>
+      <h1>Split bills.<br>Not friendships.</h1>
+      <p>Groups, friends and trips in any currency. Every rupee accounted for, to the last paisa.</p>
+    </div>
+    <div class="row" style="position:relative;gap:8px;flex-wrap:wrap">
+      <span class="chip" style="background:rgba(255,255,255,.18);color:#fff;border-color:transparent">5 split types</span>
+      <span class="chip" style="background:rgba(255,255,255,.18);color:#fff;border-color:transparent">Multi-currency</span>
+      <span class="chip" style="background:rgba(255,255,255,.18);color:#fff;border-color:transparent">Recurring bills</span>
+    </div>
+  </div>
+  <div class="login-form">
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><h2 style="margin:0">Sign in</h2><div class="theme-switch" data-theme-switch></div></div>
+      <div class="field"><label>Email</label><input class="input" value="alice@example.com"></div>
+      <div class="field"><label>Password</label><input class="input" type="password" value="password123"></div>
+      <button class="btn" onclick="enterApp()">Sign in</button>
+      <button class="btn ghost" onclick="enterApp()">Create an account</button>
+      <div class="muted" style="font-size:12px;text-align:center">Prototype - no real login. Demo data only.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ APP -->
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <div class="brand">SPLITWISE//X</div>
+    <button class="nav-btn active" data-go="dashboard"><span class="ico">&#9671;</span>Dashboard</button>
+    <button class="nav-btn" data-go="group"><span class="ico">&#9638;</span>Goa Trip</button>
+    <button class="nav-btn" data-go="activity"><span class="ico">&#8635;</span>Activity</button>
+    <button class="nav-btn" data-go="recurring"><span class="ico">&#8734;</span>Recurring</button>
+    <button class="nav-btn" data-go="reports"><span class="ico">&#9684;</span>Reports</button>
+    <div class="spacer"></div>
+    <button class="btn accent" onclick="openExpense()">+ Add expense</button>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="title"><h1 id="screen-title">Dashboard</h1><div class="muted" id="screen-sub" style="font-size:13px;margin-top:4px">Welcome back, Alice</div></div>
+      <div class="search">&#128269;<input placeholder="Search expenses, friends..."></div>
+      <div class="theme-switch" data-theme-switch></div>
+      <div class="avatar">AL</div>
+    </div>
+
+    <!-- ===================== DASHBOARD -->
+    <section class="screen active" id="dashboard">
+      <div class="grid g3">
+        <div class="card stat hero"><div class="label">You are owed</div><div class="value num">&#8377;4,850.00</div><div class="sub">+ &euro;45.00 &middot; across 3 friends</div></div>
+        <div class="card stat"><div class="label">You owe</div><div class="value num neg">&#8377;1,200.00</div><div class="sub">+ $10.00 &middot; 2 friends</div></div>
+        <div class="card stat"><div class="label">Net balance</div><div class="value num pos">+&#8377;3,650.00</div><div class="sub">Currencies are never added together</div></div>
+      </div>
+
+      <div class="grid g2" style="margin-top:16px">
+        <div class="card">
+          <div class="row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0">Friends</h2><span class="chip">Largest first</span></div>
+          <div class="list">
+            <div class="item"><div class="avatar sm">BO</div><div class="grow"><div class="t">Bob</div>
+              <div class="s"><span class="chip cur">INR</span> Goa Trip +&#8377;3,000 &middot; Flat 4B +&#8377;1,050</div></div>
+              <div class="amount pos">+&#8377;4,050.00<small>owes you</small></div><button class="btn sm ghost" onclick="toast('Settle-up: one payment per group, in its currency')">Settle</button></div>
+            <div class="item"><div class="avatar sm">CA</div><div class="grow"><div class="t">Carol</div>
+              <div class="s"><span class="chip cur">EUR</span> Paris &middot; <span class="chip cur">INR</span> Goa Trip</div></div>
+              <div class="amount pos">+&euro;45.00<small>+&#8377;800.00</small></div><button class="btn sm ghost" onclick="toast('Two currencies: two payments')">Settle</button></div>
+            <div class="item"><div class="avatar sm">DA</div><div class="grow"><div class="t">Dan</div>
+              <div class="s"><span class="chip cur">INR</span> Flat 4B</div></div>
+              <div class="amount neg">-&#8377;1,200.00<small>you owe</small></div><button class="btn sm" onclick="toast('Payment recorded (prototype)')">Pay</button></div>
+            <div class="item"><div class="avatar sm">ES</div><div class="grow"><div class="t">Esha</div>
+              <div class="s"><span class="chip cur">USD</span> Non-group &middot; Airport cab</div></div>
+              <div class="amount neg">-$10.00<small>you owe</small></div><button class="btn sm" onclick="toast('Payment recorded (prototype)')">Pay</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Your groups</h2>
+          <div class="list">
+            <div class="item" style="cursor:pointer" onclick="go('group')"><div class="cat">&#127965;</div><div class="grow"><div class="t">Goa Trip</div><div class="s">4 members &middot; INR</div></div><div class="amount pos">+&#8377;3,800</div></div>
+            <div class="item"><div class="cat">&#127968;</div><div class="grow"><div class="t">Flat 4B</div><div class="s">3 members &middot; INR</div></div><div class="amount neg">-&#8377;150</div></div>
+            <div class="item"><div class="cat">&#128508;</div><div class="grow"><div class="t">Paris</div><div class="s">2 members &middot; EUR</div></div><div class="amount pos">+&euro;45</div></div>
+          </div>
+          <button class="btn ghost" style="width:100%;margin-top:10px" onclick="toast('Create group: name + currency')">+ New group</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== GROUP -->
+    <section class="screen" id="group">
+      <div class="card" style="margin-bottom:16px">
+        <div class="row" style="flex-wrap:wrap;gap:16px">
+          <div class="cat" style="width:56px;height:56px;font-size:28px">&#127965;</div>
+          <div style="flex:1;min-width:200px"><h2 style="margin:0;font-size:20px">Goa Trip</h2>
+            <div class="row" style="margin-top:8px;gap:6px"><div class="avatar sm">AL</div><div class="avatar sm">BO</div><div class="avatar sm">CA</div><div class="avatar sm">DA</div>
+              <span class="chip cur">INR</span><span class="muted" style="font-size:12px">Total spent &#8377;18,600</span></div></div>
+          <button class="btn ghost" onclick="toast('CSV export: one column per person, safe for Excel')">Export CSV</button>
+          <button class="btn accent" onclick="openExpense()">+ Add expense</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="chip on" data-tab="g-exp">Expenses</button>
+        <button class="chip" data-tab="g-bal">Balances</button>
+        <button class="chip" data-tab="g-settle">Settle up</button>
+      </div>
+
+      <div id="g-exp" class="card tab-pane">
+        <div class="row" style="flex-wrap:wrap;gap:6px;margin-bottom:8px">
+          <span class="chip on">All</span><span class="chip">Food &amp; drink</span><span class="chip">Travel</span><span class="chip">Rent</span>
+          <span class="chip">Sep 2026</span><span class="chip">Paid by me</span>
+        </div>
+        <div class="list">
+          <div class="item"><div class="cat">&#127829;</div><div class="grow"><div class="t">Beach shack dinner</div><div class="s">Bob paid &middot; Equal &middot; 12 Sep</div></div><div class="amount neg">-&#8377;600.00<small>your share</small></div></div>
+          <div class="item"><div class="cat">&#127976;</div><div class="grow"><div class="t">Villa (3 nights)</div><div class="s">You paid &middot; Shares 2:1:1:1 &middot; 10 Sep</div></div><div class="amount pos">+&#8377;9,000.00<small>you lent</small></div></div>
+          <div class="item"><div class="cat">&#128661;</div><div class="grow"><div class="t">Scooter rental</div><div class="s">Carol paid &middot; Adjustment (Dan +200) &middot; 10 Sep</div></div><div class="amount neg">-&#8377;400.00<small>your share</small></div></div>
+          <div class="item"><div class="cat">&#9992;</div><div class="grow"><div class="t">Flights</div><div class="s">You paid &middot; Exact &middot; 9 Sep</div></div><div class="amount pos">+&#8377;5,200.00<small>you lent</small></div></div>
+        </div>
+        <div class="row" style="justify-content:space-between;margin-top:10px"><span class="muted" style="font-size:12px">Page 1 of 3 &middot; 57 expenses</span><div class="row" style="gap:6px"><button class="btn sm ghost">&larr;</button><button class="btn sm ghost">&rarr;</button></div></div>
+      </div>
+
+      <div id="g-bal" class="card tab-pane hidden">
+        <h2>Who is up, who is down</h2>
+        <div class="bar-row"><b>Alice</b><div class="bar-track"><div class="bar-fill pos" style="width:38%"></div></div><span class="amount pos">+&#8377;3,800</span></div>
+        <div class="bar-row"><b>Bob</b><div class="bar-track"><div class="bar-fill neg" style="width:30%"></div></div><span class="amount neg">-&#8377;3,000</span></div>
+        <div class="bar-row"><b>Carol</b><div class="bar-track"><div class="bar-fill neg" style="width:8%"></div></div><span class="amount neg">-&#8377;800</span></div>
+        <div class="bar-row"><b>Dan</b><div class="bar-track"></div><span class="amount muted">settled up</span></div>
+        <div class="muted" style="font-size:12px;margin-top:8px">Balances always add up to zero.</div>
+      </div>
+
+      <div id="g-settle" class="card tab-pane hidden">
+        <h2>Fewest payments to settle the group</h2>
+        <div class="transfer"><div class="avatar sm">BO</div><b>Bob</b><div class="arrow"></div><span class="amount">&#8377;3,000</span><div class="arrow"></div><b>Alice</b><div class="avatar sm">AL</div><button class="btn sm" onclick="toast('Payment recorded (prototype)')">Settle</button></div>
+        <div class="transfer"><div class="avatar sm">CA</div><b>Carol</b><div class="arrow"></div><span class="amount">&#8377;800</span><div class="arrow"></div><b>Alice</b><div class="avatar sm">AL</div><button class="btn sm" onclick="toast('Payment recorded (prototype)')">Settle</button></div>
+        <div class="muted" style="font-size:12px">2 payments settle the whole group &middot; greedy minimum cash flow</div>
+      </div>
+    </section>
+
+    <!-- ===================== ACTIVITY -->
+    <section class="screen" id="activity">
+      <div class="card">
+        <h2>Activity</h2>
+        <div class="tl">
+          <div class="tl-item"><div class="tl-dot edit"></div><b>Bob updated "Beach shack dinner"</b> <span class="muted" style="font-size:12px">&middot; 2 min ago &middot; Goa Trip</span>
+            <div class="diff"><div>Amount: 2,000.00 &rarr; 2,400.00</div><div>Carol removed from the split (was 500.00)</div><div>Alice's share: 500.00 &rarr; 600.00</div></div></div>
+          <div class="tl-item"><div class="tl-dot add"></div><b>Carol paid Alice &#8377;600.00</b> <span class="muted" style="font-size:12px">&middot; 1 h ago &middot; Goa Trip</span></div>
+          <div class="tl-item"><div class="tl-dot"></div><b>Alice set up "Rent" (&#8377;24,000.00) to repeat monthly</b> <span class="muted" style="font-size:12px">&middot; yesterday &middot; Flat 4B</span></div>
+          <div class="tl-item"><div class="tl-dot del"></div><b>Dan deleted "Duplicate taxi"</b> <span class="muted" style="font-size:12px">&middot; 2 days ago</span> <button class="btn sm ghost" onclick="toast('Restored')">Restore</button></div>
+          <div class="tl-item"><div class="tl-dot"></div><b>Esha left "Flat 4B"</b> <span class="muted" style="font-size:12px">&middot; last week &middot; only possible at a zero balance</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== RECURRING -->
+    <section class="screen" id="recurring">
+      <div class="grid g3">
+        <div class="card"><div class="row" style="justify-content:space-between"><div class="cat">&#127968;</div><span class="chip on">Monthly</span></div>
+          <h2 style="margin-top:14px">Rent</h2><div class="amount num" style="text-align:left;font-size:24px">&#8377;24,000.00</div>
+          <div class="muted" style="font-size:13px;margin-top:8px">Flat 4B &middot; next on <b class="num">31 Oct</b></div>
+          <div class="muted" style="font-size:12px;margin-top:4px">Starts on the 31st: Feb 28, then back to Mar 31</div></div>
+        <div class="card"><div class="row" style="justify-content:space-between"><div class="cat">&#128246;</div><span class="chip on">Monthly</span></div>
+          <h2 style="margin-top:14px">Wifi</h2><div class="amount num" style="text-align:left;font-size:24px">&#8377;999.00</div>
+          <div class="muted" style="font-size:13px;margin-top:8px">Flat 4B &middot; next on <b class="num">05 Nov</b></div></div>
+        <div class="card" style="border-color:var(--warn)"><div class="row" style="justify-content:space-between"><div class="cat">&#127916;</div><span class="chip" style="color:var(--warn)">Paused</span></div>
+          <h2 style="margin-top:14px">Netflix</h2><div class="amount num" style="text-align:left;font-size:24px">&#8377;649.00</div>
+          <div class="muted" style="font-size:13px;margin-top:8px">Paused: Esha is no longer a member of the group</div></div>
+      </div>
+    </section>
+
+    <!-- ===================== REPORTS -->
+    <section class="screen" id="reports">
+      <div class="grid g2">
+        <div class="card">
+          <div class="row" style="justify-content:space-between"><h2 style="margin:0">Goa Trip &middot; September</h2><span class="chip cur">INR</span></div>
+          <div class="row donut-wrap" style="gap:28px;margin-top:18px">
+            <div class="donut" style="background:conic-gradient(var(--primary) 0 48%, var(--accent) 48% 76%, var(--positive) 76% 92%, var(--warn) 92% 100%)">
+              <div class="donut-center"><div><div class="muted" style="font-size:11px">TOTAL</div><div class="num" style="font-size:20px;font-weight:700">&#8377;18.6K</div></div></div>
+            </div>
+            <div class="legend list" style="flex:1">
+              <div class="item"><span class="dot" style="background:var(--primary)"></span><div class="grow">Travel</div><b class="num">&#8377;8,928</b></div>
+              <div class="item"><span class="dot" style="background:var(--accent)"></span><div class="grow">Rent</div><b class="num">&#8377;5,208</b></div>
+              <div class="item"><span class="dot" style="background:var(--positive)"></span><div class="grow">Food &amp; drink</div><b class="num">&#8377;2,976</b></div>
+              <div class="item"><span class="dot" style="background:var(--warn)"></span><div class="grow">Transport</div><b class="num">&#8377;1,488</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Per member</h2>
+          <div class="list">
+            <div class="item"><div class="avatar sm">AL</div><div class="grow"><div class="t">Alice</div><div class="s">paid &#8377;8,450 &middot; share &#8377;4,650</div></div><div class="amount pos">+&#8377;3,800</div></div>
+            <div class="item"><div class="avatar sm">BO</div><div class="grow"><div class="t">Bob</div><div class="s">paid &#8377;1,650 &middot; share &#8377;4,650</div></div><div class="amount neg">-&#8377;3,000</div></div>
+            <div class="item"><div class="avatar sm">CA</div><div class="grow"><div class="t">Carol</div><div class="s">paid &#8377;3,850 &middot; share &#8377;4,650</div></div><div class="amount neg">-&#8377;800</div></div>
+            <div class="item"><div class="avatar sm">DA</div><div class="grow"><div class="t">Dan</div><div class="s">paid &#8377;4,650 &middot; share &#8377;4,650</div></div><div class="amount muted">&#8377;0</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="mobile-nav">
+    <button class="nav-btn active" data-go="dashboard"><span class="ico">&#9671;</span>Home</button>
+    <button class="nav-btn" data-go="group"><span class="ico">&#9638;</span>Group</button>
+    <button class="nav-btn" onclick="openExpense()"><span class="ico" style="color:var(--accent);font-size:20px">&#8853;</span>Add</button>
+    <button class="nav-btn" data-go="activity"><span class="ico">&#8635;</span>Activity</button>
+    <button class="nav-btn" data-go="reports"><span class="ico">&#9684;</span>Reports</button>
+  </nav>
+</div>
+
+<!-- ============================================================ ADD EXPENSE -->
+<div class="overlay" id="expense-modal" onclick="if (event.target === this) closeExpense()">
+  <div class="modal">
+    <div class="row" style="justify-content:space-between;margin-bottom:16px"><h2 style="margin:0;font-size:18px">Add expense &middot; Goa Trip</h2>
+      <button class="btn sm ghost" onclick="closeExpense()">&#10005;</button></div>
+    <div class="grid form-top">
+      <div class="field"><label>Description</label><input class="input" value="Beach shack dinner"></div>
+      <div class="field"><label>Amount (INR)</label><input class="input num" id="amount" type="number" step="0.01" min="0.01" value="1000.00"></div>
+      <div class="field"><label>Paid by</label><select class="input"><option>Alice</option><option>Bob</option><option>Carol</option><option>Dan</option></select></div>
+    </div>
+    <div class="field" style="margin-top:14px"><label>Split</label>
+      <div class="seg" id="split-types">
+        <button data-type="EQUAL" class="on">Equal</button><button data-type="EXACT">Exact</button>
+        <button data-type="PERCENTAGE">Percent</button><button data-type="SHARES">Shares</button><button data-type="ADJUSTMENT">Adjust</button>
+      </div>
+    </div>
+    <div style="margin-top:12px" id="split-hint" class="muted"></div>
+    <div id="split-rows" style="margin-top:6px"></div>
+    <div id="split-status" class="status ok"></div>
+    <div class="row" style="justify-content:flex-end;margin-top:16px;gap:10px">
+      <button class="btn ghost" onclick="closeExpense()">Cancel</button>
+      <button class="btn" id="save-btn" onclick="saveExpense()">Save expense</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;display:none"
+     class="card"></div>
+
+<script>
+/* ---------------------------------------------------------------- theme */
+const THEMES = [["neon", "NEON"], ["solar", "SOLAR"], ["aurora", "AURORA"]];
+function setTheme(name) {
+  document.documentElement.setAttribute("data-theme", name);
+  try { localStorage.setItem("splitwise-proto-theme", name); } catch (e) { /* storage unavailable */ }
+  document.querySelectorAll("[data-theme-switch]").forEach(sw => {
+    sw.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.t === name));
+  });
+}
+document.querySelectorAll("[data-theme-switch]").forEach(sw => {
+  sw.innerHTML = THEMES.map(([t, label]) => `<button data-t="${t}">${label}</button>`).join("");
+  sw.addEventListener("click", e => { if (e.target.dataset.t) setTheme(e.target.dataset.t); });
+});
+let saved = null;
+try { saved = localStorage.getItem("splitwise-proto-theme"); } catch (e) { /* ignore */ }
+const params = new URLSearchParams(location.search);
+setTheme(params.get("theme") || saved || "neon");
+
+/* ---------------------------------------------------------------- navigation */
+const TITLES = {
+  dashboard: ["Dashboard", "Welcome back, Alice"], group: ["Goa Trip", "4 members - INR"],
+  activity: ["Activity", "Every change, with exactly what changed"], recurring: ["Recurring", "Created automatically on each due date"],
+  reports: ["Reports", "Where the money went"]
+};
+function enterApp() {
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+}
+function go(screen) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === screen));
+  document.querySelectorAll("[data-go]").forEach(b => b.classList.toggle("active", b.dataset.go === screen));
+  document.getElementById("screen-title").textContent = TITLES[screen][0];
+  document.getElementById("screen-sub").textContent = TITLES[screen][1];
+}
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
+document.querySelectorAll("[data-tab]").forEach(tab => tab.addEventListener("click", () => {
+  document.querySelectorAll("[data-tab]").forEach(t => t.classList.toggle("on", t === tab));
+  document.querySelectorAll(".tab-pane").forEach(p => p.classList.toggle("hidden", p.id !== tab.dataset.tab));
+}));
+function toast(message) {
+  const el = document.getElementById("toast");
+  el.textContent = message;
+  el.style.display = "block";
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.style.display = "none", 2200);
+}
+
+/* ---------------------------------------------------------------- split calculator
+   Same rules as the backend: whole paise with integer arithmetic; leftover paise to the lowest ids (equal) or
+   to the largest remainders (percentage / shares); a 0 share never gets a paisa. */
+const PEOPLE = [{ id: 1, name: "Alice" }, { id: 2, name: "Bob" }, { id: 3, name: "Carol" }, { id: 4, name: "Dan" }];
+const DEFAULTS = { EQUAL: [null, null, null, null], EXACT: ["400", "300", "200", "100"],
+  PERCENTAGE: ["40", "30", "20", "10"], SHARES: ["2", "1", "1", "1"], ADJUSTMENT: ["", "", "", "200"] };
+const HINTS = { EQUAL: "Everyone pays the same. Leftover paise go one each to the first people.",
+  EXACT: "Type what each person owes. The amounts must add up to the total.",
+  PERCENTAGE: "Percentages must add up to 100. Rounding uses the largest remainders.",
+  SHARES: "e.g. a couple 2, a single 1. Divided in proportion.",
+  ADJUSTMENT: "Extra amounts for some people (the dessert); the rest is split equally." };
+let splitType = "EQUAL";
+let values = {};
+let included = { 1: true, 2: true, 3: true, 4: true };
+
+function cents(text) { return Math.round(parseFloat(text || "0") * 100); }
+function money(c) { return "₹" + (c / 100).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+function equal(total, ids) {
+  const base = Math.floor(total / ids.length), rem = total % ids.length, out = {};
+  ids.forEach((id, i) => out[id] = base + (i < rem ? 1 : 0));
+  return out;
+}
+function proportional(total, ids, weights) {
+  const scaled = weights.map(w => Math.round(w * 10000));
+  const sum = scaled.reduce((a, b) => a + b, 0);
+  const parts = ids.map((id, i) => ({ id, i, floor: Math.floor(total * scaled[i] / sum), rem: (total * scaled[i]) % sum }));
+  let left = total - parts.reduce((a, p) => a + p.floor, 0);
+  [...parts].sort((a, b) => b.rem - a.rem || a.i - b.i).slice(0, left).forEach(p => p.floor++);
+  const out = {}; parts.forEach(p => out[p.id] = p.floor); return out;
+}
+function compute() {
+  const total = cents(document.getElementById("amount").value);
+  const ids = PEOPLE.filter(p => included[p.id]).map(p => p.id);
+  const v = id => parseFloat(values[id] || "0");
+  if (total <= 0) return { error: "Amount must be greater than zero" };
+  if (!ids.length) return { error: "Pick at least one person" };
+  switch (splitType) {
+    case "EQUAL": return { owed: equal(total, ids) };
+    case "EXACT": {
+      const owed = {}; ids.forEach(id => owed[id] = cents(values[id]));
+      const sum = Object.values(owed).reduce((a, b) => a + b, 0);
+      return sum === total ? { owed } : { owed, error: `Exact amounts add up to ${money(sum)}, not ${money(total)}` };
+    }
+    case "PERCENTAGE": {
+      const sum = ids.reduce((a, id) => a + v(id), 0);
+      if (Math.abs(sum - 100) > 1e-9) return { error: `Percentages add up to ${+sum.toFixed(4)}, not 100` };
+      return { owed: proportional(total, ids, ids.map(v)) };
+    }
+    case "SHARES": {
+      if (ids.every(id => v(id) === 0)) return { error: "At least one person needs more than 0 shares" };
+      return { owed: proportional(total, ids, ids.map(v)) };
+    }
+    case "ADJUSTMENT": {
+      const adj = {}; ids.forEach(id => adj[id] = cents(values[id]));
+      const adjSum = Object.values(adj).reduce((a, b) => a + b, 0);
+      if (adjSum > total) return { error: `Adjustments (${money(adjSum)}) are more than the amount` };
+      const rest = equal(total - adjSum, ids), owed = {};
+      ids.forEach(id => owed[id] = rest[id] + adj[id]);
+      return { owed };
+    }
+  }
+}
+function render() {
+  const result = compute();
+  const showInput = splitType !== "EQUAL";
+  const unit = { EXACT: "₹", PERCENTAGE: "%", SHARES: "shares", ADJUSTMENT: "+₹" }[splitType] || "";
+  document.getElementById("split-hint").textContent = HINTS[splitType];
+  document.getElementById("split-rows").innerHTML = PEOPLE.map(p => `
+    <div class="split-row">
+      <input type="checkbox" data-inc="${p.id}" ${included[p.id] ? "checked" : ""}>
+      <div class="row" style="gap:8px"><div class="avatar sm">${p.name.slice(0, 2).toUpperCase()}</div><b>${p.name}</b></div>
+      ${showInput ? `<input class="input num" data-val="${p.id}" value="${values[p.id] ?? ""}" placeholder="${unit}" ${included[p.id] ? "" : "disabled"}>` : `<span class="muted" style="font-size:12px">equal share</span>`}
+      <div class="amount num">${included[p.id] && result.owed ? money(result.owed[p.id] || 0) : "-"}</div>
+    </div>`).join("");
+  const status = document.getElementById("split-status");
+  if (result.error) {
+    status.className = "status bad"; status.textContent = result.error;
+  } else {
+    const sum = Object.values(result.owed).reduce((a, b) => a + b, 0);
+    status.className = "status ok"; status.textContent = `Adds up to ${money(sum)} exactly`;
+  }
+  document.getElementById("save-btn").disabled = !!result.error;
+  document.getElementById("save-btn").style.opacity = result.error ? .4 : 1;
+}
+function setType(type) {
+  splitType = type;
+  values = {};
+  PEOPLE.forEach((p, i) => values[p.id] = DEFAULTS[type][i] ?? "");
+  document.querySelectorAll("#split-types button").forEach(b => b.classList.toggle("on", b.dataset.type === type));
+  render();
+}
+document.getElementById("split-types").addEventListener("click", e => { if (e.target.dataset.type) setType(e.target.dataset.type); });
+document.getElementById("split-rows").addEventListener("input", e => {
+  if (e.target.dataset.val) { values[e.target.dataset.val] = e.target.value; render(); refocus(e.target.dataset.val); }
+});
+document.getElementById("split-rows").addEventListener("change", e => {
+  if (e.target.dataset.inc) { included[e.target.dataset.inc] = e.target.checked; render(); }
+});
+function refocus(id) {
+  const el = document.querySelector(`[data-val="${id}"]`);
+  if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+}
+document.getElementById("amount").addEventListener("input", render);
+function openExpense() { document.getElementById("expense-modal").classList.add("open"); setType(splitType); }
+function closeExpense() { document.getElementById("expense-modal").classList.remove("open"); }
+function saveExpense() { closeExpense(); toast("Expense saved (prototype)"); }
+
+/* deep links for screenshots: ?screen=group&modal=1&split=SHARES */
+if (params.get("screen") || params.get("app")) { enterApp(); go(params.get("screen") || "dashboard"); }
+if (params.get("tab")) document.querySelector(`[data-tab="${params.get("tab")}"]`)?.click();
+if (params.get("modal")) { openExpense(); if (params.get("split")) setType(params.get("split")); }
+</script>
+</body>
+</html>
