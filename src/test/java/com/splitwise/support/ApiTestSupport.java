@@ -1,5 +1,11 @@
 package com.splitwise.support;
 
+import java.time.ZoneId;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Bean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.junit.jupiter.api.AfterEach;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +39,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Import(ApiTestSupport.ClockConfig.class)
 public abstract class ApiTestSupport {
+
+    /** Replaces the application clock with one the tests can move. */
+    @TestConfiguration
+    static class ClockConfig {
+        @Bean
+        @Primary
+        MutableClock mutableClock() {
+            return new MutableClock(ZoneId.systemDefault());
+        }
+    }
 
     @Autowired
     protected MockMvc mvc;
+
+    @Autowired
+    protected MutableClock clock;
+
+    @AfterEach
+    void resetClock() {
+        clock.reset();
+    }
 
     @Autowired
     protected ObjectMapper json;

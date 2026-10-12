@@ -46,6 +46,16 @@ docs in Swagger UI.
   (`Amount: 300.00 -> 400.00`, `Carol removed from the split (was 100.00)`, `Bob's share: 100.00 -> 200.00`).
   A group's feed is visible to its members; people involved in an entry keep seeing it after leaving the group;
   non-group entries are visible only to the people involved. Paginated, newest first.
+- **Recurring expenses** (rent, wifi, subscriptions): weekly, monthly or yearly, with an optional end date. A
+  scheduled job creates each occurrence as a real expense (hourly by default, `RECURRING_CRON`), and catches up
+  runs missed while the app was down. Dates are computed from the start date, so a monthly expense starting on the
+  31st falls on the 28th/29th in February and on the 31st again in March. Each occurrence is created exactly once,
+  even with overlapping runs or several app instances (template and group row locks, plus a unique
+  (template, date) constraint). If someone in it has left the group, the template pauses with the reason
+  instead of creating an invalid expense.
+- **Reports and CSV export**: per group and date range - total spent, per category, and per member (paid, own
+  share, net). CSV export with one column per person (like Splitwise), properly quoted, with a UTF-8 BOM for
+  Excel, and protected against CSV / formula injection (an expense called `=HYPERLINK(...)` is written as text).
 - **Access control**: only members of a group can see or change its data (others get `403`).
 - **Safe under concurrent requests**: writes that depend on group membership lock the group row first, so
   "remove a member" and "add an expense for that member" cannot interleave.
@@ -177,6 +187,7 @@ export JWT_SECRET=$(openssl rand -base64 48)
 | `DB_PASSWORD` | yes | (none) |
 | `JWT_SECRET` | yes, at least 32 bytes | (none); the app refuses to start without it |
 | `JWT_EXPIRATION` | no | `PT1H` |
+| `RECURRING_CRON` | no | `0 5 * * * *` (hourly at minute 5) |
 
 ## API overview
 
@@ -207,6 +218,10 @@ All endpoints except register, login, the API docs and `/actuator/health` need
 | GET | `/api/expenses/{id}/activity` | The expense's history, oldest first, with every change |
 | GET | `/api/groups/{id}/activity` | The group's activity, newest first (`?page=0&size=20`) |
 | GET | `/api/users/me/activity` | My feed: my groups plus everything I was involved in |
+| POST / GET | `/api/recurring-expenses` | Set up a recurring expense / list mine |
+| GET / DELETE | `/api/recurring-expenses/{id}` | Get, or stop, a recurring expense (past expenses stay) |
+| GET | `/api/groups/{id}/report` | Spending summary (`?from=2026-09-01&to=2026-09-30`, both optional) |
+| GET | `/api/groups/{id}/expenses.csv` | The group's expenses as a CSV download (same optional range) |
 | PUT | `/api/expenses/{id}` | Edit an expense; body as for create (without `groupId`) plus `version` |
 | DELETE | `/api/expenses/{id}` | Delete (soft; idempotent) |
 | POST | `/api/expenses/{id}/restore` | Restore a deleted expense |
@@ -272,6 +287,15 @@ PostgreSQL mode.
   balances, restore refused once a participant has left.
 - **Membership and settlements** (`MembershipAndSettlementIntegrationTest`): leaving only at a zero balance,
   creator rules, re-adding a former member, undoing and restoring settlements, access rules.
+- **Recurring expenses** (`ScheduleTest`, `RecurringExpenseIntegrationTest`): month-end and leap-day dates,
+  first occurrence created immediately, monthly runs exactly once, catch-up after downtime, end dates, stopping,
+  pausing when a participant leaves, validation, non-group visibility, and two simultaneous runs creating each
+  occurrence once. The tests move a test clock instead of waiting. Removing the locks made the race test fail
+  on the database's unique constraint - no duplicate, but a failed run. These tests also caught a real bug:
+  Hibernate does not store `null` values of a collection map, so an EQUAL template lost its participants on reload.
+- **Reports** (`GroupReportPropertyTest`, `ExpenseCsvTest`, `ReportIntegrationTest`): property-based checks that
+  categories, payments and shares each add up to the total and nets to zero; CSV quoting, formula-injection
+  defence, duplicate names; date ranges, deleted expenses excluded, the download headers.
 - **Activity** (`ExpenseDiffTest`, `ActivityFeedIntegrationTest`): each kind of change described exactly, the
   full story of a group, an expense's history after deletion, who sees what (former members, non-group,
   outsiders), failed changes leaving no trace, deleted groups, paging. Removing the "people involved" rule from
@@ -302,5 +326,4 @@ and once against a real PostgreSQL 16 service container.
 - Pagination and filtering for expense and settlement lists
 - Multiple currencies with per-group base currency
 - Refresh tokens and rate limiting on the auth endpoints
-- Testcontainers-based tests against a real PostgreSQL
-- Recurring expenses and expense categories (present in an earlier prototype, not yet rebuilt)
+- Editing a recurring template (today: stop it and create a new one)

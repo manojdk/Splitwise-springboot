@@ -1,5 +1,13 @@
 package com.splitwise.web;
 
+import java.time.LocalDate;
+import java.nio.charset.StandardCharsets;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ContentDisposition;
+import com.splitwise.web.dto.GroupReportResponse;
+import com.splitwise.service.ReportService;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.splitwise.web.dto.PageResponse;
 import com.splitwise.web.dto.ActivityResponse;
@@ -46,15 +54,38 @@ public class GroupController {
     private final SettlementService settlementService;
     private final BalanceService balanceService;
     private final ActivityService activityService;
+    private final ReportService reportService;
 
     public GroupController(GroupService groupService, ExpenseService expenseService,
                            SettlementService settlementService, BalanceService balanceService,
-                           ActivityService activityService) {
+                           ActivityService activityService, ReportService reportService) {
         this.groupService = groupService;
         this.expenseService = expenseService;
         this.settlementService = settlementService;
         this.balanceService = balanceService;
         this.activityService = activityService;
+        this.reportService = reportService;
+    }
+
+    @GetMapping("/{groupId}/report")
+    @Operation(summary = "Spending summary: total, per category and per member (optional from/to, inclusive)")
+    public GroupReportResponse report(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId,
+                                      @RequestParam(required = false) LocalDate from,
+                                      @RequestParam(required = false) LocalDate to) {
+        return reportService.groupReport(CurrentUser.id(jwt), groupId, from, to);
+    }
+
+    @GetMapping(value = "/{groupId}/expenses.csv", produces = "text/csv")
+    @Operation(summary = "The group's expenses as CSV, one column per person (optional from/to, inclusive)")
+    public ResponseEntity<String> csv(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId,
+                                      @RequestParam(required = false) LocalDate from,
+                                      @RequestParam(required = false) LocalDate to) {
+        String body = reportService.groupCsv(CurrentUser.id(jwt), groupId, from, to);
+        return ResponseEntity.ok()
+                .contentType(new MediaType("text", "csv", StandardCharsets.UTF_8))
+                .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
+                        .filename("group-" + groupId + "-expenses.csv").build().toString())
+                .body(body);
     }
 
     @PostMapping

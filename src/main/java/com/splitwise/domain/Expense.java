@@ -65,6 +65,14 @@ public class Expense {
     @Column(length = 1000)
     private String notes;
 
+    /** The recurring template this expense was created from, and which of its dates it is (else null). */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recurring_expense_id")
+    private RecurringExpense recurringExpense;
+
+    @Column(name = "occurrence_date")
+    private LocalDate occurrenceDate;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
@@ -114,6 +122,11 @@ public class Expense {
 
     public void addShare(User user, BigDecimal shareAmount) {
         shares.add(new ExpenseShare(this, user, shareAmount));
+    }
+
+    public void linkToRecurring(RecurringExpense template, LocalDate occurrence) {
+        this.recurringExpense = template;
+        this.occurrenceDate = occurrence;
     }
 
     /** Category (null = GENERAL) and notes (blank = none). */
@@ -237,6 +250,14 @@ public class Expense {
 
     public String getNotes() {
         return notes;
+    }
+
+    public RecurringExpense getRecurringExpense() {
+        return recurringExpense;
+    }
+
+    public LocalDate getOccurrenceDate() {
+        return occurrenceDate;
     }
 
     public Instant getUpdatedAt() {

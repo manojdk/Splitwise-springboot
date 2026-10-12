@@ -1,5 +1,6 @@
 package com.splitwise.service;
 
+import com.splitwise.domain.RecurringExpense;
 import com.splitwise.activity.ExpenseSnapshot;
 import com.splitwise.activity.ActivityRecorder;
 import com.splitwise.domain.Expense;
@@ -148,6 +149,37 @@ public class ExpenseService {
         return ExpenseResponse.from(expenseRepository.saveAndFlush(expense));
     }
 
+    /**
+     * Runs the full create-time validation (currency, split arithmetic, users, group membership) without saving,
+     * so a recurring template is only accepted if its expenses could be created.
+     */
+    public void checkDraft(Long callerId, Group group, Long paidById, String currency, BigDecimal amount,
+                           SplitType splitType, List<ShareRequest> shares) {
+        validate(callerId, group, paidById, currency, amount, splitType, shares);
+    }
+
+    /**
+     * Creates the expense for one occurrence of a recurring template, in the name of the template's creator.
+     * The caller (the scheduler) has locked the group and checked that everyone involved is still a member.
+     */
+    @Transactional
+    public Expense addRecurringOccurrence(RecurringExpense template, LocalDate occurrence) {
+        List<ShareRequest> shareRequests = template.getShares().entrySet().stream()
+                .map(e -> new ShareRequest(e.getKey(), e.getValue()))
+                .toList();
+        Long creatorId = template.getCreatedBy().getId();
+        ValidatedSplit split = validate(creatorId, template.getGroup(), template.getPaidBy().getId(),
+                template.getCurrency(), template.getAmount(), template.getSplitType(), shareRequests);
+        Expense expense = new Expense(template.getDescription(), template.getAmount(), split.currency(),
+                split.payer(), template.getGroup(), occurrence, template.getSplitType(), template.getCreatedBy());
+        expense.describe(template.getCategory(), template.getNotes());
+        expense.linkToRecurring(template, occurrence);
+        split.shares().forEach(expense::addShare);
+        Expense saved = expenseRepository.save(expense);
+        activity.expenseAdded(creatorId, saved);
+        return saved;
+    }
+
     public List<ExpenseResponse> listForGroup(Long callerId, Long groupId) {
         groupService.requireMemberGroup(groupId, callerId);
         return expenseRepository.findByGroupIdAndDeletedAtIsNullOrderByExpenseDateDescIdDesc(groupId).stream()
@@ -233,7 +265,7 @@ public class ExpenseService {
         return date != null ? date : LocalDate.now(clock);
     }
 
-    static String resolveCurrency(String requested) {
+    public static String resolveCurrency(String requested) {
         if (requested == null || requested.isBlank()) {
             return Money.DEFAULT_CURRENCY;
         }
