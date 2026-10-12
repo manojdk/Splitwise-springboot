@@ -67,10 +67,12 @@ docs in Swagger UI.
 - **Consistent errors**: every error returns `{timestamp, status, error, message, path}` with an
   appropriate `400 / 401 / 403 / 404 / 409` status.
 
-## UI prototype
+## Frontend
 
-A clickable prototype of the frontend, in three themes, lives in [`docs/prototype`](docs/prototype/README.md).
-Open `docs/prototype/index.html` in a browser; it needs no build or server.
+A React + TypeScript app in [`frontend/`](frontend/README.md), being built screen by screen. Sign-in, sign-up
+and the app shell are done, in three themes (Aurora is the default). The screens were designed first as a
+clickable prototype in [`docs/prototype`](docs/prototype/README.md): open `docs/prototype/index.html` in a
+browser, no build needed.
 
 | Neon | Solar | Aurora |
 |---|---|---|
@@ -202,6 +204,18 @@ export JWT_SECRET=$(openssl rand -base64 48)
 | `JWT_SECRET` | yes, at least 32 bytes | (none); the app refuses to start without it |
 | `JWT_EXPIRATION` | no | `PT1H` |
 | `RECURRING_CRON` | no | `0 5 * * * *` (hourly at minute 5) |
+
+### The frontend
+
+With the API running on port 8080 (Node 22.12+):
+
+```bash
+cd frontend
+npm ci
+npm run dev        # http://localhost:5173, /api is proxied to :8080
+```
+
+See [`frontend/README.md`](frontend/README.md) for tests and the generated API types.
 
 ## API overview
 

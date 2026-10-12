@@ -1,0 +1,2225 @@
+{
+  "components" : {
+    "schemas" : {
+      "ActivityResponse" : {
+        "properties" : {
+          "actorId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "actorName" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "details" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "expenseId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "groupId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "settlementId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "summary" : {
+            "type" : "string"
+          },
+          "type" : {
+            "enum" : [ "GROUP_CREATED", "GROUP_RENAMED", "GROUP_DELETED", "MEMBER_ADDED", "MEMBER_REMOVED", "MEMBER_LEFT", "EXPENSE_ADDED", "EXPENSE_UPDATED", "EXPENSE_DELETED", "EXPENSE_RESTORED", "SETTLEMENT_ADDED", "SETTLEMENT_DELETED", "SETTLEMENT_RESTORED", "RECURRING_CREATED", "RECURRING_STOPPED", "RECURRING_PAUSED" ],
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "AddMemberRequest" : {
+        "properties" : {
+          "email" : {
+            "format" : "email",
+            "minLength" : 1,
+            "type" : "string"
+          }
+        },
+        "required" : [ "email" ],
+        "type" : "object"
+      },
+      "BalanceResponse" : {
+        "properties" : {
+          "currency" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "netBalance" : {
+            "type" : "number"
+          },
+          "userId" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "CategoryTotal" : {
+        "properties" : {
+          "category" : {
+            "enum" : [ "GENERAL", "FOOD_AND_DRINK", "GROCERIES", "RENT", "UTILITIES", "TRANSPORT", "TRAVEL", "ENTERTAINMENT", "SHOPPING", "HEALTH" ],
+            "type" : "string"
+          },
+          "count" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "total" : {
+            "type" : "number"
+          }
+        },
+        "type" : "object"
+      },
+      "CreateExpenseRequest" : {
+        "properties" : {
+          "amount" : {
+            "minimum" : 0.01,
+            "type" : "number"
+          },
+          "category" : {
+            "enum" : [ "GENERAL", "FOOD_AND_DRINK", "GROCERIES", "RENT", "UTILITIES", "TRANSPORT", "TRAVEL", "ENTERTAINMENT", "SHOPPING", "HEALTH" ],
+            "type" : "string"
+          },
+          "currency" : {
+            "pattern" : "[A-Z]{3}",
+            "type" : "string"
+          },
+          "date" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "description" : {
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "groupId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "notes" : {
+            "maxLength" : 1000,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "paidById" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "shares" : {
+            "items" : {
+              "$ref" : "#/components/schemas/ShareRequest"
+            },
+            "minItems" : 1,
+            "type" : "array"
+          },
+          "splitType" : {
+            "enum" : [ "EQUAL", "EXACT", "PERCENTAGE", "SHARES", "ADJUSTMENT" ],
+            "type" : "string"
+          }
+        },
+        "required" : [ "amount", "description", "paidById", "shares", "splitType" ],
+        "type" : "object"
+      },
+      "CreateGroupRequest" : {
+        "properties" : {
+          "currency" : {
+            "pattern" : "[A-Z]{3}",
+            "type" : "string"
+          },
+          "memberIds" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "type" : "array"
+          },
+          "name" : {
+            "maxLength" : 100,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "name" ],
+        "type" : "object"
+      },
+      "CreateRecurringExpenseRequest" : {
+        "properties" : {
+          "amount" : {
+            "minimum" : 0.01,
+            "type" : "number"
+          },
+          "category" : {
+            "enum" : [ "GENERAL", "FOOD_AND_DRINK", "GROCERIES", "RENT", "UTILITIES", "TRANSPORT", "TRAVEL", "ENTERTAINMENT", "SHOPPING", "HEALTH" ],
+            "type" : "string"
+          },
+          "currency" : {
+            "pattern" : "[A-Z]{3}",
+            "type" : "string"
+          },
+          "description" : {
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "endDate" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "frequency" : {
+            "enum" : [ "WEEKLY", "MONTHLY", "YEARLY" ],
+            "type" : "string"
+          },
+          "groupId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "notes" : {
+            "maxLength" : 1000,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "paidById" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "shares" : {
+            "items" : {
+              "$ref" : "#/components/schemas/ShareRequest"
+            },
+            "minItems" : 1,
+            "type" : "array"
+          },
+          "splitType" : {
+            "enum" : [ "EQUAL", "EXACT", "PERCENTAGE", "SHARES", "ADJUSTMENT" ],
+            "type" : "string"
+          },
+          "startDate" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        },
+        "required" : [ "amount", "description", "frequency", "paidById", "shares", "splitType", "startDate" ],
+        "type" : "object"
+      },
+      "CreateSettlementRequest" : {
+        "properties" : {
+          "amount" : {
+            "minimum" : 0.01,
+            "type" : "number"
+          },
+          "currency" : {
+            "pattern" : "[A-Z]{3}",
+            "type" : "string"
+          },
+          "date" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "fromUserId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "groupId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "note" : {
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "toUserId" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "amount", "fromUserId", "toUserId" ],
+        "type" : "object"
+      },
+      "CurrencyAmount" : {
+        "properties" : {
+          "amount" : {
+            "type" : "number"
+          },
+          "currency" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "ExpenseResponse" : {
+        "properties" : {
+          "amount" : {
+            "type" : "number"
+          },
+          "category" : {
+            "enum" : [ "GENERAL", "FOOD_AND_DRINK", "GROCERIES", "RENT", "UTILITIES", "TRANSPORT", "TRAVEL", "ENTERTAINMENT", "SHOPPING", "HEALTH" ],
+            "type" : "string"
+          },
+          "createdAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "createdById" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "currency" : {
+            "type" : "string"
+          },
+          "date" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "deleted" : {
+            "type" : "boolean"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "groupId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "notes" : {
+            "type" : "string"
+          },
+          "paidBy" : {
+            "$ref" : "#/components/schemas/UserSummary"
+          },
+          "recurringExpenseId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "shares" : {
+            "items" : {
+              "$ref" : "#/components/schemas/ShareResponse"
+            },
+            "type" : "array"
+          },
+          "splitType" : {
+            "enum" : [ "EQUAL", "EXACT", "PERCENTAGE", "SHARES", "ADJUSTMENT" ],
+            "type" : "string"
+          },
+          "updatedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "updatedById" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "version" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "FriendBalanceResponse" : {
+        "properties" : {
+          "balances" : {
+            "items" : {
+              "$ref" : "#/components/schemas/CurrencyAmount"
+            },
+            "type" : "array"
+          },
+          "breakdown" : {
+            "items" : {
+              "$ref" : "#/components/schemas/Item"
+            },
+            "type" : "array"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "userId" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "FriendBalancesResponse" : {
+        "properties" : {
+          "friends" : {
+            "items" : {
+              "$ref" : "#/components/schemas/FriendBalanceResponse"
+            },
+            "type" : "array"
+          },
+          "totals" : {
+            "items" : {
+              "$ref" : "#/components/schemas/Totals"
+            },
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      },
+      "GroupReportResponse" : {
+        "properties" : {
+          "byCategory" : {
+            "items" : {
+              "$ref" : "#/components/schemas/CategoryTotal"
+            },
+            "type" : "array"
+          },
+          "byMember" : {
+            "items" : {
+              "$ref" : "#/components/schemas/MemberTotal"
+            },
+            "type" : "array"
+          },
+          "currency" : {
+            "type" : "string"
+          },
+          "expenseCount" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "from" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "groupId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "groupName" : {
+            "type" : "string"
+          },
+          "to" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "totalSpent" : {
+            "type" : "number"
+          }
+        },
+        "type" : "object"
+      },
+      "GroupResponse" : {
+        "properties" : {
+          "createdAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "createdById" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "currency" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "members" : {
+            "items" : {
+              "$ref" : "#/components/schemas/UserResponse"
+            },
+            "type" : "array"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "Item" : {
+        "properties" : {
+          "amount" : {
+            "type" : "number"
+          },
+          "currency" : {
+            "type" : "string"
+          },
+          "groupId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "groupName" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "LoginRequest" : {
+        "properties" : {
+          "email" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "password" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        },
+        "required" : [ "email", "password" ],
+        "type" : "object"
+      },
+      "MemberTotal" : {
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "net" : {
+            "type" : "number"
+          },
+          "paid" : {
+            "type" : "number"
+          },
+          "share" : {
+            "type" : "number"
+          },
+          "userId" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "PageResponseActivityResponse" : {
+        "properties" : {
+          "content" : {
+            "items" : {
+              "$ref" : "#/components/schemas/ActivityResponse"
+            },
+            "type" : "array"
+          },
+          "last" : {
+            "type" : "boolean"
+          },
+          "page" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "size" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "totalElements" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "totalPages" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "PageResponseExpenseResponse" : {
+        "properties" : {
+          "content" : {
+            "items" : {
+              "$ref" : "#/components/schemas/ExpenseResponse"
+            },
+            "type" : "array"
+          },
+          "last" : {
+            "type" : "boolean"
+          },
+          "page" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "size" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "totalElements" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "totalPages" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "PageResponseSettlementResponse" : {
+        "properties" : {
+          "content" : {
+            "items" : {
+              "$ref" : "#/components/schemas/SettlementResponse"
+            },
+            "type" : "array"
+          },
+          "last" : {
+            "type" : "boolean"
+          },
+          "page" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "size" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "totalElements" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "totalPages" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "RecurringExpenseResponse" : {
+        "properties" : {
+          "active" : {
+            "type" : "boolean"
+          },
+          "amount" : {
+            "type" : "number"
+          },
+          "category" : {
+            "enum" : [ "GENERAL", "FOOD_AND_DRINK", "GROCERIES", "RENT", "UTILITIES", "TRANSPORT", "TRAVEL", "ENTERTAINMENT", "SHOPPING", "HEALTH" ],
+            "type" : "string"
+          },
+          "createdAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "createdById" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "currency" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "endDate" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "frequency" : {
+            "enum" : [ "WEEKLY", "MONTHLY", "YEARLY" ],
+            "type" : "string"
+          },
+          "groupId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "nextDate" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "notes" : {
+            "type" : "string"
+          },
+          "paidById" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "shares" : {
+            "items" : {
+              "$ref" : "#/components/schemas/ShareRequest"
+            },
+            "type" : "array"
+          },
+          "splitType" : {
+            "enum" : [ "EQUAL", "EXACT", "PERCENTAGE", "SHARES", "ADJUSTMENT" ],
+            "type" : "string"
+          },
+          "startDate" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "stoppedReason" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "RegisterRequest" : {
+        "properties" : {
+          "email" : {
+            "format" : "email",
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "name" : {
+            "maxLength" : 100,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "password" : {
+            "maxLength" : 72,
+            "minLength" : 8,
+            "type" : "string"
+          }
+        },
+        "required" : [ "email", "name", "password" ],
+        "type" : "object"
+      },
+      "SettleUpResponse" : {
+        "properties" : {
+          "balance" : {
+            "$ref" : "#/components/schemas/FriendBalanceResponse"
+          },
+          "settlements" : {
+            "items" : {
+              "$ref" : "#/components/schemas/SettlementResponse"
+            },
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      },
+      "SettlementResponse" : {
+        "properties" : {
+          "amount" : {
+            "type" : "number"
+          },
+          "currency" : {
+            "type" : "string"
+          },
+          "date" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "deleted" : {
+            "type" : "boolean"
+          },
+          "fromName" : {
+            "type" : "string"
+          },
+          "fromUserId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "groupId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "note" : {
+            "type" : "string"
+          },
+          "toName" : {
+            "type" : "string"
+          },
+          "toUserId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "version" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "ShareRequest" : {
+        "properties" : {
+          "userId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "value" : {
+            "type" : "number"
+          }
+        },
+        "required" : [ "userId" ],
+        "type" : "object"
+      },
+      "ShareResponse" : {
+        "properties" : {
+          "amount" : {
+            "type" : "number"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "userId" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "TokenResponse" : {
+        "properties" : {
+          "accessToken" : {
+            "type" : "string"
+          },
+          "expiresInSeconds" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "tokenType" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "Totals" : {
+        "properties" : {
+          "currency" : {
+            "type" : "string"
+          },
+          "net" : {
+            "type" : "number"
+          },
+          "youAreOwed" : {
+            "type" : "number"
+          },
+          "youOwe" : {
+            "type" : "number"
+          }
+        },
+        "type" : "object"
+      },
+      "TransferResponse" : {
+        "properties" : {
+          "amount" : {
+            "type" : "number"
+          },
+          "currency" : {
+            "type" : "string"
+          },
+          "fromName" : {
+            "type" : "string"
+          },
+          "fromUserId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "toName" : {
+            "type" : "string"
+          },
+          "toUserId" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "UpdateExpenseRequest" : {
+        "properties" : {
+          "amount" : {
+            "minimum" : 0.01,
+            "type" : "number"
+          },
+          "category" : {
+            "enum" : [ "GENERAL", "FOOD_AND_DRINK", "GROCERIES", "RENT", "UTILITIES", "TRANSPORT", "TRAVEL", "ENTERTAINMENT", "SHOPPING", "HEALTH" ],
+            "type" : "string"
+          },
+          "currency" : {
+            "pattern" : "[A-Z]{3}",
+            "type" : "string"
+          },
+          "date" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "description" : {
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "notes" : {
+            "maxLength" : 1000,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "paidById" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "shares" : {
+            "items" : {
+              "$ref" : "#/components/schemas/ShareRequest"
+            },
+            "minItems" : 1,
+            "type" : "array"
+          },
+          "splitType" : {
+            "enum" : [ "EQUAL", "EXACT", "PERCENTAGE", "SHARES", "ADJUSTMENT" ],
+            "type" : "string"
+          },
+          "version" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "amount", "description", "paidById", "shares", "splitType", "version" ],
+        "type" : "object"
+      },
+      "UpdateGroupRequest" : {
+        "properties" : {
+          "name" : {
+            "maxLength" : 100,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "name" ],
+        "type" : "object"
+      },
+      "UserBalanceResponse" : {
+        "properties" : {
+          "balances" : {
+            "items" : {
+              "$ref" : "#/components/schemas/CurrencyAmount"
+            },
+            "type" : "array"
+          },
+          "userId" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "UserResponse" : {
+        "properties" : {
+          "email" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "UserSummary" : {
+        "properties" : {
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      }
+    },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "bearerFormat" : "JWT",
+        "scheme" : "bearer",
+        "type" : "http"
+      }
+    }
+  },
+  "info" : {
+    "description" : "Shared-expense tracking: groups, expense splitting, balances and debt simplification",
+    "title" : "Splitwise API",
+    "version" : "v1"
+  },
+  "openapi" : "3.1.0",
+  "paths" : {
+    "/api/auth/login" : {
+      "post" : {
+        "operationId" : "login",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TokenResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ ],
+        "summary" : "Exchange email + password for a JWT access token",
+        "tags" : [ "Auth" ]
+      }
+    },
+    "/api/auth/register" : {
+      "post" : {
+        "operationId" : "register",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "security" : [ ],
+        "summary" : "Create an account",
+        "tags" : [ "Auth" ]
+      }
+    },
+    "/api/expenses" : {
+      "post" : {
+        "operationId" : "create_3",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateExpenseRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ExpenseResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "Record an expense split EQUAL, EXACT or PERCENTAGE",
+        "tags" : [ "Expenses" ]
+      }
+    },
+    "/api/expenses/{expenseId}" : {
+      "delete" : {
+        "operationId" : "delete_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "expenseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "summary" : "Delete an expense (soft delete, can be restored)",
+        "tags" : [ "Expenses" ]
+      },
+      "get" : {
+        "operationId" : "get_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "expenseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ExpenseResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get an expense, including a deleted one (flagged deleted=true)",
+        "tags" : [ "Expenses" ]
+      },
+      "put" : {
+        "operationId" : "update",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "expenseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateExpenseRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ExpenseResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Edit an expense; send the version you read, a stale version gives 409",
+        "tags" : [ "Expenses" ]
+      }
+    },
+    "/api/expenses/{expenseId}/activity" : {
+      "get" : {
+        "operationId" : "history",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "expenseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/ActivityResponse"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "The expense's history, oldest first: who added, edited (with each change) or deleted it",
+        "tags" : [ "Expenses" ]
+      }
+    },
+    "/api/expenses/{expenseId}/restore" : {
+      "post" : {
+        "operationId" : "restore_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "expenseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ExpenseResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Restore a deleted expense",
+        "tags" : [ "Expenses" ]
+      }
+    },
+    "/api/groups" : {
+      "get" : {
+        "operationId" : "list_1",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/GroupResponse"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Groups the caller belongs to",
+        "tags" : [ "Groups" ]
+      },
+      "post" : {
+        "operationId" : "create_2",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateGroupRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GroupResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "Create a group; the caller becomes a member",
+        "tags" : [ "Groups" ]
+      }
+    },
+    "/api/groups/{groupId}" : {
+      "delete" : {
+        "operationId" : "delete",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "groupId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "summary" : "Delete an empty group (creator only)",
+        "tags" : [ "Groups" ]
+      },
+      "get" : {
+        "operationId" : "get",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "groupId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GroupResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Groups" ]
+      },
+      "put" : {
+        "operationId" : "rename",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "groupId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateGroupRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GroupResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Rename a group",
+        "tags" : [ "Groups" ]
+      }
+    },
+    "/api/groups/{groupId}/activity" : {
+      "get" : {
+        "operationId" : "activity_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "groupId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "page",
+          "required" : false,
+          "schema" : {
+            "default" : 0,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "size",
+          "required" : false,
+          "schema" : {
+            "default" : 20,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageResponseActivityResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "The group's activity, newest first (members only)",
+        "tags" : [ "Groups" ]
+      }
+    },
+    "/api/groups/{groupId}/balances" : {
+      "get" : {
+        "operationId" : "balances",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "groupId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/BalanceResponse"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Net balance per member (positive = is owed, negative = owes)",
+        "tags" : [ "Groups" ]
+      }
+    },
+    "/api/groups/{groupId}/debts/simplified" : {
+      "get" : {
+        "operationId" : "simplifiedDebts",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "groupId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/TransferResponse"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Suggested payments that settle the whole group with few transfers",
+        "tags" : [ "Groups" ]
+      }
+    },
+    "/api/groups/{groupId}/expenses" : {
+      "get" : {
+        "operationId" : "expenses",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "groupId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "page",
+          "required" : false,
+          "schema" : {
+            "default" : 0,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "size",
+          "required" : false,
+          "schema" : {
+            "default" : 20,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "from",
+          "required" : false,
+          "schema" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "to",
+          "required" : false,
+          "schema" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "category",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "GENERAL", "FOOD_AND_DRINK", "GROCERIES", "RENT", "UTILITIES", "TRANSPORT", "TRAVEL", "ENTERTAINMENT", "SHOPPING", "HEALTH" ],
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "paidBy",
+          "required" : false,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "q",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageResponseExpenseResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "The group's expenses, newest first; filter by date range, category, payer or text (q)",
+        "tags" : [ "Groups" ]
+      }
+    },
+    "/api/groups/{groupId}/expenses.csv" : {
+      "get" : {
+        "operationId" : "csv",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "groupId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "from",
+          "required" : false,
+          "schema" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "to",
+          "required" : false,
+          "schema" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "text/csv" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "The group's expenses as CSV, one column per person (optional from/to, inclusive)",
+        "tags" : [ "Groups" ]
+      }
+    },
+    "/api/groups/{groupId}/members" : {
+      "post" : {
+        "operationId" : "addMember",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "groupId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AddMemberRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GroupResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Add a registered user to the group by email",
+        "tags" : [ "Groups" ]
+      }
+    },
+    "/api/groups/{groupId}/members/{userId}" : {
+      "delete" : {
+        "operationId" : "removeMember",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "groupId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "path",
+          "name" : "userId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GroupResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Remove a member (creator only) or leave (your own id); the balance in the group must be zero",
+        "tags" : [ "Groups" ]
+      }
+    },
+    "/api/groups/{groupId}/report" : {
+      "get" : {
+        "operationId" : "report",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "groupId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "from",
+          "required" : false,
+          "schema" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "to",
+          "required" : false,
+          "schema" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GroupReportResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Spending summary: total, per category and per member (optional from/to, inclusive)",
+        "tags" : [ "Groups" ]
+      }
+    },
+    "/api/groups/{groupId}/settlements" : {
+      "get" : {
+        "operationId" : "settlements",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "groupId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "page",
+          "required" : false,
+          "schema" : {
+            "default" : 0,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "size",
+          "required" : false,
+          "schema" : {
+            "default" : 20,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "from",
+          "required" : false,
+          "schema" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "to",
+          "required" : false,
+          "schema" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageResponseSettlementResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "The group's settlements, newest first, optionally within dates",
+        "tags" : [ "Groups" ]
+      }
+    },
+    "/api/recurring-expenses" : {
+      "get" : {
+        "operationId" : "list",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/RecurringExpenseResponse"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Recurring expenses in my groups and the non-group ones I am part of",
+        "tags" : [ "Recurring expenses" ]
+      },
+      "post" : {
+        "operationId" : "create_1",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateRecurringExpenseRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RecurringExpenseResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "Set up an expense that repeats weekly, monthly or yearly (first one today or later)",
+        "tags" : [ "Recurring expenses" ]
+      }
+    },
+    "/api/recurring-expenses/{id}" : {
+      "delete" : {
+        "operationId" : "stop",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "summary" : "Stop future occurrences (expenses already created stay)",
+        "tags" : [ "Recurring expenses" ]
+      },
+      "get" : {
+        "operationId" : "get_3",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RecurringExpenseResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Recurring expenses" ]
+      }
+    },
+    "/api/settlements" : {
+      "post" : {
+        "operationId" : "create",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateSettlementRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SettlementResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "Record a payment from one user to another (settle up)",
+        "tags" : [ "Settlements" ]
+      }
+    },
+    "/api/settlements/{settlementId}" : {
+      "delete" : {
+        "operationId" : "delete_2",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "settlementId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "summary" : "Undo a settlement recorded by mistake (soft delete, can be restored)",
+        "tags" : [ "Settlements" ]
+      },
+      "get" : {
+        "operationId" : "get_2",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "settlementId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SettlementResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get a settlement, including a deleted one (flagged deleted=true)",
+        "tags" : [ "Settlements" ]
+      }
+    },
+    "/api/settlements/{settlementId}/restore" : {
+      "post" : {
+        "operationId" : "restore",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "settlementId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SettlementResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Restore a deleted settlement",
+        "tags" : [ "Settlements" ]
+      }
+    },
+    "/api/users/me" : {
+      "get" : {
+        "operationId" : "me",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "The authenticated user's profile",
+        "tags" : [ "Current user" ]
+      }
+    },
+    "/api/users/me/activity" : {
+      "get" : {
+        "operationId" : "activity",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "page",
+          "required" : false,
+          "schema" : {
+            "default" : 0,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "size",
+          "required" : false,
+          "schema" : {
+            "default" : 20,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageResponseActivityResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Activity feed: your groups plus everything you were involved in, newest first",
+        "tags" : [ "Current user" ]
+      }
+    },
+    "/api/users/me/balance" : {
+      "get" : {
+        "operationId" : "myBalance",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserBalanceResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Overall net balance across all groups and non-group expenses (positive = owed to you)",
+        "tags" : [ "Current user" ]
+      }
+    },
+    "/api/users/me/expenses" : {
+      "get" : {
+        "operationId" : "myExpenses",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "page",
+          "required" : false,
+          "schema" : {
+            "default" : 0,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "size",
+          "required" : false,
+          "schema" : {
+            "default" : 20,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "from",
+          "required" : false,
+          "schema" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "to",
+          "required" : false,
+          "schema" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "category",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "GENERAL", "FOOD_AND_DRINK", "GROCERIES", "RENT", "UTILITIES", "TRANSPORT", "TRAVEL", "ENTERTAINMENT", "SHOPPING", "HEALTH" ],
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "paidBy",
+          "required" : false,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "q",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageResponseExpenseResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "All expenses the user paid for or has a share in",
+        "tags" : [ "Current user" ]
+      }
+    },
+    "/api/users/me/friends" : {
+      "get" : {
+        "operationId" : "friends",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FriendBalancesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Everyone you have an open balance with, per group, plus totals (positive = owed to you)",
+        "tags" : [ "Current user" ]
+      }
+    },
+    "/api/users/me/friends/{friendId}" : {
+      "get" : {
+        "operationId" : "friend",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "friendId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FriendBalanceResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Your balance with one friend, per group",
+        "tags" : [ "Current user" ]
+      }
+    },
+    "/api/users/me/friends/{friendId}/settle-up" : {
+      "post" : {
+        "operationId" : "settleUp",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "friendId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SettleUpResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "Record the payments that clear every open balance with a friend (one per group)",
+        "tags" : [ "Current user" ]
+      }
+    },
+    "/api/users/me/settlements" : {
+      "get" : {
+        "operationId" : "mySettlements",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "page",
+          "required" : false,
+          "schema" : {
+            "default" : 0,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "size",
+          "required" : false,
+          "schema" : {
+            "default" : 20,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "from",
+          "required" : false,
+          "schema" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "to",
+          "required" : false,
+          "schema" : {
+            "format" : "date",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageResponseSettlementResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "All settlements the user paid or received",
+        "tags" : [ "Current user" ]
+      }
+    }
+  },
+  "security" : [ {
+    "bearerAuth" : [ ]
+  } ]
+}
