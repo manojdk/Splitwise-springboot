@@ -1,15 +1,19 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { z } from 'zod'
 import { ApiError } from '../api/client'
 import { useAddMember, useGroup, useRemoveMember } from '../api/queries'
-import type { Group, User } from '../api/types'
+import type { Expense, Group, User } from '../api/types'
 import { useAuth } from '../auth/AuthProvider'
 import { Modal } from '../components/Modal'
 import { Avatar, ErrorState, Loading } from '../components/States'
 import { useToast } from '../components/Toast'
+import { ExpenseDetail } from '../features/expenses/ExpenseDetail'
+import { ExpenseForm } from '../features/expenses/ExpenseForm'
+import { ExpenseList } from '../features/expenses/ExpenseList'
+import { GroupBalances, SettleUpPanel } from '../features/groups/GroupBalances'
 import { NotFoundPage } from './NotFoundPage'
 
 export function GroupPage() {
@@ -34,6 +38,28 @@ function GroupView({ id }: { id: number }) {
     )
   }
 
+  return <GroupContent group={group.data} />
+}
+
+type Tab = 'expenses' | 'balances' | 'settle'
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'expenses', label: 'Expenses' },
+  { id: 'balances', label: 'Balances' },
+  { id: 'settle', label: 'Settle up' },
+]
+
+function GroupContent({ group }: { group: Group }) {
+  const [params, setParams] = useSearchParams()
+  const tab = (TABS.find((t) => t.id === params.get('tab'))?.id ?? 'expenses') as Tab
+  const [adding, setAdding] = useState(false)
+  const [viewing, setViewing] = useState<Expense | null>(null)
+  const [editing, setEditing] = useState<Expense | null>(null)
+
+  function selectTab(next: Tab) {
+    // Filters belong to the expenses tab; switching tabs starts clean
+    setParams(next === 'expenses' ? {} : { tab: next }, { replace: true })
+  }
+
   return (
     <div className="grid gap-5">
       <div>
@@ -41,19 +67,53 @@ function GroupView({ id }: { id: number }) {
           {'←'} All groups
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <h1 className="m-0 text-2xl">{group.data.name}</h1>
-          <span className="rounded-full border border-line px-2 py-0.5 text-xs font-bold text-muted">{group.data.currency}</span>
+          <h1 className="m-0 text-2xl">{group.name}</h1>
+          <span className="rounded-full border border-line px-2 py-0.5 text-xs font-bold text-muted">{group.currency}</span>
+          <button type="button" className="btn btn-accent ml-auto" onClick={() => setAdding(true)}>
+            + Add expense
+          </button>
         </div>
       </div>
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-        <section className="card p-5" aria-labelledby="expenses-heading">
-          <h2 id="expenses-heading" className="mt-0 mb-2 text-base">
-            Expenses
-          </h2>
-          <p className="m-0 text-muted">Adding and listing expenses comes next. For now, set up who is in the group.</p>
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <section className="card p-5" aria-label={TABS.find((t) => t.id === tab)!.label}>
+          <div role="tablist" aria-label="Group sections" className="mb-4 flex flex-wrap gap-1.5">
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                role="tab"
+                aria-selected={tab === t.id}
+                onClick={() => selectTab(t.id)}
+                className={
+                  'cursor-pointer rounded-full border px-3.5 py-1.5 text-sm font-semibold transition ' +
+                  (tab === t.id ? 'border-transparent bg-primary text-primary-ink' : 'border-line bg-surface-2 text-muted hover:text-text')
+                }
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <div role="tabpanel">
+            {tab === 'expenses' && <ExpenseList group={group} onOpen={setViewing} />}
+            {tab === 'balances' && <GroupBalances group={group} />}
+            {tab === 'settle' && <SettleUpPanel group={group} />}
+          </div>
         </section>
-        <Members group={group.data} />
+        <Members group={group} />
       </div>
+
+      {adding && <ExpenseForm group={group} onClose={() => setAdding(false)} />}
+      {viewing && (
+        <ExpenseDetail
+          expense={viewing}
+          onClose={() => setViewing(null)}
+          onEdit={() => {
+            setEditing(viewing)
+            setViewing(null)
+          }}
+        />
+      )}
+      {editing && <ExpenseForm group={group} expense={editing} onClose={() => setEditing(null)} />}
     </div>
   )
 }

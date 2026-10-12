@@ -42,7 +42,20 @@ backend needs no CORS setup.
 | Sign in / Create account | Validation as strict as the API's; server errors shown where they belong |
 | Dashboard | What you are owed and what you owe, **per currency** (never added together); friends with each balance and where it comes from; settle up with a friend after confirming the payments it records; your balance in each group |
 | Groups | Your groups with members and your balance; new group with a currency and people to add by email (people without an account are listed, the group is kept) |
-| Group | Members: add by email, remove (the creator) or leave (others), with the API's zero-balance rule explained when it refuses. Expenses come next |
+| Group | Expenses with search, category, payer and date filters (kept in the address) and paging; balances; the fewest payments to settle, recordable by the people involved; members (add, remove, leave) |
+| Add / edit expense | All five split types with **each person's share shown live, to the paisa**; edits open in the terms they were entered (2 : 1 : 1 shares, 50 %); a concurrent edit is caught (409) and the other version offered; delete with Undo |
+
+## The split calculator matches the API
+
+`src/lib/split.ts` mirrors the backend's split rules with whole-paise `BigInt` arithmetic. The backend test
+`SplitGoldenCasesTest` runs 420 inputs (random ones plus boundaries such as a 0.01 split three ways or a
+percentage with 5 decimals) through the real split strategies and writes the results to
+`src/lib/split-golden.json`; `split.golden.test.ts` replays every case. So the preview in the form is proven to
+show what the API will save. When a split rule changes, the backend test fails until the file is regenerated:
+
+```bash
+./mvnw test -Dtest=SplitGoldenCasesTest -Dsplit.update=true
+```
 
 ## API types
 

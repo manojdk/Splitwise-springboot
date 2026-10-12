@@ -1,0 +1,7935 @@
+[ {
+  "type" : "EQUAL",
+  "total" : "511013414.99",
+  "participants" : [ {
+    "userId" : 13,
+    "value" : null
+  }, {
+    "userId" : 4,
+    "value" : null
+  }, {
+    "userId" : 11,
+    "value" : null
+  } ],
+  "result" : {
+    "4" : "170337805.00",
+    "11" : "170337805.00",
+    "13" : "170337804.99"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 33,
+    "value" : "0.03"
+  }, {
+    "userId" : 41,
+    "value" : "0.01"
+  }, {
+    "userId" : 19,
+    "value" : "0.01"
+  }, {
+    "userId" : 47,
+    "value" : "0.02"
+  }, {
+    "userId" : 48,
+    "value" : "0.00"
+  }, {
+    "userId" : 15,
+    "value" : "0.00"
+  } ],
+  "result" : {
+    "15" : "0.00",
+    "19" : "0.01",
+    "33" : "0.03",
+    "41" : "0.01",
+    "47" : "0.02",
+    "48" : "0.00"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "70.29",
+  "participants" : [ {
+    "userId" : 17,
+    "value" : "13.3437"
+  }, {
+    "userId" : 54,
+    "value" : "1.5819"
+  }, {
+    "userId" : 2,
+    "value" : "26.4218"
+  }, {
+    "userId" : 43,
+    "value" : "0.9218"
+  }, {
+    "userId" : 39,
+    "value" : "9.3451"
+  }, {
+    "userId" : 23,
+    "value" : "48.3857"
+  } ],
+  "result" : {
+    "2" : "18.57",
+    "17" : "9.38",
+    "23" : "34.01",
+    "39" : "6.57",
+    "43" : "0.65",
+    "54" : "1.11"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "69461.57",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : "0"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "187357869.62",
+  "participants" : [ {
+    "userId" : 39,
+    "value" : "30805153.73"
+  }, {
+    "userId" : 27,
+    "value" : null
+  }, {
+    "userId" : 60,
+    "value" : "23337225.99"
+  }, {
+    "userId" : 12,
+    "value" : null
+  }, {
+    "userId" : 2,
+    "value" : null
+  }, {
+    "userId" : 11,
+    "value" : "30728449.06"
+  } ],
+  "result" : {
+    "2" : "17081173.48",
+    "11" : "47809622.54",
+    "12" : "17081173.47",
+    "27" : "17081173.47",
+    "39" : "47886327.20",
+    "60" : "40418399.46"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "338045399.59",
+  "participants" : [ {
+    "userId" : 46,
+    "value" : null
+  }, {
+    "userId" : 28,
+    "value" : null
+  }, {
+    "userId" : 16,
+    "value" : null
+  } ],
+  "result" : {
+    "16" : "112681799.87",
+    "28" : "112681799.86",
+    "46" : "112681799.86"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 49,
+    "value" : "0.00"
+  }, {
+    "userId" : 13,
+    "value" : "0.00"
+  }, {
+    "userId" : 18,
+    "value" : "0.02"
+  }, {
+    "userId" : 24,
+    "value" : "0.01"
+  }, {
+    "userId" : 56,
+    "value" : "0.01"
+  }, {
+    "userId" : 31,
+    "value" : "0.03"
+  } ],
+  "result" : {
+    "13" : "0.00",
+    "18" : "0.02",
+    "24" : "0.01",
+    "31" : "0.03",
+    "49" : "0.00",
+    "56" : "0.01"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 42,
+    "value" : "20.6984"
+  }, {
+    "userId" : 18,
+    "value" : "23.3544"
+  }, {
+    "userId" : 3,
+    "value" : "55.9472"
+  } ],
+  "result" : {
+    "3" : "0.01",
+    "18" : "0.01",
+    "42" : "0.00"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "356815100.68",
+  "participants" : [ {
+    "userId" : 2,
+    "value" : "0"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.00",
+  "participants" : [ {
+    "userId" : 36,
+    "value" : null
+  }, {
+    "userId" : 55,
+    "value" : null
+  }, {
+    "userId" : 57,
+    "value" : null
+  }, {
+    "userId" : 48,
+    "value" : null
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "98783.77",
+  "participants" : [ {
+    "userId" : 6,
+    "value" : null
+  }, {
+    "userId" : 27,
+    "value" : null
+  }, {
+    "userId" : 23,
+    "value" : null
+  } ],
+  "result" : {
+    "6" : "32927.93",
+    "23" : "32927.92",
+    "27" : "32927.92"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "262414677.62",
+  "participants" : [ {
+    "userId" : 57,
+    "value" : "88282566.68"
+  }, {
+    "userId" : 42,
+    "value" : "174132110.94"
+  } ],
+  "result" : {
+    "42" : "174132110.94",
+    "57" : "88282566.68"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "60024.39",
+  "participants" : [ {
+    "userId" : 23,
+    "value" : "12"
+  }, {
+    "userId" : 18,
+    "value" : "24"
+  }, {
+    "userId" : 9,
+    "value" : "29"
+  }, {
+    "userId" : 1,
+    "value" : "35"
+  } ],
+  "result" : {
+    "1" : "21008.54",
+    "9" : "17407.07",
+    "18" : "14405.85",
+    "23" : "7202.93"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "59746.17",
+  "participants" : [ {
+    "userId" : 57,
+    "value" : "2"
+  }, {
+    "userId" : 16,
+    "value" : "2.50"
+  }, {
+    "userId" : 18,
+    "value" : "3.58"
+  }, {
+    "userId" : 34,
+    "value" : "5"
+  }, {
+    "userId" : 39,
+    "value" : "0"
+  } ],
+  "result" : {
+    "16" : "11419.38",
+    "18" : "16352.54",
+    "34" : "22838.75",
+    "39" : "0.00",
+    "57" : "9135.50"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.03",
+  "participants" : [ {
+    "userId" : 54,
+    "value" : "0.03"
+  }, {
+    "userId" : 44,
+    "value" : "0.03"
+  }, {
+    "userId" : 56,
+    "value" : "0.03"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "432261389.76",
+  "participants" : [ {
+    "userId" : 38,
+    "value" : null
+  }, {
+    "userId" : 14,
+    "value" : null
+  }, {
+    "userId" : 30,
+    "value" : null
+  }, {
+    "userId" : 7,
+    "value" : null
+  }, {
+    "userId" : 54,
+    "value" : null
+  } ],
+  "result" : {
+    "7" : "86452277.96",
+    "14" : "86452277.95",
+    "30" : "86452277.95",
+    "38" : "86452277.95",
+    "54" : "86452277.95"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "6492.71",
+  "participants" : [ {
+    "userId" : 22,
+    "value" : "1335.03"
+  }, {
+    "userId" : 25,
+    "value" : "1629.11"
+  }, {
+    "userId" : 11,
+    "value" : "819.64"
+  }, {
+    "userId" : 34,
+    "value" : "2708.93"
+  } ],
+  "result" : {
+    "11" : "819.64",
+    "22" : "1335.03",
+    "25" : "1629.11",
+    "34" : "2708.93"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "88622.39",
+  "participants" : [ {
+    "userId" : 19,
+    "value" : "0.8554"
+  }, {
+    "userId" : 43,
+    "value" : "99.1446"
+  } ],
+  "result" : {
+    "19" : "758.08",
+    "43" : "87864.31"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "42002.11",
+  "participants" : [ {
+    "userId" : 13,
+    "value" : "0.22"
+  } ],
+  "result" : {
+    "13" : "42002.11"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 39,
+    "value" : null
+  }, {
+    "userId" : 13,
+    "value" : "0.00"
+  }, {
+    "userId" : 28,
+    "value" : "0.00"
+  }, {
+    "userId" : 12,
+    "value" : null
+  } ],
+  "result" : {
+    "12" : "0.02",
+    "13" : "0.01",
+    "28" : "0.01",
+    "39" : "0.01"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "15.21",
+  "participants" : [ {
+    "userId" : 48,
+    "value" : null
+  }, {
+    "userId" : 30,
+    "value" : null
+  }, {
+    "userId" : 37,
+    "value" : null
+  }, {
+    "userId" : 43,
+    "value" : null
+  }, {
+    "userId" : 60,
+    "value" : null
+  }, {
+    "userId" : 22,
+    "value" : null
+  } ],
+  "result" : {
+    "22" : "2.54",
+    "30" : "2.54",
+    "37" : "2.54",
+    "43" : "2.53",
+    "48" : "2.53",
+    "60" : "2.53"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 51,
+    "value" : "0.01"
+  }, {
+    "userId" : 52,
+    "value" : "0.01"
+  }, {
+    "userId" : 4,
+    "value" : "0.00"
+  }, {
+    "userId" : 21,
+    "value" : "0.00"
+  } ],
+  "result" : {
+    "4" : "0.00",
+    "21" : "0.00",
+    "51" : "0.01",
+    "52" : "0.01"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "453970542.39",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : "54"
+  }, {
+    "userId" : 26,
+    "value" : "9"
+  }, {
+    "userId" : 12,
+    "value" : "37"
+  } ],
+  "result" : {
+    "12" : "167969100.68",
+    "26" : "40857348.82",
+    "44" : "245144092.89"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "81722670.23",
+  "participants" : [ {
+    "userId" : 8,
+    "value" : "3"
+  }, {
+    "userId" : 32,
+    "value" : "3"
+  }, {
+    "userId" : 1,
+    "value" : "3"
+  }, {
+    "userId" : 16,
+    "value" : "3"
+  } ],
+  "result" : {
+    "1" : "20430667.56",
+    "8" : "20430667.56",
+    "16" : "20430667.56",
+    "32" : "20430667.55"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "64.48",
+  "participants" : [ {
+    "userId" : 15,
+    "value" : "3.68"
+  }, {
+    "userId" : 44,
+    "value" : "5.26"
+  }, {
+    "userId" : 43,
+    "value" : "9.21"
+  }, {
+    "userId" : 12,
+    "value" : "6.45"
+  }, {
+    "userId" : 14,
+    "value" : null
+  } ],
+  "result" : {
+    "12" : "14.43",
+    "14" : "7.98",
+    "15" : "11.66",
+    "43" : "17.18",
+    "44" : "13.23"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "501094406.08",
+  "participants" : [ {
+    "userId" : 10,
+    "value" : null
+  }, {
+    "userId" : 41,
+    "value" : null
+  }, {
+    "userId" : 55,
+    "value" : null
+  }, {
+    "userId" : 33,
+    "value" : null
+  }, {
+    "userId" : 21,
+    "value" : null
+  }, {
+    "userId" : 52,
+    "value" : null
+  } ],
+  "result" : {
+    "10" : "83515734.35",
+    "21" : "83515734.35",
+    "33" : "83515734.35",
+    "41" : "83515734.35",
+    "52" : "83515734.34",
+    "55" : "83515734.34"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "88500.72",
+  "participants" : [ {
+    "userId" : 9,
+    "value" : "329.831"
+  }, {
+    "userId" : 19,
+    "value" : "21983.27"
+  }, {
+    "userId" : 1,
+    "value" : "26508.74"
+  }, {
+    "userId" : 31,
+    "value" : "4970.82"
+  }, {
+    "userId" : 52,
+    "value" : "11492.97"
+  }, {
+    "userId" : 53,
+    "value" : "23215.09"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "263512877.82",
+  "participants" : [ {
+    "userId" : 54,
+    "value" : "89.3293"
+  }, {
+    "userId" : 34,
+    "value" : "7.4199"
+  }, {
+    "userId" : 10,
+    "value" : "3.2508"
+  } ],
+  "result" : {
+    "10" : "8566276.63",
+    "34" : "19552392.02",
+    "54" : "235394209.17"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "398144384.86",
+  "participants" : [ {
+    "userId" : 30,
+    "value" : "4"
+  } ],
+  "result" : {
+    "30" : "398144384.86"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "981694252.96",
+  "participants" : [ {
+    "userId" : 32,
+    "value" : null
+  } ],
+  "result" : {
+    "32" : "981694252.96"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "48.05",
+  "participants" : [ {
+    "userId" : 3,
+    "value" : null
+  }, {
+    "userId" : 28,
+    "value" : null
+  }, {
+    "userId" : 54,
+    "value" : null
+  }, {
+    "userId" : 29,
+    "value" : null
+  }, {
+    "userId" : 12,
+    "value" : null
+  }, {
+    "userId" : 24,
+    "value" : null
+  } ],
+  "result" : {
+    "3" : "8.01",
+    "12" : "8.01",
+    "24" : "8.01",
+    "28" : "8.01",
+    "29" : "8.01",
+    "54" : "8.00"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "54530.75",
+  "participants" : [ {
+    "userId" : 16,
+    "value" : "46651.59"
+  }, {
+    "userId" : 33,
+    "value" : "7879.16"
+  } ],
+  "result" : {
+    "16" : "46651.59",
+    "33" : "7879.16"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "298948926.74",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : "21.8585"
+  }, {
+    "userId" : 28,
+    "value" : "19.3586"
+  }, {
+    "userId" : 12,
+    "value" : "7.3407"
+  }, {
+    "userId" : 4,
+    "value" : "51.4422"
+  } ],
+  "result" : {
+    "4" : "153785904.79",
+    "7" : "65345751.15",
+    "12" : "21944943.87",
+    "28" : "57872326.93"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "77.88",
+  "participants" : [ {
+    "userId" : 27,
+    "value" : "0"
+  }, {
+    "userId" : 51,
+    "value" : "3"
+  }, {
+    "userId" : 7,
+    "value" : "5"
+  }, {
+    "userId" : 8,
+    "value" : "4"
+  }, {
+    "userId" : 15,
+    "value" : "3"
+  }, {
+    "userId" : 42,
+    "value" : "4"
+  } ],
+  "result" : {
+    "7" : "20.49",
+    "8" : "16.40",
+    "15" : "12.30",
+    "27" : "0.00",
+    "42" : "16.39",
+    "51" : "12.30"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "442426486.925",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : null
+  }, {
+    "userId" : 20,
+    "value" : null
+  }, {
+    "userId" : 22,
+    "value" : "24154822.82"
+  }, {
+    "userId" : 49,
+    "value" : null
+  }, {
+    "userId" : 50,
+    "value" : "58910384.71"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 35,
+    "value" : null
+  }, {
+    "userId" : 28,
+    "value" : null
+  }, {
+    "userId" : 17,
+    "value" : null
+  } ],
+  "result" : {
+    "17" : "0.01",
+    "28" : "0.01",
+    "35" : "0.00"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "80993.17",
+  "participants" : [ {
+    "userId" : 55,
+    "value" : "4327.35"
+  }, {
+    "userId" : 39,
+    "value" : "63596.37"
+  }, {
+    "userId" : 50,
+    "value" : "13069.45"
+  } ],
+  "result" : {
+    "39" : "63596.37",
+    "50" : "13069.45",
+    "55" : "4327.35"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "49.07",
+  "participants" : [ {
+    "userId" : 30,
+    "value" : "38"
+  }, {
+    "userId" : 5,
+    "value" : "54"
+  }, {
+    "userId" : 29,
+    "value" : "8"
+  } ],
+  "result" : {
+    "5" : "26.50",
+    "29" : "3.92",
+    "30" : "18.65"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "349432021.42",
+  "participants" : [ {
+    "userId" : 30,
+    "value" : "2"
+  }, {
+    "userId" : 42,
+    "value" : "0"
+  }, {
+    "userId" : 41,
+    "value" : "1"
+  }, {
+    "userId" : 27,
+    "value" : "2"
+  } ],
+  "result" : {
+    "27" : "139772808.57",
+    "30" : "139772808.57",
+    "41" : "69886404.28",
+    "42" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "7.77",
+  "participants" : [ {
+    "userId" : 51,
+    "value" : null
+  }, {
+    "userId" : 60,
+    "value" : "0.99"
+  }, {
+    "userId" : 15,
+    "value" : "1.66"
+  } ],
+  "result" : {
+    "15" : "3.37",
+    "51" : "1.71",
+    "60" : "2.69"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "411519477.75",
+  "participants" : [ {
+    "userId" : 48,
+    "value" : null
+  }, {
+    "userId" : 34,
+    "value" : null
+  }, {
+    "userId" : 20,
+    "value" : null
+  } ],
+  "result" : {
+    "20" : "137173159.25",
+    "34" : "137173159.25",
+    "48" : "137173159.25"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "70.71",
+  "participants" : [ {
+    "userId" : 43,
+    "value" : "33.21"
+  }, {
+    "userId" : 14,
+    "value" : "37.50"
+  } ],
+  "result" : {
+    "14" : "37.50",
+    "43" : "33.21"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "79.72",
+  "participants" : [ {
+    "userId" : 58,
+    "value" : "23.123"
+  }, {
+    "userId" : 17,
+    "value" : "20.3938"
+  }, {
+    "userId" : 22,
+    "value" : "3.3546"
+  }, {
+    "userId" : 59,
+    "value" : "28.4132"
+  }, {
+    "userId" : 49,
+    "value" : "20.2869"
+  }, {
+    "userId" : 32,
+    "value" : "4.4285"
+  } ],
+  "result" : {
+    "17" : "16.26",
+    "22" : "2.68",
+    "32" : "3.53",
+    "49" : "16.17",
+    "58" : "18.43",
+    "59" : "22.65"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "36.595",
+  "participants" : [ {
+    "userId" : 40,
+    "value" : "5"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "103167048.82",
+  "participants" : [ {
+    "userId" : 6,
+    "value" : "86959346.17"
+  } ],
+  "result" : {
+    "6" : "103167048.82"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.01",
+  "participants" : [ {
+    "userId" : 20,
+    "value" : null
+  }, {
+    "userId" : 31,
+    "value" : null
+  }, {
+    "userId" : 29,
+    "value" : null
+  } ],
+  "result" : {
+    "20" : "0.01",
+    "29" : "0.00",
+    "31" : "0.00"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "126648516.95",
+  "participants" : [ {
+    "userId" : 58,
+    "value" : "18081142.90"
+  }, {
+    "userId" : 54,
+    "value" : "44530947.29"
+  }, {
+    "userId" : 46,
+    "value" : "11452216.44"
+  }, {
+    "userId" : 14,
+    "value" : "52584210.32"
+  } ],
+  "result" : {
+    "14" : "52584210.32",
+    "46" : "11452216.44",
+    "54" : "44530947.29",
+    "58" : "18081142.90"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "81909.48",
+  "participants" : [ {
+    "userId" : 48,
+    "value" : "25.793"
+  }, {
+    "userId" : 57,
+    "value" : "24.9428"
+  }, {
+    "userId" : 30,
+    "value" : "4.351"
+  }, {
+    "userId" : 5,
+    "value" : "17.3028"
+  }, {
+    "userId" : 15,
+    "value" : "27.6104"
+  } ],
+  "result" : {
+    "5" : "14172.63",
+    "15" : "22615.54",
+    "30" : "3563.88",
+    "48" : "21126.91",
+    "57" : "20430.52"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "36238.22",
+  "participants" : [ {
+    "userId" : 39,
+    "value" : "3"
+  } ],
+  "result" : {
+    "39" : "36238.22"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "50.37",
+  "participants" : [ {
+    "userId" : 28,
+    "value" : "12.08"
+  }, {
+    "userId" : 60,
+    "value" : "7.68"
+  }, {
+    "userId" : 3,
+    "value" : null
+  } ],
+  "result" : {
+    "3" : "10.21",
+    "28" : "22.28",
+    "60" : "17.88"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "77.71",
+  "participants" : [ {
+    "userId" : 29,
+    "value" : null
+  }, {
+    "userId" : 10,
+    "value" : null
+  }, {
+    "userId" : 27,
+    "value" : null
+  }, {
+    "userId" : 25,
+    "value" : null
+  } ],
+  "result" : {
+    "10" : "19.43",
+    "25" : "19.43",
+    "27" : "19.43",
+    "29" : "19.42"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 30,
+    "value" : "0.02"
+  }, {
+    "userId" : 34,
+    "value" : "0.03"
+  }, {
+    "userId" : 41,
+    "value" : "0.01"
+  } ],
+  "result" : {
+    "30" : "0.02",
+    "34" : "0.03",
+    "41" : "0.01"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "52.37",
+  "participants" : [ {
+    "userId" : 34,
+    "value" : "96"
+  }, {
+    "userId" : 50,
+    "value" : "4"
+  }, {
+    "userId" : 58,
+    "value" : "0"
+  } ],
+  "result" : {
+    "34" : "50.28",
+    "50" : "2.09",
+    "58" : "0.00"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "21127826.76",
+  "participants" : [ {
+    "userId" : 12,
+    "value" : "0"
+  }, {
+    "userId" : 59,
+    "value" : "3"
+  }, {
+    "userId" : 8,
+    "value" : "3"
+  }, {
+    "userId" : 34,
+    "value" : "0"
+  }, {
+    "userId" : 46,
+    "value" : "4"
+  } ],
+  "result" : {
+    "8" : "6338348.03",
+    "12" : "0.00",
+    "34" : "0.00",
+    "46" : "8451130.70",
+    "59" : "6338348.03"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "75.93",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : null
+  } ],
+  "result" : {
+    "5" : "75.93"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "19869.52",
+  "participants" : [ {
+    "userId" : 48,
+    "value" : null
+  }, {
+    "userId" : 54,
+    "value" : null
+  }, {
+    "userId" : 33,
+    "value" : null
+  }, {
+    "userId" : 46,
+    "value" : null
+  }, {
+    "userId" : 56,
+    "value" : null
+  } ],
+  "result" : {
+    "33" : "3973.91",
+    "46" : "3973.91",
+    "48" : "3973.90",
+    "54" : "3973.90",
+    "56" : "3973.90"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "83.71",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : "83.72"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "8.06",
+  "participants" : [ {
+    "userId" : 60,
+    "value" : "23.4442"
+  }, {
+    "userId" : 43,
+    "value" : "20.394"
+  }, {
+    "userId" : 54,
+    "value" : "1.7617"
+  }, {
+    "userId" : 31,
+    "value" : "30.9295"
+  }, {
+    "userId" : 55,
+    "value" : "8.2658"
+  }, {
+    "userId" : 26,
+    "value" : "15.2048"
+  } ],
+  "result" : {
+    "26" : "1.23",
+    "31" : "2.49",
+    "43" : "1.64",
+    "54" : "0.14",
+    "55" : "0.67",
+    "60" : "1.89"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "12997.42",
+  "participants" : [ {
+    "userId" : 50,
+    "value" : "1.125"
+  }, {
+    "userId" : 32,
+    "value" : "3.19"
+  }, {
+    "userId" : 34,
+    "value" : "3"
+  }, {
+    "userId" : 26,
+    "value" : "1"
+  }, {
+    "userId" : 28,
+    "value" : "5"
+  }, {
+    "userId" : 51,
+    "value" : "5"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.03",
+  "participants" : [ {
+    "userId" : 49,
+    "value" : "0.03"
+  }, {
+    "userId" : 54,
+    "value" : "0.03"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 55,
+    "value" : null
+  }, {
+    "userId" : 6,
+    "value" : null
+  } ],
+  "result" : {
+    "6" : "0.03",
+    "55" : "0.02"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "104162817.90",
+  "participants" : [ {
+    "userId" : 13,
+    "value" : "13908923.32"
+  }, {
+    "userId" : 20,
+    "value" : "19436130.34"
+  }, {
+    "userId" : 6,
+    "value" : "13777747.91"
+  }, {
+    "userId" : 16,
+    "value" : "13676459.68"
+  }, {
+    "userId" : 21,
+    "value" : "15303806.51"
+  }, {
+    "userId" : 19,
+    "value" : "28059750.14"
+  } ],
+  "result" : {
+    "6" : "13777747.91",
+    "13" : "13908923.32",
+    "16" : "13676459.68",
+    "19" : "28059750.14",
+    "20" : "19436130.34",
+    "21" : "15303806.51"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 35,
+    "value" : "81.7185"
+  }, {
+    "userId" : 45,
+    "value" : "4.0506"
+  }, {
+    "userId" : 44,
+    "value" : "6.5233"
+  }, {
+    "userId" : 4,
+    "value" : "8.7076"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "3936.23",
+  "participants" : [ {
+    "userId" : 51,
+    "value" : "1.125"
+  }, {
+    "userId" : 52,
+    "value" : "1"
+  }, {
+    "userId" : 40,
+    "value" : "0"
+  }, {
+    "userId" : 38,
+    "value" : "0"
+  }, {
+    "userId" : 29,
+    "value" : "5"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "440895650.98",
+  "participants" : [ {
+    "userId" : 37,
+    "value" : "440895650.98"
+  }, {
+    "userId" : 46,
+    "value" : "440895650.98"
+  }, {
+    "userId" : 50,
+    "value" : "440895650.98"
+  }, {
+    "userId" : 36,
+    "value" : "440895650.98"
+  }, {
+    "userId" : 32,
+    "value" : "440895650.98"
+  }, {
+    "userId" : 34,
+    "value" : "440895650.98"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "16554977.15",
+  "participants" : [ {
+    "userId" : 48,
+    "value" : null
+  }, {
+    "userId" : 33,
+    "value" : null
+  }, {
+    "userId" : 52,
+    "value" : null
+  }, {
+    "userId" : 28,
+    "value" : null
+  } ],
+  "result" : {
+    "28" : "4138744.29",
+    "33" : "4138744.29",
+    "48" : "4138744.29",
+    "52" : "4138744.28"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 28,
+    "value" : "0.001"
+  }, {
+    "userId" : 45,
+    "value" : "0.01"
+  }, {
+    "userId" : 59,
+    "value" : "0.01"
+  }, {
+    "userId" : 4,
+    "value" : "0.03"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.00",
+  "participants" : [ {
+    "userId" : 50,
+    "value" : "37.37100001"
+  }, {
+    "userId" : 11,
+    "value" : "49.3635"
+  }, {
+    "userId" : 56,
+    "value" : "3.1189"
+  }, {
+    "userId" : 55,
+    "value" : "2.9256"
+  }, {
+    "userId" : 6,
+    "value" : "7.221"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "29.195",
+  "participants" : [ {
+    "userId" : 32,
+    "value" : "3"
+  }, {
+    "userId" : 31,
+    "value" : "0.57"
+  }, {
+    "userId" : 21,
+    "value" : "0.86"
+  }, {
+    "userId" : 3,
+    "value" : "5"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "48.64",
+  "participants" : [ {
+    "userId" : 11,
+    "value" : "2.56"
+  }, {
+    "userId" : 16,
+    "value" : null
+  }, {
+    "userId" : 59,
+    "value" : "15.72"
+  } ],
+  "result" : {
+    "11" : "12.68",
+    "16" : "10.12",
+    "59" : "25.84"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "989257182.97",
+  "participants" : [ {
+    "userId" : 29,
+    "value" : null
+  }, {
+    "userId" : 24,
+    "value" : null
+  }, {
+    "userId" : 31,
+    "value" : null
+  } ],
+  "result" : {
+    "24" : "329752394.33",
+    "29" : "329752394.32",
+    "31" : "329752394.32"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "94.50",
+  "participants" : [ {
+    "userId" : 38,
+    "value" : "1.38"
+  }, {
+    "userId" : 25,
+    "value" : "24.00"
+  }, {
+    "userId" : 36,
+    "value" : "0.24"
+  }, {
+    "userId" : 37,
+    "value" : "54.05"
+  }, {
+    "userId" : 6,
+    "value" : "14.83"
+  } ],
+  "result" : {
+    "6" : "14.83",
+    "25" : "24.00",
+    "36" : "0.24",
+    "37" : "54.05",
+    "38" : "1.38"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "2028.545",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : "2.00001"
+  }, {
+    "userId" : 34,
+    "value" : "11"
+  }, {
+    "userId" : 56,
+    "value" : "12"
+  }, {
+    "userId" : 47,
+    "value" : "42"
+  }, {
+    "userId" : 50,
+    "value" : "1"
+  }, {
+    "userId" : 7,
+    "value" : "32"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 27,
+    "value" : "1.125"
+  }, {
+    "userId" : 29,
+    "value" : "1"
+  }, {
+    "userId" : 48,
+    "value" : "4"
+  }, {
+    "userId" : 47,
+    "value" : "3"
+  }, {
+    "userId" : 55,
+    "value" : "0"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "618067601.35",
+  "participants" : [ {
+    "userId" : 16,
+    "value" : null
+  }, {
+    "userId" : 50,
+    "value" : "87343490.72"
+  }, {
+    "userId" : 56,
+    "value" : null
+  } ],
+  "result" : {
+    "16" : "176908036.88",
+    "50" : "264251527.60",
+    "56" : "176908036.87"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.04",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : null
+  }, {
+    "userId" : 45,
+    "value" : null
+  }, {
+    "userId" : 4,
+    "value" : null
+  } ],
+  "result" : {
+    "4" : "0.02",
+    "5" : "0.01",
+    "45" : "0.01"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "98582653.52",
+  "participants" : [ {
+    "userId" : 49,
+    "value" : "98582653.52"
+  } ],
+  "result" : {
+    "49" : "98582653.52"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.00",
+  "participants" : [ {
+    "userId" : 40,
+    "value" : "47.3168"
+  }, {
+    "userId" : 8,
+    "value" : "52.6832"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "32.16",
+  "participants" : [ {
+    "userId" : 18,
+    "value" : "0"
+  }, {
+    "userId" : 57,
+    "value" : "0"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "26.83",
+  "participants" : [ {
+    "userId" : 52,
+    "value" : null
+  }, {
+    "userId" : 45,
+    "value" : null
+  }, {
+    "userId" : 53,
+    "value" : "2.51"
+  }, {
+    "userId" : 16,
+    "value" : null
+  } ],
+  "result" : {
+    "16" : "6.08",
+    "45" : "6.08",
+    "52" : "6.08",
+    "53" : "8.59"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "49248.59",
+  "participants" : [ {
+    "userId" : 43,
+    "value" : null
+  }, {
+    "userId" : 50,
+    "value" : null
+  }, {
+    "userId" : 49,
+    "value" : null
+  }, {
+    "userId" : 27,
+    "value" : null
+  }, {
+    "userId" : 1,
+    "value" : null
+  } ],
+  "result" : {
+    "1" : "9849.72",
+    "27" : "9849.72",
+    "43" : "9849.72",
+    "49" : "9849.72",
+    "50" : "9849.71"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 45,
+    "value" : "0.05"
+  }, {
+    "userId" : 18,
+    "value" : "0.00"
+  }, {
+    "userId" : 46,
+    "value" : "0.00"
+  } ],
+  "result" : {
+    "18" : "0.00",
+    "45" : "0.05",
+    "46" : "0.00"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "2151977.39",
+  "participants" : [ {
+    "userId" : 48,
+    "value" : "59.04"
+  }, {
+    "userId" : 18,
+    "value" : "8.9814"
+  }, {
+    "userId" : 23,
+    "value" : "32.9786"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "535145904.29",
+  "participants" : [ {
+    "userId" : 22,
+    "value" : "4.08"
+  }, {
+    "userId" : 9,
+    "value" : "3.36"
+  }, {
+    "userId" : 10,
+    "value" : "3"
+  } ],
+  "result" : {
+    "9" : "172230865.75",
+    "10" : "153777558.70",
+    "22" : "209137479.84"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "49.84",
+  "participants" : [ {
+    "userId" : 16,
+    "value" : null
+  }, {
+    "userId" : 51,
+    "value" : "7.16"
+  }, {
+    "userId" : 14,
+    "value" : null
+  } ],
+  "result" : {
+    "14" : "14.23",
+    "16" : "14.23",
+    "51" : "21.38"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "83876.50",
+  "participants" : [ {
+    "userId" : 6,
+    "value" : null
+  }, {
+    "userId" : 12,
+    "value" : null
+  } ],
+  "result" : {
+    "6" : "41938.25",
+    "12" : "41938.25"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "673355788.82",
+  "participants" : [ {
+    "userId" : 27,
+    "value" : "60789274.871"
+  }, {
+    "userId" : 59,
+    "value" : "612566513.95"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "895074239.73",
+  "participants" : [ {
+    "userId" : 50,
+    "value" : "1"
+  }, {
+    "userId" : 31,
+    "value" : "78"
+  }, {
+    "userId" : 56,
+    "value" : "18"
+  }, {
+    "userId" : 23,
+    "value" : "4"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "12.87",
+  "participants" : [ {
+    "userId" : 51,
+    "value" : "0"
+  }, {
+    "userId" : 49,
+    "value" : "0.19"
+  }, {
+    "userId" : 9,
+    "value" : "5"
+  }, {
+    "userId" : 45,
+    "value" : "3"
+  }, {
+    "userId" : 27,
+    "value" : "4.73"
+  }, {
+    "userId" : 31,
+    "value" : "4"
+  } ],
+  "result" : {
+    "9" : "3.80",
+    "27" : "3.60",
+    "31" : "3.04",
+    "45" : "2.28",
+    "49" : "0.15",
+    "51" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "181260815.56",
+  "participants" : [ {
+    "userId" : 3,
+    "value" : "40869378.79"
+  }, {
+    "userId" : 59,
+    "value" : "21789775.79"
+  } ],
+  "result" : {
+    "3" : "100170209.28",
+    "59" : "81090606.28"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "48.46",
+  "participants" : [ {
+    "userId" : 46,
+    "value" : null
+  }, {
+    "userId" : 53,
+    "value" : null
+  }, {
+    "userId" : 17,
+    "value" : null
+  }, {
+    "userId" : 43,
+    "value" : null
+  }, {
+    "userId" : 15,
+    "value" : null
+  }, {
+    "userId" : 16,
+    "value" : null
+  } ],
+  "result" : {
+    "15" : "8.08",
+    "16" : "8.08",
+    "17" : "8.08",
+    "43" : "8.08",
+    "46" : "8.07",
+    "53" : "8.07"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "98.49",
+  "participants" : [ {
+    "userId" : 28,
+    "value" : "98.49"
+  } ],
+  "result" : {
+    "28" : "98.49"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "658243905.76",
+  "participants" : [ {
+    "userId" : 2,
+    "value" : "85.8813"
+  }, {
+    "userId" : 43,
+    "value" : "14.1187"
+  } ],
+  "result" : {
+    "2" : "565308423.44",
+    "43" : "92935482.32"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 13,
+    "value" : "4"
+  }, {
+    "userId" : 55,
+    "value" : "1.87"
+  }, {
+    "userId" : 33,
+    "value" : "1"
+  } ],
+  "result" : {
+    "13" : "0.03",
+    "33" : "0.01",
+    "55" : "0.02"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.04",
+  "participants" : [ {
+    "userId" : 34,
+    "value" : "0.04"
+  }, {
+    "userId" : 8,
+    "value" : "0.04"
+  }, {
+    "userId" : 60,
+    "value" : "0.04"
+  }, {
+    "userId" : 35,
+    "value" : "0.04"
+  }, {
+    "userId" : 59,
+    "value" : "0.04"
+  }, {
+    "userId" : 2,
+    "value" : "0.04"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "75051.74",
+  "participants" : [ {
+    "userId" : 22,
+    "value" : null
+  }, {
+    "userId" : 32,
+    "value" : null
+  }, {
+    "userId" : 17,
+    "value" : null
+  } ],
+  "result" : {
+    "17" : "25017.25",
+    "22" : "25017.25",
+    "32" : "25017.24"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "45092.23",
+  "participants" : [ {
+    "userId" : 40,
+    "value" : "714.97"
+  }, {
+    "userId" : 35,
+    "value" : "12538.64"
+  }, {
+    "userId" : 7,
+    "value" : "26433.23"
+  }, {
+    "userId" : 32,
+    "value" : "2994.74"
+  }, {
+    "userId" : 60,
+    "value" : "2410.65"
+  } ],
+  "result" : {
+    "7" : "26433.23",
+    "32" : "2994.74",
+    "35" : "12538.64",
+    "40" : "714.97",
+    "60" : "2410.65"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "69.99",
+  "participants" : [ {
+    "userId" : 40,
+    "value" : "36.4234"
+  }, {
+    "userId" : 9,
+    "value" : "41.709"
+  }, {
+    "userId" : 1,
+    "value" : "22.8676"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "243409554.50",
+  "participants" : [ {
+    "userId" : 56,
+    "value" : "3"
+  }, {
+    "userId" : 58,
+    "value" : "2"
+  }, {
+    "userId" : 42,
+    "value" : "0"
+  }, {
+    "userId" : 12,
+    "value" : "3"
+  } ],
+  "result" : {
+    "12" : "91278582.94",
+    "42" : "0.00",
+    "56" : "91278582.94",
+    "58" : "60852388.62"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "245375704.79",
+  "participants" : [ {
+    "userId" : 58,
+    "value" : "37999487.35"
+  }, {
+    "userId" : 31,
+    "value" : null
+  }, {
+    "userId" : 45,
+    "value" : null
+  }, {
+    "userId" : 15,
+    "value" : "55803158.14"
+  } ],
+  "result" : {
+    "15" : "93696422.97",
+    "31" : "37893264.83",
+    "45" : "37893264.82",
+    "58" : "75892752.17"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "285146560.48",
+  "participants" : [ {
+    "userId" : 48,
+    "value" : null
+  }, {
+    "userId" : 42,
+    "value" : null
+  }, {
+    "userId" : 56,
+    "value" : null
+  }, {
+    "userId" : 6,
+    "value" : null
+  }, {
+    "userId" : 40,
+    "value" : null
+  } ],
+  "result" : {
+    "6" : "57029312.10",
+    "40" : "57029312.10",
+    "42" : "57029312.10",
+    "48" : "57029312.09",
+    "56" : "57029312.09"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "23.79",
+  "participants" : [ {
+    "userId" : 55,
+    "value" : "10.171"
+  }, {
+    "userId" : 34,
+    "value" : "2.92"
+  }, {
+    "userId" : 40,
+    "value" : "9.74"
+  }, {
+    "userId" : 48,
+    "value" : "0.96"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.01",
+  "participants" : [ {
+    "userId" : 3,
+    "value" : "29.3158"
+  }, {
+    "userId" : 21,
+    "value" : "70.6842"
+  } ],
+  "result" : {
+    "3" : "0.00",
+    "21" : "0.01"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "47895.71",
+  "participants" : [ {
+    "userId" : 59,
+    "value" : "0"
+  }, {
+    "userId" : 34,
+    "value" : "0"
+  }, {
+    "userId" : 14,
+    "value" : "4"
+  }, {
+    "userId" : 49,
+    "value" : "4"
+  }, {
+    "userId" : 15,
+    "value" : "1"
+  }, {
+    "userId" : 27,
+    "value" : "5"
+  } ],
+  "result" : {
+    "14" : "13684.49",
+    "15" : "3421.12",
+    "27" : "17105.61",
+    "34" : "0.00",
+    "49" : "13684.49",
+    "59" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "795379703.14",
+  "participants" : [ {
+    "userId" : 2,
+    "value" : "110114051.84"
+  }, {
+    "userId" : 57,
+    "value" : "20847419.31"
+  }, {
+    "userId" : 7,
+    "value" : null
+  }, {
+    "userId" : 5,
+    "value" : "74067188.55"
+  }, {
+    "userId" : 19,
+    "value" : null
+  }, {
+    "userId" : 30,
+    "value" : null
+  } ],
+  "result" : {
+    "2" : "208505892.42",
+    "5" : "172459029.13",
+    "7" : "98391840.57",
+    "19" : "98391840.57",
+    "30" : "98391840.57",
+    "57" : "119239259.88"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 9,
+    "value" : null
+  }, {
+    "userId" : 32,
+    "value" : null
+  }, {
+    "userId" : 57,
+    "value" : null
+  }, {
+    "userId" : 10,
+    "value" : null
+  }, {
+    "userId" : 13,
+    "value" : null
+  } ],
+  "result" : {
+    "9" : "0.01",
+    "10" : "0.01",
+    "13" : "0.00",
+    "32" : "0.00",
+    "57" : "0.00"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "83.14",
+  "participants" : [ {
+    "userId" : 52,
+    "value" : "6.84"
+  }, {
+    "userId" : 20,
+    "value" : "1.24"
+  }, {
+    "userId" : 33,
+    "value" : "40.05"
+  }, {
+    "userId" : 60,
+    "value" : "9.62"
+  }, {
+    "userId" : 46,
+    "value" : "22.44"
+  }, {
+    "userId" : 6,
+    "value" : "2.96"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "928572491.00",
+  "participants" : [ {
+    "userId" : 36,
+    "value" : "37.00001"
+  }, {
+    "userId" : 15,
+    "value" : "6"
+  }, {
+    "userId" : 13,
+    "value" : "1"
+  }, {
+    "userId" : 56,
+    "value" : "23"
+  }, {
+    "userId" : 30,
+    "value" : "33"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "1449.92",
+  "participants" : [ {
+    "userId" : 54,
+    "value" : "1.125"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "75.48",
+  "participants" : [ {
+    "userId" : 58,
+    "value" : null
+  } ],
+  "result" : {
+    "58" : "75.48"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "91.66",
+  "participants" : [ {
+    "userId" : 53,
+    "value" : null
+  }, {
+    "userId" : 46,
+    "value" : null
+  }, {
+    "userId" : 6,
+    "value" : null
+  }, {
+    "userId" : 50,
+    "value" : null
+  }, {
+    "userId" : 56,
+    "value" : null
+  } ],
+  "result" : {
+    "6" : "18.34",
+    "46" : "18.33",
+    "50" : "18.33",
+    "53" : "18.33",
+    "56" : "18.33"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "83673.87",
+  "participants" : [ {
+    "userId" : 29,
+    "value" : "2993.691"
+  }, {
+    "userId" : 28,
+    "value" : "2002.34"
+  }, {
+    "userId" : 37,
+    "value" : "15910.53"
+  }, {
+    "userId" : 4,
+    "value" : "62767.31"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "66.79",
+  "participants" : [ {
+    "userId" : 55,
+    "value" : "50.5794"
+  }, {
+    "userId" : 12,
+    "value" : "6.7856"
+  }, {
+    "userId" : 20,
+    "value" : "8.0002"
+  }, {
+    "userId" : 9,
+    "value" : "4.0947"
+  }, {
+    "userId" : 41,
+    "value" : "31.5401"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "52.43",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : "1"
+  }, {
+    "userId" : 25,
+    "value" : "0"
+  }, {
+    "userId" : 28,
+    "value" : "1"
+  }, {
+    "userId" : 26,
+    "value" : "0"
+  }, {
+    "userId" : 10,
+    "value" : "1.27"
+  } ],
+  "result" : {
+    "10" : "20.36",
+    "25" : "0.00",
+    "26" : "0.00",
+    "28" : "16.04",
+    "44" : "16.03"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.04",
+  "participants" : [ {
+    "userId" : 32,
+    "value" : null
+  } ],
+  "result" : {
+    "32" : "0.04"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 17,
+    "value" : null
+  }, {
+    "userId" : 60,
+    "value" : null
+  }, {
+    "userId" : 7,
+    "value" : null
+  }, {
+    "userId" : 6,
+    "value" : null
+  } ],
+  "result" : {
+    "6" : "0.01",
+    "7" : "0.01",
+    "17" : "0.00",
+    "60" : "0.00"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "604959300.05",
+  "participants" : [ {
+    "userId" : 60,
+    "value" : "281536373.01"
+  }, {
+    "userId" : 26,
+    "value" : "105403339.06"
+  }, {
+    "userId" : 4,
+    "value" : "218019587.99"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "247095244.45",
+  "participants" : [ {
+    "userId" : 35,
+    "value" : "100"
+  } ],
+  "result" : {
+    "35" : "247095244.45"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.03",
+  "participants" : [ {
+    "userId" : 18,
+    "value" : "1"
+  }, {
+    "userId" : 52,
+    "value" : "1"
+  }, {
+    "userId" : 33,
+    "value" : "4"
+  }, {
+    "userId" : 38,
+    "value" : "4"
+  }, {
+    "userId" : 27,
+    "value" : "2"
+  }, {
+    "userId" : 58,
+    "value" : "4.73"
+  } ],
+  "result" : {
+    "18" : "0.00",
+    "27" : "0.00",
+    "33" : "0.01",
+    "38" : "0.01",
+    "52" : "0.00",
+    "58" : "0.01"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "2.40",
+  "participants" : [ {
+    "userId" : 56,
+    "value" : "2.40"
+  }, {
+    "userId" : 55,
+    "value" : "2.40"
+  }, {
+    "userId" : 42,
+    "value" : "2.40"
+  }, {
+    "userId" : 27,
+    "value" : "2.40"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "358666022.36",
+  "participants" : [ {
+    "userId" : 59,
+    "value" : null
+  }, {
+    "userId" : 10,
+    "value" : null
+  }, {
+    "userId" : 32,
+    "value" : null
+  }, {
+    "userId" : 28,
+    "value" : null
+  }, {
+    "userId" : 50,
+    "value" : null
+  }, {
+    "userId" : 33,
+    "value" : null
+  } ],
+  "result" : {
+    "10" : "59777670.40",
+    "28" : "59777670.40",
+    "32" : "59777670.39",
+    "33" : "59777670.39",
+    "50" : "59777670.39",
+    "59" : "59777670.39"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "69095.87",
+  "participants" : [ {
+    "userId" : 32,
+    "value" : "6752.72"
+  }, {
+    "userId" : 29,
+    "value" : "62343.15"
+  } ],
+  "result" : {
+    "29" : "62343.15",
+    "32" : "6752.72"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "36.75",
+  "participants" : [ {
+    "userId" : 46,
+    "value" : "14.3159"
+  }, {
+    "userId" : 45,
+    "value" : "18.9884"
+  }, {
+    "userId" : 55,
+    "value" : "66.6957"
+  } ],
+  "result" : {
+    "45" : "6.98",
+    "46" : "5.26",
+    "55" : "24.51"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 32,
+    "value" : "3"
+  }, {
+    "userId" : 2,
+    "value" : "3.80"
+  }, {
+    "userId" : 4,
+    "value" : "3.97"
+  } ],
+  "result" : {
+    "2" : "0.01",
+    "4" : "0.01",
+    "32" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "48735.51",
+  "participants" : [ {
+    "userId" : 14,
+    "value" : "11055.66"
+  }, {
+    "userId" : 8,
+    "value" : "10435.72"
+  }, {
+    "userId" : 3,
+    "value" : null
+  } ],
+  "result" : {
+    "3" : "9081.38",
+    "8" : "19517.10",
+    "14" : "20137.03"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "6.595",
+  "participants" : [ {
+    "userId" : 18,
+    "value" : null
+  } ],
+  "result" : null
+}, {
+  "type" : "EXACT",
+  "total" : "69798.04",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : "69798.04"
+  } ],
+  "result" : {
+    "7" : "69798.04"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "85661.51",
+  "participants" : [ {
+    "userId" : 12,
+    "value" : "16"
+  }, {
+    "userId" : 49,
+    "value" : "8"
+  }, {
+    "userId" : 40,
+    "value" : "39"
+  }, {
+    "userId" : 30,
+    "value" : "37"
+  } ],
+  "result" : {
+    "12" : "13705.84",
+    "30" : "31694.76",
+    "40" : "33407.99",
+    "49" : "6852.92"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "9445.07",
+  "participants" : [ {
+    "userId" : 10,
+    "value" : "3"
+  }, {
+    "userId" : 53,
+    "value" : "0"
+  }, {
+    "userId" : 31,
+    "value" : "0.02"
+  } ],
+  "result" : {
+    "10" : "9382.52",
+    "31" : "62.55",
+    "53" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "436909772.19",
+  "participants" : [ {
+    "userId" : 12,
+    "value" : null
+  }, {
+    "userId" : 40,
+    "value" : null
+  }, {
+    "userId" : 17,
+    "value" : "53024897.06"
+  }, {
+    "userId" : 27,
+    "value" : "67964486.70"
+  } ],
+  "result" : {
+    "12" : "78980097.11",
+    "17" : "132004994.17",
+    "27" : "146944583.81",
+    "40" : "78980097.10"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 39,
+    "value" : null
+  }, {
+    "userId" : 57,
+    "value" : null
+  }, {
+    "userId" : 5,
+    "value" : null
+  }, {
+    "userId" : 20,
+    "value" : null
+  }, {
+    "userId" : 38,
+    "value" : null
+  } ],
+  "result" : {
+    "5" : "0.01",
+    "20" : "0.01",
+    "38" : "0.01",
+    "39" : "0.01",
+    "57" : "0.01"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "79152.22",
+  "participants" : [ {
+    "userId" : 6,
+    "value" : "40249.73"
+  }, {
+    "userId" : 18,
+    "value" : "14558.25"
+  }, {
+    "userId" : 26,
+    "value" : "24344.24"
+  } ],
+  "result" : {
+    "6" : "40249.73",
+    "18" : "14558.25",
+    "26" : "24344.24"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 2,
+    "value" : "49.00001"
+  }, {
+    "userId" : 15,
+    "value" : "51"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "198277762.35",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : "4"
+  } ],
+  "result" : {
+    "44" : "198277762.35"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "20324.99",
+  "participants" : [ {
+    "userId" : 9,
+    "value" : null
+  }, {
+    "userId" : 13,
+    "value" : "3138.17"
+  }, {
+    "userId" : 4,
+    "value" : "2638.93"
+  }, {
+    "userId" : 58,
+    "value" : null
+  } ],
+  "result" : {
+    "4" : "6275.91",
+    "9" : "3636.97",
+    "13" : "6775.14",
+    "58" : "3636.97"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "56.37",
+  "participants" : [ {
+    "userId" : 4,
+    "value" : null
+  }, {
+    "userId" : 13,
+    "value" : null
+  }, {
+    "userId" : 44,
+    "value" : null
+  }, {
+    "userId" : 27,
+    "value" : null
+  } ],
+  "result" : {
+    "4" : "14.10",
+    "13" : "14.09",
+    "27" : "14.09",
+    "44" : "14.09"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "985834049.81",
+  "participants" : [ {
+    "userId" : 54,
+    "value" : "70551303.66"
+  }, {
+    "userId" : 19,
+    "value" : "52482407.84"
+  }, {
+    "userId" : 38,
+    "value" : "149570037.29"
+  }, {
+    "userId" : 8,
+    "value" : "501642095.51"
+  }, {
+    "userId" : 52,
+    "value" : "211588205.51"
+  } ],
+  "result" : {
+    "8" : "501642095.51",
+    "19" : "52482407.84",
+    "38" : "149570037.29",
+    "52" : "211588205.51",
+    "54" : "70551303.66"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "129356960.50",
+  "participants" : [ {
+    "userId" : 31,
+    "value" : "38"
+  }, {
+    "userId" : 58,
+    "value" : "62"
+  } ],
+  "result" : {
+    "31" : "49155644.99",
+    "58" : "80201315.51"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 42,
+    "value" : "0"
+  }, {
+    "userId" : 4,
+    "value" : "4"
+  } ],
+  "result" : {
+    "4" : "0.07",
+    "42" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "85.99",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : "11.38"
+  }, {
+    "userId" : 21,
+    "value" : "5.03"
+  }, {
+    "userId" : 2,
+    "value" : null
+  }, {
+    "userId" : 46,
+    "value" : "17.35"
+  } ],
+  "result" : {
+    "2" : "13.06",
+    "5" : "24.44",
+    "21" : "18.09",
+    "46" : "30.40"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "62.64",
+  "participants" : [ {
+    "userId" : 6,
+    "value" : null
+  } ],
+  "result" : {
+    "6" : "62.64"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "425708797.53",
+  "participants" : [ {
+    "userId" : 34,
+    "value" : "70352490.23"
+  }, {
+    "userId" : 1,
+    "value" : "9317078.77"
+  }, {
+    "userId" : 57,
+    "value" : "281288789.92"
+  }, {
+    "userId" : 55,
+    "value" : "64750438.61"
+  } ],
+  "result" : {
+    "1" : "9317078.77",
+    "34" : "70352490.23",
+    "55" : "64750438.61",
+    "57" : "281288789.92"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "36853.56",
+  "participants" : [ {
+    "userId" : 43,
+    "value" : "10"
+  }, {
+    "userId" : 6,
+    "value" : "6"
+  }, {
+    "userId" : 58,
+    "value" : "15"
+  }, {
+    "userId" : 45,
+    "value" : "23"
+  }, {
+    "userId" : 46,
+    "value" : "46"
+  } ],
+  "result" : {
+    "6" : "2211.21",
+    "43" : "3685.36",
+    "45" : "8476.32",
+    "46" : "16952.64",
+    "58" : "5528.03"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.46",
+  "participants" : [ {
+    "userId" : 20,
+    "value" : "1.125"
+  }, {
+    "userId" : 43,
+    "value" : "3"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 33,
+    "value" : "0.02"
+  }, {
+    "userId" : 36,
+    "value" : null
+  } ],
+  "result" : {
+    "33" : "0.05",
+    "36" : "0.02"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.03",
+  "participants" : [ {
+    "userId" : 10,
+    "value" : null
+  }, {
+    "userId" : 2,
+    "value" : null
+  } ],
+  "result" : {
+    "2" : "0.02",
+    "10" : "0.01"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "66.76",
+  "participants" : [ {
+    "userId" : 16,
+    "value" : "66.76"
+  } ],
+  "result" : {
+    "16" : "66.76"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.00",
+  "participants" : [ {
+    "userId" : 2,
+    "value" : "2.69"
+  }, {
+    "userId" : 60,
+    "value" : "97.31"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "165161087.91",
+  "participants" : [ {
+    "userId" : 36,
+    "value" : "1.125"
+  }, {
+    "userId" : 4,
+    "value" : "3.97"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.04",
+  "participants" : [ {
+    "userId" : 58,
+    "value" : null
+  }, {
+    "userId" : 20,
+    "value" : "0.01"
+  }, {
+    "userId" : 55,
+    "value" : null
+  }, {
+    "userId" : 38,
+    "value" : "0.00"
+  }, {
+    "userId" : 25,
+    "value" : null
+  }, {
+    "userId" : 18,
+    "value" : "0.00"
+  } ],
+  "result" : {
+    "18" : "0.01",
+    "20" : "0.02",
+    "25" : "0.01",
+    "38" : "0.00",
+    "55" : "0.00",
+    "58" : "0.00"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 25,
+    "value" : null
+  }, {
+    "userId" : 8,
+    "value" : null
+  }, {
+    "userId" : 14,
+    "value" : null
+  }, {
+    "userId" : 33,
+    "value" : null
+  } ],
+  "result" : {
+    "8" : "0.02",
+    "14" : "0.02",
+    "25" : "0.02",
+    "33" : "0.01"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "168408952.48",
+  "participants" : [ {
+    "userId" : 19,
+    "value" : "47486040.63"
+  }, {
+    "userId" : 48,
+    "value" : "39430173.33"
+  }, {
+    "userId" : 39,
+    "value" : "81492738.52"
+  } ],
+  "result" : {
+    "19" : "47486040.63",
+    "39" : "81492738.52",
+    "48" : "39430173.33"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.00",
+  "participants" : [ {
+    "userId" : 29,
+    "value" : "101"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "68.52",
+  "participants" : [ {
+    "userId" : 45,
+    "value" : "4"
+  } ],
+  "result" : {
+    "45" : "68.52"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "10.34",
+  "participants" : [ {
+    "userId" : 2,
+    "value" : null
+  }, {
+    "userId" : 54,
+    "value" : "0.70"
+  }, {
+    "userId" : 53,
+    "value" : null
+  } ],
+  "result" : {
+    "2" : "3.22",
+    "53" : "3.21",
+    "54" : "3.91"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "37.63",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : null
+  }, {
+    "userId" : 27,
+    "value" : null
+  }, {
+    "userId" : 54,
+    "value" : null
+  }, {
+    "userId" : 50,
+    "value" : null
+  }, {
+    "userId" : 22,
+    "value" : null
+  }, {
+    "userId" : 52,
+    "value" : null
+  } ],
+  "result" : {
+    "22" : "6.28",
+    "27" : "6.27",
+    "44" : "6.27",
+    "50" : "6.27",
+    "52" : "6.27",
+    "54" : "6.27"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 8,
+    "value" : "0.01"
+  }, {
+    "userId" : 40,
+    "value" : "0.03"
+  }, {
+    "userId" : 6,
+    "value" : "0.01"
+  }, {
+    "userId" : 11,
+    "value" : "0.02"
+  } ],
+  "result" : {
+    "6" : "0.01",
+    "8" : "0.01",
+    "11" : "0.02",
+    "40" : "0.03"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "3.63",
+  "participants" : [ {
+    "userId" : 17,
+    "value" : "1.5989"
+  }, {
+    "userId" : 57,
+    "value" : "8.7664"
+  }, {
+    "userId" : 56,
+    "value" : "26.4087"
+  }, {
+    "userId" : 29,
+    "value" : "57.2724"
+  }, {
+    "userId" : 15,
+    "value" : "5.3234"
+  }, {
+    "userId" : 22,
+    "value" : "0.6302"
+  } ],
+  "result" : {
+    "15" : "0.19",
+    "17" : "0.06",
+    "22" : "0.02",
+    "29" : "2.08",
+    "56" : "0.96",
+    "57" : "0.32"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 20,
+    "value" : "0"
+  }, {
+    "userId" : 52,
+    "value" : "0"
+  }, {
+    "userId" : 35,
+    "value" : "0"
+  }, {
+    "userId" : 33,
+    "value" : "0"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : "0.02"
+  }, {
+    "userId" : 51,
+    "value" : null
+  }, {
+    "userId" : 9,
+    "value" : "0.02"
+  } ],
+  "result" : {
+    "5" : "0.03",
+    "9" : "0.03",
+    "51" : "0.00"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "30.11",
+  "participants" : [ {
+    "userId" : 34,
+    "value" : null
+  }, {
+    "userId" : 8,
+    "value" : null
+  }, {
+    "userId" : 16,
+    "value" : null
+  } ],
+  "result" : {
+    "8" : "10.04",
+    "16" : "10.04",
+    "34" : "10.03"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "165720443.63",
+  "participants" : [ {
+    "userId" : 41,
+    "value" : "165720443.63"
+  } ],
+  "result" : {
+    "41" : "165720443.63"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 58,
+    "value" : "10"
+  }, {
+    "userId" : 2,
+    "value" : "22"
+  }, {
+    "userId" : 24,
+    "value" : "25"
+  }, {
+    "userId" : 18,
+    "value" : "23"
+  }, {
+    "userId" : 9,
+    "value" : "20"
+  } ],
+  "result" : {
+    "2" : "0.01",
+    "9" : "0.01",
+    "18" : "0.02",
+    "24" : "0.02",
+    "58" : "0.01"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.01",
+  "participants" : [ {
+    "userId" : 22,
+    "value" : "4"
+  }, {
+    "userId" : 47,
+    "value" : "4"
+  }, {
+    "userId" : 30,
+    "value" : "1.80"
+  }, {
+    "userId" : 45,
+    "value" : "0"
+  }, {
+    "userId" : 48,
+    "value" : "3"
+  } ],
+  "result" : {
+    "22" : "0.01",
+    "30" : "0.00",
+    "45" : "0.00",
+    "47" : "0.00",
+    "48" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "506418226.56",
+  "participants" : [ {
+    "userId" : 14,
+    "value" : "506418226.56"
+  } ],
+  "result" : {
+    "14" : "506418226.56"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "80432.27",
+  "participants" : [ {
+    "userId" : 6,
+    "value" : null
+  }, {
+    "userId" : 38,
+    "value" : null
+  }, {
+    "userId" : 21,
+    "value" : null
+  }, {
+    "userId" : 48,
+    "value" : null
+  } ],
+  "result" : {
+    "6" : "20108.07",
+    "21" : "20108.07",
+    "38" : "20108.07",
+    "48" : "20108.06"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "70.97",
+  "participants" : [ {
+    "userId" : 6,
+    "value" : "27.87"
+  }, {
+    "userId" : 35,
+    "value" : "43.10"
+  } ],
+  "result" : {
+    "6" : "27.87",
+    "35" : "43.10"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "810304739.54",
+  "participants" : [ {
+    "userId" : 3,
+    "value" : "100"
+  } ],
+  "result" : {
+    "3" : "810304739.54"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "91156.16",
+  "participants" : [ {
+    "userId" : 21,
+    "value" : "0"
+  }, {
+    "userId" : 13,
+    "value" : "0"
+  }, {
+    "userId" : 40,
+    "value" : "0"
+  }, {
+    "userId" : 4,
+    "value" : "0"
+  }, {
+    "userId" : 29,
+    "value" : "0"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "98.63",
+  "participants" : [ {
+    "userId" : 57,
+    "value" : null
+  }, {
+    "userId" : 39,
+    "value" : null
+  }, {
+    "userId" : 34,
+    "value" : "10.92"
+  } ],
+  "result" : {
+    "34" : "40.16",
+    "39" : "29.24",
+    "57" : "29.23"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "932889388.08",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : null
+  }, {
+    "userId" : 43,
+    "value" : null
+  }, {
+    "userId" : 24,
+    "value" : null
+  }, {
+    "userId" : 20,
+    "value" : null
+  }, {
+    "userId" : 30,
+    "value" : null
+  } ],
+  "result" : {
+    "7" : "186577877.62",
+    "20" : "186577877.62",
+    "24" : "186577877.62",
+    "30" : "186577877.61",
+    "43" : "186577877.61"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "540565493.78",
+  "participants" : [ {
+    "userId" : 15,
+    "value" : "19540360.46"
+  }, {
+    "userId" : 44,
+    "value" : "56224782.36"
+  }, {
+    "userId" : 28,
+    "value" : "37350589.05"
+  }, {
+    "userId" : 21,
+    "value" : "96462189.59"
+  }, {
+    "userId" : 43,
+    "value" : "247154347.87"
+  }, {
+    "userId" : 48,
+    "value" : "83833224.45"
+  } ],
+  "result" : {
+    "15" : "19540360.46",
+    "21" : "96462189.59",
+    "28" : "37350589.05",
+    "43" : "247154347.87",
+    "44" : "56224782.36",
+    "48" : "83833224.45"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "276672210.59",
+  "participants" : [ {
+    "userId" : 8,
+    "value" : "83"
+  }, {
+    "userId" : 58,
+    "value" : "18"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "558527143.04",
+  "participants" : [ {
+    "userId" : 2,
+    "value" : "5"
+  }, {
+    "userId" : 49,
+    "value" : "5"
+  } ],
+  "result" : {
+    "2" : "279263571.52",
+    "49" : "279263571.52"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "2788.06",
+  "participants" : [ {
+    "userId" : 11,
+    "value" : null
+  }, {
+    "userId" : 4,
+    "value" : null
+  }, {
+    "userId" : 12,
+    "value" : null
+  }, {
+    "userId" : 13,
+    "value" : "446.15"
+  }, {
+    "userId" : 5,
+    "value" : "445.47"
+  }, {
+    "userId" : 45,
+    "value" : "235.18"
+  } ],
+  "result" : {
+    "4" : "276.88",
+    "5" : "722.35",
+    "11" : "276.88",
+    "12" : "276.88",
+    "13" : "723.02",
+    "45" : "512.05"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "34.46",
+  "participants" : [ {
+    "userId" : 20,
+    "value" : null
+  }, {
+    "userId" : 39,
+    "value" : null
+  }, {
+    "userId" : 14,
+    "value" : null
+  }, {
+    "userId" : 49,
+    "value" : null
+  }, {
+    "userId" : 56,
+    "value" : null
+  } ],
+  "result" : {
+    "14" : "6.90",
+    "20" : "6.89",
+    "39" : "6.89",
+    "49" : "6.89",
+    "56" : "6.89"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "97.81",
+  "participants" : [ {
+    "userId" : 30,
+    "value" : "97.81"
+  } ],
+  "result" : {
+    "30" : "97.81"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "32.93",
+  "participants" : [ {
+    "userId" : 16,
+    "value" : "101"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 54,
+    "value" : "1.125"
+  }, {
+    "userId" : 42,
+    "value" : "5"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "43641.56",
+  "participants" : [ {
+    "userId" : 55,
+    "value" : "43641.56"
+  }, {
+    "userId" : 38,
+    "value" : "43641.56"
+  }, {
+    "userId" : 43,
+    "value" : "43641.56"
+  }, {
+    "userId" : 33,
+    "value" : "43641.56"
+  }, {
+    "userId" : 17,
+    "value" : "43641.56"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 21,
+    "value" : null
+  }, {
+    "userId" : 16,
+    "value" : null
+  }, {
+    "userId" : 10,
+    "value" : null
+  }, {
+    "userId" : 29,
+    "value" : null
+  }, {
+    "userId" : 39,
+    "value" : null
+  } ],
+  "result" : {
+    "10" : "0.02",
+    "16" : "0.01",
+    "21" : "0.01",
+    "29" : "0.01",
+    "39" : "0.01"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "85.90",
+  "participants" : [ {
+    "userId" : 47,
+    "value" : "85.90"
+  } ],
+  "result" : {
+    "47" : "85.90"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "54.02",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : "7.5313"
+  }, {
+    "userId" : 21,
+    "value" : "13.3718"
+  }, {
+    "userId" : 39,
+    "value" : "25.4648"
+  }, {
+    "userId" : 51,
+    "value" : "25.2141"
+  }, {
+    "userId" : 5,
+    "value" : "28.418"
+  } ],
+  "result" : {
+    "5" : "15.35",
+    "21" : "7.22",
+    "39" : "13.76",
+    "44" : "4.07",
+    "51" : "13.62"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "417942105.46",
+  "participants" : [ {
+    "userId" : 20,
+    "value" : "3"
+  }, {
+    "userId" : 5,
+    "value" : "1.59"
+  } ],
+  "result" : {
+    "5" : "144777330.65",
+    "20" : "273164774.81"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "17.93",
+  "participants" : [ {
+    "userId" : 54,
+    "value" : null
+  }, {
+    "userId" : 42,
+    "value" : "5.31"
+  } ],
+  "result" : {
+    "42" : "11.62",
+    "54" : "6.31"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "56.98",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : null
+  }, {
+    "userId" : 53,
+    "value" : null
+  }, {
+    "userId" : 5,
+    "value" : null
+  }, {
+    "userId" : 57,
+    "value" : null
+  }, {
+    "userId" : 22,
+    "value" : null
+  }, {
+    "userId" : 48,
+    "value" : null
+  } ],
+  "result" : {
+    "5" : "9.50",
+    "22" : "9.50",
+    "44" : "9.50",
+    "48" : "9.50",
+    "53" : "9.49",
+    "57" : "9.49"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "2674.54",
+  "participants" : [ {
+    "userId" : 56,
+    "value" : "981.86"
+  }, {
+    "userId" : 53,
+    "value" : "543.36"
+  }, {
+    "userId" : 5,
+    "value" : "795.20"
+  }, {
+    "userId" : 35,
+    "value" : "354.12"
+  } ],
+  "result" : {
+    "5" : "795.20",
+    "35" : "354.12",
+    "53" : "543.36",
+    "56" : "981.86"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "88.55",
+  "participants" : [ {
+    "userId" : 51,
+    "value" : "93"
+  }, {
+    "userId" : 21,
+    "value" : "7"
+  } ],
+  "result" : {
+    "21" : "6.20",
+    "51" : "82.35"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "716592121.48",
+  "participants" : [ {
+    "userId" : 39,
+    "value" : "1"
+  }, {
+    "userId" : 17,
+    "value" : "3"
+  }, {
+    "userId" : 32,
+    "value" : "2"
+  } ],
+  "result" : {
+    "17" : "358296060.74",
+    "32" : "238864040.49",
+    "39" : "119432020.25"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "92603.27",
+  "participants" : [ {
+    "userId" : 52,
+    "value" : "13784.77"
+  }, {
+    "userId" : 1,
+    "value" : null
+  }, {
+    "userId" : 27,
+    "value" : "3715.17"
+  }, {
+    "userId" : 4,
+    "value" : "7867.33"
+  }, {
+    "userId" : 11,
+    "value" : null
+  } ],
+  "result" : {
+    "1" : "13447.20",
+    "4" : "21314.53",
+    "11" : "13447.20",
+    "27" : "17162.37",
+    "52" : "27231.97"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "77.20",
+  "participants" : [ {
+    "userId" : 49,
+    "value" : null
+  }, {
+    "userId" : 29,
+    "value" : null
+  } ],
+  "result" : {
+    "29" : "38.60",
+    "49" : "38.60"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "58.08",
+  "participants" : [ {
+    "userId" : 48,
+    "value" : "58.08"
+  } ],
+  "result" : {
+    "48" : "58.08"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "26.44",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : "24"
+  }, {
+    "userId" : 55,
+    "value" : "45"
+  }, {
+    "userId" : 57,
+    "value" : "32"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "589435386.94",
+  "participants" : [ {
+    "userId" : 36,
+    "value" : "4"
+  } ],
+  "result" : {
+    "36" : "589435386.94"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "33.77",
+  "participants" : [ {
+    "userId" : 46,
+    "value" : "4.33"
+  }, {
+    "userId" : 51,
+    "value" : null
+  }, {
+    "userId" : 50,
+    "value" : "4.15"
+  }, {
+    "userId" : 52,
+    "value" : "4.12"
+  }, {
+    "userId" : 45,
+    "value" : null
+  }, {
+    "userId" : 26,
+    "value" : "3.92"
+  } ],
+  "result" : {
+    "26" : "6.80",
+    "45" : "2.88",
+    "46" : "7.21",
+    "50" : "7.02",
+    "51" : "2.87",
+    "52" : "6.99"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "2.61",
+  "participants" : [ {
+    "userId" : 49,
+    "value" : null
+  }, {
+    "userId" : 10,
+    "value" : null
+  } ],
+  "result" : {
+    "10" : "1.31",
+    "49" : "1.30"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 38,
+    "value" : "0.051"
+  }, {
+    "userId" : 24,
+    "value" : "0.01"
+  }, {
+    "userId" : 55,
+    "value" : "0.00"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "56.87",
+  "participants" : [ {
+    "userId" : 33,
+    "value" : "3.6063"
+  }, {
+    "userId" : 50,
+    "value" : "40.8029"
+  }, {
+    "userId" : 41,
+    "value" : "17.3241"
+  }, {
+    "userId" : 13,
+    "value" : "29.9015"
+  }, {
+    "userId" : 23,
+    "value" : "8.3652"
+  } ],
+  "result" : {
+    "13" : "17.01",
+    "23" : "4.76",
+    "33" : "2.05",
+    "41" : "9.85",
+    "50" : "23.20"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.01",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : "4.50"
+  } ],
+  "result" : {
+    "5" : "0.01"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "82986.67",
+  "participants" : [ {
+    "userId" : 58,
+    "value" : "8782.94"
+  }, {
+    "userId" : 36,
+    "value" : null
+  }, {
+    "userId" : 53,
+    "value" : null
+  } ],
+  "result" : {
+    "36" : "24734.58",
+    "53" : "24734.58",
+    "58" : "33517.51"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "49.35",
+  "participants" : [ {
+    "userId" : 34,
+    "value" : null
+  }, {
+    "userId" : 14,
+    "value" : null
+  }, {
+    "userId" : 44,
+    "value" : null
+  }, {
+    "userId" : 55,
+    "value" : null
+  }, {
+    "userId" : 18,
+    "value" : null
+  }, {
+    "userId" : 59,
+    "value" : null
+  } ],
+  "result" : {
+    "14" : "8.23",
+    "18" : "8.23",
+    "34" : "8.23",
+    "44" : "8.22",
+    "55" : "8.22",
+    "59" : "8.22"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "38219.33",
+  "participants" : [ {
+    "userId" : 15,
+    "value" : "821.73"
+  }, {
+    "userId" : 36,
+    "value" : "3472.53"
+  }, {
+    "userId" : 12,
+    "value" : "10507.42"
+  }, {
+    "userId" : 16,
+    "value" : "21753.16"
+  }, {
+    "userId" : 60,
+    "value" : "681.18"
+  }, {
+    "userId" : 34,
+    "value" : "983.31"
+  } ],
+  "result" : {
+    "12" : "10507.42",
+    "15" : "821.73",
+    "16" : "21753.16",
+    "34" : "983.31",
+    "36" : "3472.53",
+    "60" : "681.18"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.01",
+  "participants" : [ {
+    "userId" : 18,
+    "value" : "31.6645"
+  }, {
+    "userId" : 19,
+    "value" : "10.0489"
+  }, {
+    "userId" : 58,
+    "value" : "46.4952"
+  }, {
+    "userId" : 30,
+    "value" : "0.1982"
+  }, {
+    "userId" : 49,
+    "value" : "12.5932"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 32,
+    "value" : "3"
+  }, {
+    "userId" : 24,
+    "value" : "1"
+  }, {
+    "userId" : 21,
+    "value" : "5"
+  }, {
+    "userId" : 8,
+    "value" : "0"
+  } ],
+  "result" : {
+    "8" : "0.00",
+    "21" : "0.04",
+    "24" : "0.01",
+    "32" : "0.02"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 9,
+    "value" : null
+  }, {
+    "userId" : 8,
+    "value" : "0.00"
+  }, {
+    "userId" : 45,
+    "value" : "0.01"
+  }, {
+    "userId" : 7,
+    "value" : "0.00"
+  }, {
+    "userId" : 32,
+    "value" : null
+  } ],
+  "result" : {
+    "7" : "0.02",
+    "8" : "0.01",
+    "9" : "0.01",
+    "32" : "0.01",
+    "45" : "0.02"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "86.23",
+  "participants" : [ {
+    "userId" : 58,
+    "value" : null
+  }, {
+    "userId" : 35,
+    "value" : null
+  }, {
+    "userId" : 29,
+    "value" : null
+  }, {
+    "userId" : 1,
+    "value" : null
+  } ],
+  "result" : {
+    "1" : "21.56",
+    "29" : "21.56",
+    "35" : "21.56",
+    "58" : "21.55"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "66137.99",
+  "participants" : [ {
+    "userId" : 24,
+    "value" : "66137.991"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "547133383.89",
+  "participants" : [ {
+    "userId" : 50,
+    "value" : "28.2528"
+  }, {
+    "userId" : 34,
+    "value" : "14.2295"
+  }, {
+    "userId" : 6,
+    "value" : "48.0106"
+  }, {
+    "userId" : 56,
+    "value" : "1.0463"
+  }, {
+    "userId" : 49,
+    "value" : "4.4644"
+  }, {
+    "userId" : 16,
+    "value" : "3.9964"
+  } ],
+  "result" : {
+    "6" : "262682020.41",
+    "16" : "21865638.55",
+    "34" : "77854344.86",
+    "49" : "24426222.79",
+    "50" : "154580500.68",
+    "56" : "5724656.60"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 34,
+    "value" : "4.58"
+  }, {
+    "userId" : 42,
+    "value" : "0"
+  }, {
+    "userId" : 22,
+    "value" : "0"
+  }, {
+    "userId" : 25,
+    "value" : "1"
+  } ],
+  "result" : {
+    "22" : "0.00",
+    "25" : "0.00",
+    "34" : "0.02",
+    "42" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "794165352.35",
+  "participants" : [ {
+    "userId" : 41,
+    "value" : null
+  }, {
+    "userId" : 34,
+    "value" : "102559775.80"
+  }, {
+    "userId" : 44,
+    "value" : "37328903.66"
+  }, {
+    "userId" : 31,
+    "value" : "33181702.51"
+  }, {
+    "userId" : 57,
+    "value" : "61494071.55"
+  } ],
+  "result" : {
+    "31" : "145101882.28",
+    "34" : "214479955.57",
+    "41" : "111920179.77",
+    "44" : "149249083.42",
+    "57" : "173414251.31"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 11,
+    "value" : null
+  }, {
+    "userId" : 59,
+    "value" : null
+  } ],
+  "result" : {
+    "11" : "0.04",
+    "59" : "0.03"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 23,
+    "value" : "0.00"
+  }, {
+    "userId" : 29,
+    "value" : "0.03"
+  }, {
+    "userId" : 24,
+    "value" : "0.00"
+  }, {
+    "userId" : 52,
+    "value" : "0.02"
+  }, {
+    "userId" : 28,
+    "value" : "0.00"
+  } ],
+  "result" : {
+    "23" : "0.00",
+    "24" : "0.00",
+    "28" : "0.00",
+    "29" : "0.03",
+    "52" : "0.02"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 41,
+    "value" : "47"
+  }, {
+    "userId" : 23,
+    "value" : "3"
+  }, {
+    "userId" : 21,
+    "value" : "15"
+  }, {
+    "userId" : 58,
+    "value" : "26"
+  }, {
+    "userId" : 48,
+    "value" : "9"
+  } ],
+  "result" : {
+    "21" : "0.00",
+    "23" : "0.00",
+    "41" : "0.01",
+    "48" : "0.00",
+    "58" : "0.01"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "69911.91",
+  "participants" : [ {
+    "userId" : 45,
+    "value" : "0"
+  }, {
+    "userId" : 48,
+    "value" : "0"
+  }, {
+    "userId" : 22,
+    "value" : "0"
+  }, {
+    "userId" : 53,
+    "value" : "0"
+  }, {
+    "userId" : 19,
+    "value" : "0"
+  }, {
+    "userId" : 47,
+    "value" : "0"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "38858.87",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : "199.85"
+  }, {
+    "userId" : 41,
+    "value" : null
+  }, {
+    "userId" : 34,
+    "value" : "4642.29"
+  }, {
+    "userId" : 25,
+    "value" : null
+  }, {
+    "userId" : 51,
+    "value" : "1084.55"
+  } ],
+  "result" : {
+    "5" : "6786.29",
+    "25" : "6586.44",
+    "34" : "11228.73",
+    "41" : "6586.43",
+    "51" : "7670.98"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "135222171.38",
+  "participants" : [ {
+    "userId" : 47,
+    "value" : null
+  }, {
+    "userId" : 28,
+    "value" : null
+  }, {
+    "userId" : 39,
+    "value" : null
+  }, {
+    "userId" : 1,
+    "value" : null
+  } ],
+  "result" : {
+    "1" : "33805542.85",
+    "28" : "33805542.85",
+    "39" : "33805542.84",
+    "47" : "33805542.84"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "69665.11",
+  "participants" : [ {
+    "userId" : 35,
+    "value" : "26446.87"
+  }, {
+    "userId" : 12,
+    "value" : "6956.39"
+  }, {
+    "userId" : 49,
+    "value" : "20983.44"
+  }, {
+    "userId" : 16,
+    "value" : "3896.92"
+  }, {
+    "userId" : 36,
+    "value" : "5043.85"
+  }, {
+    "userId" : 60,
+    "value" : "6337.64"
+  } ],
+  "result" : {
+    "12" : "6956.39",
+    "16" : "3896.92",
+    "35" : "26446.87",
+    "36" : "5043.85",
+    "49" : "20983.44",
+    "60" : "6337.64"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.04",
+  "participants" : [ {
+    "userId" : 47,
+    "value" : "33.5145"
+  }, {
+    "userId" : 60,
+    "value" : "3.0628"
+  }, {
+    "userId" : 49,
+    "value" : "46.2353"
+  }, {
+    "userId" : 41,
+    "value" : "17.1874"
+  } ],
+  "result" : {
+    "41" : "0.01",
+    "47" : "0.01",
+    "49" : "0.02",
+    "60" : "0.00"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "15.86",
+  "participants" : [ {
+    "userId" : 30,
+    "value" : "1.125"
+  }, {
+    "userId" : 53,
+    "value" : "0"
+  }, {
+    "userId" : 16,
+    "value" : "4"
+  }, {
+    "userId" : 41,
+    "value" : "5"
+  }, {
+    "userId" : 26,
+    "value" : "2"
+  }, {
+    "userId" : 50,
+    "value" : "2"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.03",
+  "participants" : [ {
+    "userId" : 35,
+    "value" : "0.00"
+  }, {
+    "userId" : 52,
+    "value" : "0.01"
+  }, {
+    "userId" : 58,
+    "value" : "0.00"
+  } ],
+  "result" : {
+    "35" : "0.01",
+    "52" : "0.02",
+    "58" : "0.00"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "46006.55",
+  "participants" : [ {
+    "userId" : 6,
+    "value" : null
+  }, {
+    "userId" : 34,
+    "value" : null
+  }, {
+    "userId" : 18,
+    "value" : null
+  }, {
+    "userId" : 47,
+    "value" : null
+  } ],
+  "result" : {
+    "6" : "11501.64",
+    "18" : "11501.64",
+    "34" : "11501.64",
+    "47" : "11501.63"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "34379.54",
+  "participants" : [ {
+    "userId" : 16,
+    "value" : "17958.66"
+  }, {
+    "userId" : 42,
+    "value" : "16420.88"
+  } ],
+  "result" : {
+    "16" : "17958.66",
+    "42" : "16420.88"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "864582357.34",
+  "participants" : [ {
+    "userId" : 56,
+    "value" : "18.3192"
+  }, {
+    "userId" : 25,
+    "value" : "82.6808"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "692956431.59",
+  "participants" : [ {
+    "userId" : 47,
+    "value" : "2"
+  }, {
+    "userId" : 14,
+    "value" : "4"
+  }, {
+    "userId" : 8,
+    "value" : "4.16"
+  }, {
+    "userId" : 49,
+    "value" : "0"
+  }, {
+    "userId" : 5,
+    "value" : "4"
+  } ],
+  "result" : {
+    "5" : "195750404.41",
+    "8" : "203580420.58",
+    "14" : "195750404.40",
+    "47" : "97875202.20",
+    "49" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : "0.01"
+  }, {
+    "userId" : 51,
+    "value" : null
+  }, {
+    "userId" : 55,
+    "value" : "0.00"
+  } ],
+  "result" : {
+    "44" : "0.03",
+    "51" : "0.01",
+    "55" : "0.01"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "35.72",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : null
+  }, {
+    "userId" : 54,
+    "value" : null
+  }, {
+    "userId" : 11,
+    "value" : null
+  }, {
+    "userId" : 51,
+    "value" : null
+  }, {
+    "userId" : 1,
+    "value" : null
+  } ],
+  "result" : {
+    "1" : "7.15",
+    "7" : "7.15",
+    "11" : "7.14",
+    "51" : "7.14",
+    "54" : "7.14"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 41,
+    "value" : "0.04"
+  }, {
+    "userId" : 1,
+    "value" : "0.00"
+  }, {
+    "userId" : 27,
+    "value" : "0.04"
+  }, {
+    "userId" : 11,
+    "value" : "0.00"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "44.41",
+  "participants" : [ {
+    "userId" : 9,
+    "value" : "27.6071"
+  }, {
+    "userId" : 51,
+    "value" : "14.7201"
+  }, {
+    "userId" : 11,
+    "value" : "27.0335"
+  }, {
+    "userId" : 7,
+    "value" : "30.6393"
+  } ],
+  "result" : {
+    "7" : "13.61",
+    "9" : "12.26",
+    "11" : "12.00",
+    "51" : "6.54"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "716367245.61",
+  "participants" : [ {
+    "userId" : 52,
+    "value" : "0"
+  }, {
+    "userId" : 41,
+    "value" : "4.95"
+  }, {
+    "userId" : 22,
+    "value" : "0"
+  }, {
+    "userId" : 24,
+    "value" : "2"
+  }, {
+    "userId" : 55,
+    "value" : "1.25"
+  } ],
+  "result" : {
+    "22" : "0.00",
+    "24" : "174723718.44",
+    "41" : "432441203.14",
+    "52" : "0.00",
+    "55" : "109202324.03"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : null
+  }, {
+    "userId" : 47,
+    "value" : "0.00"
+  }, {
+    "userId" : 21,
+    "value" : null
+  }, {
+    "userId" : 46,
+    "value" : "0.01"
+  } ],
+  "result" : {
+    "21" : "0.01",
+    "44" : "0.00",
+    "46" : "0.01",
+    "47" : "0.00"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 20,
+    "value" : null
+  }, {
+    "userId" : 28,
+    "value" : null
+  }, {
+    "userId" : 2,
+    "value" : null
+  }, {
+    "userId" : 26,
+    "value" : null
+  } ],
+  "result" : {
+    "2" : "0.02",
+    "20" : "0.02",
+    "26" : "0.02",
+    "28" : "0.01"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 33,
+    "value" : "0.00"
+  }, {
+    "userId" : 28,
+    "value" : "0.04"
+  }, {
+    "userId" : 44,
+    "value" : "0.02"
+  }, {
+    "userId" : 53,
+    "value" : "0.00"
+  } ],
+  "result" : {
+    "28" : "0.04",
+    "33" : "0.00",
+    "44" : "0.02",
+    "53" : "0.00"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "27.80",
+  "participants" : [ {
+    "userId" : 59,
+    "value" : "100"
+  } ],
+  "result" : {
+    "59" : "27.80"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "688838000.87",
+  "participants" : [ {
+    "userId" : 29,
+    "value" : "1.125"
+  }, {
+    "userId" : 12,
+    "value" : "0"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "14595658.21",
+  "participants" : [ {
+    "userId" : 49,
+    "value" : "1429673.03"
+  }, {
+    "userId" : 20,
+    "value" : null
+  }, {
+    "userId" : 56,
+    "value" : "3308992.19"
+  } ],
+  "result" : {
+    "20" : "3285664.33",
+    "49" : "4715337.36",
+    "56" : "6594656.52"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "52866.23",
+  "participants" : [ {
+    "userId" : 33,
+    "value" : null
+  }, {
+    "userId" : 35,
+    "value" : null
+  } ],
+  "result" : {
+    "33" : "26433.12",
+    "35" : "26433.11"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 42,
+    "value" : "0.01"
+  }, {
+    "userId" : 34,
+    "value" : "0.00"
+  }, {
+    "userId" : 2,
+    "value" : "0.00"
+  }, {
+    "userId" : 48,
+    "value" : "0.03"
+  }, {
+    "userId" : 11,
+    "value" : "0.01"
+  } ],
+  "result" : {
+    "2" : "0.00",
+    "11" : "0.01",
+    "34" : "0.00",
+    "42" : "0.01",
+    "48" : "0.03"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "88944.08",
+  "participants" : [ {
+    "userId" : 39,
+    "value" : "5.27200001"
+  }, {
+    "userId" : 12,
+    "value" : "42.1308"
+  }, {
+    "userId" : 27,
+    "value" : "52.5972"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "6.01",
+  "participants" : [ {
+    "userId" : 58,
+    "value" : "0"
+  }, {
+    "userId" : 35,
+    "value" : "5"
+  }, {
+    "userId" : 36,
+    "value" : "0"
+  } ],
+  "result" : {
+    "35" : "6.01",
+    "36" : "0.00",
+    "58" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 11,
+    "value" : null
+  }, {
+    "userId" : 21,
+    "value" : "0.01"
+  } ],
+  "result" : {
+    "11" : "0.01",
+    "21" : "0.01"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 52,
+    "value" : null
+  }, {
+    "userId" : 46,
+    "value" : null
+  } ],
+  "result" : {
+    "46" : "0.04",
+    "52" : "0.03"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "38591.10",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : "6914.84"
+  }, {
+    "userId" : 23,
+    "value" : "7949.06"
+  }, {
+    "userId" : 22,
+    "value" : "1015.01"
+  }, {
+    "userId" : 21,
+    "value" : "9677.86"
+  }, {
+    "userId" : 43,
+    "value" : "8468.04"
+  }, {
+    "userId" : 40,
+    "value" : "4566.29"
+  } ],
+  "result" : {
+    "5" : "6914.84",
+    "21" : "9677.86",
+    "22" : "1015.01",
+    "23" : "7949.06",
+    "40" : "4566.29",
+    "43" : "8468.04"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "2.90",
+  "participants" : [ {
+    "userId" : 35,
+    "value" : "14.998200001"
+  }, {
+    "userId" : 14,
+    "value" : "59.3783"
+  }, {
+    "userId" : 9,
+    "value" : "25.6235"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "76.385",
+  "participants" : [ {
+    "userId" : 13,
+    "value" : "4"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "480338041.30",
+  "participants" : [ {
+    "userId" : 59,
+    "value" : "240595970.96"
+  } ],
+  "result" : {
+    "59" : "480338041.30"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 29,
+    "value" : null
+  }, {
+    "userId" : 12,
+    "value" : null
+  }, {
+    "userId" : 40,
+    "value" : null
+  }, {
+    "userId" : 8,
+    "value" : null
+  } ],
+  "result" : {
+    "8" : "0.01",
+    "12" : "0.01",
+    "29" : "0.00",
+    "40" : "0.00"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "780348728.15",
+  "participants" : [ {
+    "userId" : 22,
+    "value" : "2503808.27"
+  }, {
+    "userId" : 41,
+    "value" : "94152104.52"
+  }, {
+    "userId" : 12,
+    "value" : "128714019.09"
+  }, {
+    "userId" : 19,
+    "value" : "287408290.42"
+  }, {
+    "userId" : 3,
+    "value" : "6877386.60"
+  }, {
+    "userId" : 53,
+    "value" : "260693119.26"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "35.24",
+  "participants" : [ {
+    "userId" : 4,
+    "value" : "17.3243"
+  }, {
+    "userId" : 28,
+    "value" : "24.8238"
+  }, {
+    "userId" : 22,
+    "value" : "57.8519"
+  } ],
+  "result" : {
+    "4" : "6.10",
+    "22" : "20.39",
+    "28" : "8.75"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.00",
+  "participants" : [ {
+    "userId" : 20,
+    "value" : "2"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "21179.87",
+  "participants" : [ {
+    "userId" : 37,
+    "value" : null
+  } ],
+  "result" : {
+    "37" : "21179.87"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "516658770.78",
+  "participants" : [ {
+    "userId" : 40,
+    "value" : null
+  } ],
+  "result" : {
+    "40" : "516658770.78"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.04",
+  "participants" : [ {
+    "userId" : 49,
+    "value" : "0.011"
+  }, {
+    "userId" : 44,
+    "value" : "0.01"
+  }, {
+    "userId" : 59,
+    "value" : "0.01"
+  }, {
+    "userId" : 17,
+    "value" : "0.01"
+  }, {
+    "userId" : 5,
+    "value" : "0.00"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : "82.825400001"
+  }, {
+    "userId" : 14,
+    "value" : "5.0291"
+  }, {
+    "userId" : 37,
+    "value" : "12.1455"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "92866.96",
+  "participants" : [ {
+    "userId" : 47,
+    "value" : "4"
+  }, {
+    "userId" : 20,
+    "value" : "4"
+  }, {
+    "userId" : 17,
+    "value" : "3.82"
+  } ],
+  "result" : {
+    "17" : "30012.84",
+    "20" : "31427.06",
+    "47" : "31427.06"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "88.21",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : null
+  }, {
+    "userId" : 47,
+    "value" : null
+  } ],
+  "result" : {
+    "7" : "44.11",
+    "47" : "44.10"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "96574.86",
+  "participants" : [ {
+    "userId" : 6,
+    "value" : null
+  }, {
+    "userId" : 38,
+    "value" : null
+  }, {
+    "userId" : 48,
+    "value" : null
+  }, {
+    "userId" : 30,
+    "value" : null
+  }, {
+    "userId" : 43,
+    "value" : null
+  }, {
+    "userId" : 41,
+    "value" : null
+  } ],
+  "result" : {
+    "6" : "16095.81",
+    "30" : "16095.81",
+    "38" : "16095.81",
+    "41" : "16095.81",
+    "43" : "16095.81",
+    "48" : "16095.81"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.01",
+  "participants" : [ {
+    "userId" : 28,
+    "value" : "0.00"
+  }, {
+    "userId" : 30,
+    "value" : "0.00"
+  }, {
+    "userId" : 26,
+    "value" : "0.01"
+  } ],
+  "result" : {
+    "26" : "0.01",
+    "28" : "0.00",
+    "30" : "0.00"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "81765.20",
+  "participants" : [ {
+    "userId" : 55,
+    "value" : "100"
+  } ],
+  "result" : {
+    "55" : "81765.20"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "70902.00",
+  "participants" : [ {
+    "userId" : 33,
+    "value" : "0"
+  }, {
+    "userId" : 44,
+    "value" : "0"
+  }, {
+    "userId" : 49,
+    "value" : "0"
+  }, {
+    "userId" : 51,
+    "value" : "0"
+  }, {
+    "userId" : 42,
+    "value" : "0"
+  }, {
+    "userId" : 27,
+    "value" : "0"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "35.96",
+  "participants" : [ {
+    "userId" : 15,
+    "value" : null
+  }, {
+    "userId" : 5,
+    "value" : null
+  }, {
+    "userId" : 10,
+    "value" : "3.67"
+  }, {
+    "userId" : 36,
+    "value" : null
+  }, {
+    "userId" : 48,
+    "value" : null
+  } ],
+  "result" : {
+    "5" : "6.46",
+    "10" : "10.13",
+    "15" : "6.46",
+    "36" : "6.46",
+    "48" : "6.45"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "11.00",
+  "participants" : [ {
+    "userId" : 55,
+    "value" : null
+  } ],
+  "result" : {
+    "55" : "11.00"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "999849211.35",
+  "participants" : [ {
+    "userId" : 11,
+    "value" : "999849211.35"
+  } ],
+  "result" : {
+    "11" : "999849211.35"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "99.71",
+  "participants" : [ {
+    "userId" : 47,
+    "value" : "12.919"
+  }, {
+    "userId" : 13,
+    "value" : "87.081"
+  } ],
+  "result" : {
+    "13" : "86.83",
+    "47" : "12.88"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "282569655.13",
+  "participants" : [ {
+    "userId" : 33,
+    "value" : "4"
+  }, {
+    "userId" : 58,
+    "value" : "1"
+  }, {
+    "userId" : 6,
+    "value" : "0"
+  }, {
+    "userId" : 42,
+    "value" : "3"
+  } ],
+  "result" : {
+    "6" : "0.00",
+    "33" : "141284827.57",
+    "42" : "105963620.67",
+    "58" : "35321206.89"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.03",
+  "participants" : [ {
+    "userId" : 22,
+    "value" : "0.00"
+  }, {
+    "userId" : 35,
+    "value" : null
+  }, {
+    "userId" : 23,
+    "value" : null
+  }, {
+    "userId" : 44,
+    "value" : "0.01"
+  }, {
+    "userId" : 42,
+    "value" : null
+  }, {
+    "userId" : 4,
+    "value" : "0.01"
+  } ],
+  "result" : {
+    "4" : "0.02",
+    "22" : "0.00",
+    "23" : "0.00",
+    "35" : "0.00",
+    "42" : "0.00",
+    "44" : "0.01"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "59.44",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : null
+  }, {
+    "userId" : 55,
+    "value" : null
+  } ],
+  "result" : {
+    "7" : "29.72",
+    "55" : "29.72"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "73797.88",
+  "participants" : [ {
+    "userId" : 26,
+    "value" : "25259.26"
+  }, {
+    "userId" : 10,
+    "value" : "6787.03"
+  }, {
+    "userId" : 45,
+    "value" : "22424.75"
+  }, {
+    "userId" : 39,
+    "value" : "19326.84"
+  } ],
+  "result" : {
+    "10" : "6787.03",
+    "26" : "25259.26",
+    "39" : "19326.84",
+    "45" : "22424.75"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "431753258.34",
+  "participants" : [ {
+    "userId" : 12,
+    "value" : "4"
+  }, {
+    "userId" : 58,
+    "value" : "57"
+  }, {
+    "userId" : 22,
+    "value" : "39"
+  } ],
+  "result" : {
+    "12" : "17270130.33",
+    "22" : "168383770.75",
+    "58" : "246099357.26"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 41,
+    "value" : "1.125"
+  }, {
+    "userId" : 56,
+    "value" : "3.18"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.00",
+  "participants" : [ {
+    "userId" : 33,
+    "value" : null
+  }, {
+    "userId" : 48,
+    "value" : null
+  }, {
+    "userId" : 37,
+    "value" : null
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "908362156.19",
+  "participants" : [ {
+    "userId" : 29,
+    "value" : null
+  }, {
+    "userId" : 34,
+    "value" : null
+  }, {
+    "userId" : 38,
+    "value" : null
+  }, {
+    "userId" : 58,
+    "value" : null
+  }, {
+    "userId" : 11,
+    "value" : null
+  }, {
+    "userId" : 57,
+    "value" : null
+  } ],
+  "result" : {
+    "11" : "151393692.70",
+    "29" : "151393692.70",
+    "34" : "151393692.70",
+    "38" : "151393692.70",
+    "57" : "151393692.70",
+    "58" : "151393692.69"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "63634.84",
+  "participants" : [ {
+    "userId" : 20,
+    "value" : "15536.66"
+  }, {
+    "userId" : 3,
+    "value" : "17649.61"
+  }, {
+    "userId" : 47,
+    "value" : "26868.04"
+  }, {
+    "userId" : 19,
+    "value" : "3580.53"
+  } ],
+  "result" : {
+    "3" : "17649.61",
+    "19" : "3580.53",
+    "20" : "15536.66",
+    "47" : "26868.04"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "199705082.46",
+  "participants" : [ {
+    "userId" : 56,
+    "value" : "17.2808"
+  }, {
+    "userId" : 43,
+    "value" : "6.4427"
+  }, {
+    "userId" : 19,
+    "value" : "6.1885"
+  }, {
+    "userId" : 6,
+    "value" : "8.2824"
+  }, {
+    "userId" : 27,
+    "value" : "36.9769"
+  }, {
+    "userId" : 58,
+    "value" : "24.8287"
+  } ],
+  "result" : {
+    "6" : "16540373.75",
+    "19" : "12358749.03",
+    "27" : "73844748.63",
+    "43" : "12866399.35",
+    "56" : "34510635.89",
+    "58" : "49584175.81"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "97948.50",
+  "participants" : [ {
+    "userId" : 60,
+    "value" : "4.30"
+  }, {
+    "userId" : 22,
+    "value" : "3"
+  } ],
+  "result" : {
+    "22" : "40252.81",
+    "60" : "57695.69"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "85863.14",
+  "participants" : [ {
+    "userId" : 21,
+    "value" : null
+  }, {
+    "userId" : 27,
+    "value" : null
+  }, {
+    "userId" : 39,
+    "value" : "15624.33"
+  } ],
+  "result" : {
+    "21" : "23412.94",
+    "27" : "23412.94",
+    "39" : "39037.26"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "5629.63",
+  "participants" : [ {
+    "userId" : 36,
+    "value" : null
+  }, {
+    "userId" : 9,
+    "value" : null
+  }, {
+    "userId" : 23,
+    "value" : null
+  }, {
+    "userId" : 37,
+    "value" : null
+  }, {
+    "userId" : 54,
+    "value" : null
+  }, {
+    "userId" : 28,
+    "value" : null
+  } ],
+  "result" : {
+    "9" : "938.28",
+    "23" : "938.27",
+    "28" : "938.27",
+    "36" : "938.27",
+    "37" : "938.27",
+    "54" : "938.27"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "75792.85",
+  "participants" : [ {
+    "userId" : 2,
+    "value" : "49656.48"
+  }, {
+    "userId" : 32,
+    "value" : "26136.38"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "27456.57",
+  "participants" : [ {
+    "userId" : 28,
+    "value" : "15.8465"
+  }, {
+    "userId" : 18,
+    "value" : "19.4641"
+  }, {
+    "userId" : 36,
+    "value" : "0.4001"
+  }, {
+    "userId" : 37,
+    "value" : "7.2194"
+  }, {
+    "userId" : 58,
+    "value" : "30.5819"
+  }, {
+    "userId" : 25,
+    "value" : "26.488"
+  } ],
+  "result" : {
+    "18" : "5344.17",
+    "25" : "7272.70",
+    "28" : "4350.91",
+    "36" : "109.85",
+    "37" : "1982.20",
+    "58" : "8396.74"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "209512808.21",
+  "participants" : [ {
+    "userId" : 37,
+    "value" : "0.23"
+  }, {
+    "userId" : 53,
+    "value" : "0"
+  }, {
+    "userId" : 44,
+    "value" : "0.74"
+  }, {
+    "userId" : 32,
+    "value" : "4"
+  } ],
+  "result" : {
+    "32" : "168621978.44",
+    "37" : "9695763.76",
+    "44" : "31195066.01",
+    "53" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "5.99",
+  "participants" : [ {
+    "userId" : 48,
+    "value" : "0.24"
+  }, {
+    "userId" : 39,
+    "value" : null
+  }, {
+    "userId" : 49,
+    "value" : null
+  }, {
+    "userId" : 1,
+    "value" : null
+  }, {
+    "userId" : 33,
+    "value" : "0.72"
+  } ],
+  "result" : {
+    "1" : "1.01",
+    "33" : "1.73",
+    "39" : "1.01",
+    "48" : "1.24",
+    "49" : "1.00"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "21061.03",
+  "participants" : [ {
+    "userId" : 34,
+    "value" : null
+  }, {
+    "userId" : 58,
+    "value" : null
+  }, {
+    "userId" : 53,
+    "value" : null
+  } ],
+  "result" : {
+    "34" : "7020.35",
+    "53" : "7020.34",
+    "58" : "7020.34"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "864086606.32",
+  "participants" : [ {
+    "userId" : 15,
+    "value" : "469357121.15"
+  }, {
+    "userId" : 40,
+    "value" : "249610896.69"
+  }, {
+    "userId" : 28,
+    "value" : "145118588.48"
+  } ],
+  "result" : {
+    "15" : "469357121.15",
+    "28" : "145118588.48",
+    "40" : "249610896.69"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "832377941.35",
+  "participants" : [ {
+    "userId" : 29,
+    "value" : "11.121"
+  }, {
+    "userId" : 8,
+    "value" : "10.9547"
+  }, {
+    "userId" : 32,
+    "value" : "11.5783"
+  }, {
+    "userId" : 57,
+    "value" : "1.5693"
+  }, {
+    "userId" : 7,
+    "value" : "33.7275"
+  }, {
+    "userId" : 60,
+    "value" : "31.0492"
+  } ],
+  "result" : {
+    "7" : "280740270.17",
+    "8" : "91184506.34",
+    "29" : "92568750.86",
+    "32" : "96375215.18",
+    "57" : "13062507.03",
+    "60" : "258446691.77"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 20,
+    "value" : "0"
+  }, {
+    "userId" : 16,
+    "value" : "0"
+  }, {
+    "userId" : 57,
+    "value" : "0"
+  }, {
+    "userId" : 12,
+    "value" : "0"
+  }, {
+    "userId" : 45,
+    "value" : "0"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "90543.71",
+  "participants" : [ {
+    "userId" : 6,
+    "value" : "43446.83"
+  }, {
+    "userId" : 56,
+    "value" : "24598.44"
+  } ],
+  "result" : {
+    "6" : "54696.05",
+    "56" : "35847.66"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "803694959.32",
+  "participants" : [ {
+    "userId" : 52,
+    "value" : null
+  } ],
+  "result" : {
+    "52" : "803694959.32"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "2595.82",
+  "participants" : [ {
+    "userId" : 9,
+    "value" : "428.05"
+  }, {
+    "userId" : 34,
+    "value" : "495.59"
+  }, {
+    "userId" : 52,
+    "value" : "1672.18"
+  } ],
+  "result" : {
+    "9" : "428.05",
+    "34" : "495.59",
+    "52" : "1672.18"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.01",
+  "participants" : [ {
+    "userId" : 37,
+    "value" : "35.00001"
+  }, {
+    "userId" : 29,
+    "value" : "18"
+  }, {
+    "userId" : 36,
+    "value" : "47"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "28.63",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : "1"
+  }, {
+    "userId" : 40,
+    "value" : "3"
+  }, {
+    "userId" : 27,
+    "value" : "3"
+  } ],
+  "result" : {
+    "7" : "4.09",
+    "27" : "12.27",
+    "40" : "12.27"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "35666.92",
+  "participants" : [ {
+    "userId" : 35,
+    "value" : "35666.92"
+  } ],
+  "result" : {
+    "35" : "35666.92"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "11246.385",
+  "participants" : [ {
+    "userId" : 14,
+    "value" : null
+  }, {
+    "userId" : 31,
+    "value" : null
+  }, {
+    "userId" : 51,
+    "value" : null
+  }, {
+    "userId" : 56,
+    "value" : null
+  }, {
+    "userId" : 8,
+    "value" : null
+  } ],
+  "result" : null
+}, {
+  "type" : "EXACT",
+  "total" : "51.85",
+  "participants" : [ {
+    "userId" : 29,
+    "value" : "8.92"
+  }, {
+    "userId" : 22,
+    "value" : "3.11"
+  }, {
+    "userId" : 49,
+    "value" : "15.46"
+  }, {
+    "userId" : 13,
+    "value" : "16.49"
+  }, {
+    "userId" : 46,
+    "value" : "7.87"
+  } ],
+  "result" : {
+    "13" : "16.49",
+    "22" : "3.11",
+    "29" : "8.92",
+    "46" : "7.87",
+    "49" : "15.46"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "7175.78",
+  "participants" : [ {
+    "userId" : 30,
+    "value" : "14.0789"
+  }, {
+    "userId" : 52,
+    "value" : "64.8386"
+  }, {
+    "userId" : 13,
+    "value" : "2.257"
+  }, {
+    "userId" : 28,
+    "value" : "18.8255"
+  } ],
+  "result" : {
+    "13" : "161.96",
+    "28" : "1350.88",
+    "30" : "1010.27",
+    "52" : "4652.67"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 4,
+    "value" : "1"
+  }, {
+    "userId" : 26,
+    "value" : "2.94"
+  }, {
+    "userId" : 32,
+    "value" : "1"
+  }, {
+    "userId" : 45,
+    "value" : "5"
+  }, {
+    "userId" : 55,
+    "value" : "4.17"
+  } ],
+  "result" : {
+    "4" : "0.00",
+    "26" : "0.00",
+    "32" : "0.00",
+    "45" : "0.01",
+    "55" : "0.01"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "40157945.11",
+  "participants" : [ {
+    "userId" : 38,
+    "value" : "40157945.11"
+  }, {
+    "userId" : 43,
+    "value" : "40157945.11"
+  }, {
+    "userId" : 49,
+    "value" : "40157945.11"
+  }, {
+    "userId" : 27,
+    "value" : "40157945.11"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "66255.03",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : null
+  }, {
+    "userId" : 12,
+    "value" : null
+  } ],
+  "result" : {
+    "7" : "33127.52",
+    "12" : "33127.51"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "6003.54",
+  "participants" : [ {
+    "userId" : 59,
+    "value" : "1196.19"
+  }, {
+    "userId" : 1,
+    "value" : "897.96"
+  }, {
+    "userId" : 22,
+    "value" : "801.92"
+  }, {
+    "userId" : 58,
+    "value" : "960.49"
+  }, {
+    "userId" : 47,
+    "value" : "152.15"
+  }, {
+    "userId" : 42,
+    "value" : "1994.83"
+  } ],
+  "result" : {
+    "1" : "897.96",
+    "22" : "801.92",
+    "42" : "1994.83",
+    "47" : "152.15",
+    "58" : "960.49",
+    "59" : "1196.19"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 23,
+    "value" : "11.9132"
+  }, {
+    "userId" : 31,
+    "value" : "0.5909"
+  }, {
+    "userId" : 43,
+    "value" : "64.8057"
+  }, {
+    "userId" : 50,
+    "value" : "22.6902"
+  } ],
+  "result" : {
+    "23" : "0.01",
+    "31" : "0.00",
+    "43" : "0.04",
+    "50" : "0.01"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "53700.75",
+  "participants" : [ {
+    "userId" : 33,
+    "value" : "1"
+  }, {
+    "userId" : 31,
+    "value" : "4"
+  }, {
+    "userId" : 25,
+    "value" : "5"
+  }, {
+    "userId" : 49,
+    "value" : "4.41"
+  }, {
+    "userId" : 35,
+    "value" : "0"
+  }, {
+    "userId" : 22,
+    "value" : "1"
+  } ],
+  "result" : {
+    "22" : "3484.80",
+    "25" : "17423.99",
+    "31" : "13939.20",
+    "33" : "3484.80",
+    "35" : "0.00",
+    "49" : "15367.96"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "28.04",
+  "participants" : [ {
+    "userId" : 10,
+    "value" : "28.04"
+  }, {
+    "userId" : 14,
+    "value" : "28.04"
+  }, {
+    "userId" : 58,
+    "value" : "28.04"
+  }, {
+    "userId" : 9,
+    "value" : "28.04"
+  }, {
+    "userId" : 56,
+    "value" : "28.04"
+  }, {
+    "userId" : 4,
+    "value" : "28.04"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "230249801.92",
+  "participants" : [ {
+    "userId" : 20,
+    "value" : null
+  }, {
+    "userId" : 26,
+    "value" : null
+  }, {
+    "userId" : 46,
+    "value" : null
+  }, {
+    "userId" : 54,
+    "value" : null
+  }, {
+    "userId" : 29,
+    "value" : null
+  }, {
+    "userId" : 40,
+    "value" : null
+  } ],
+  "result" : {
+    "20" : "38374966.99",
+    "26" : "38374966.99",
+    "29" : "38374966.99",
+    "40" : "38374966.99",
+    "46" : "38374966.98",
+    "54" : "38374966.98"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 11,
+    "value" : "0.04"
+  }, {
+    "userId" : 52,
+    "value" : "0.01"
+  }, {
+    "userId" : 26,
+    "value" : "0.03"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "611651911.73",
+  "participants" : [ {
+    "userId" : 8,
+    "value" : "47"
+  }, {
+    "userId" : 30,
+    "value" : "53"
+  } ],
+  "result" : {
+    "8" : "287476398.51",
+    "30" : "324175513.22"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "47644.88",
+  "participants" : [ {
+    "userId" : 15,
+    "value" : "1.125"
+  }, {
+    "userId" : 52,
+    "value" : "3"
+  }, {
+    "userId" : 19,
+    "value" : "1"
+  }, {
+    "userId" : 29,
+    "value" : "1.91"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "26810.67",
+  "participants" : [ {
+    "userId" : 43,
+    "value" : "26810.67"
+  }, {
+    "userId" : 53,
+    "value" : "26810.67"
+  }, {
+    "userId" : 24,
+    "value" : "26810.67"
+  }, {
+    "userId" : 42,
+    "value" : "26810.67"
+  }, {
+    "userId" : 38,
+    "value" : "26810.67"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 13,
+    "value" : null
+  }, {
+    "userId" : 6,
+    "value" : null
+  } ],
+  "result" : {
+    "6" : "0.03",
+    "13" : "0.02"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "698.71",
+  "participants" : [ {
+    "userId" : 54,
+    "value" : "62.64"
+  }, {
+    "userId" : 3,
+    "value" : "284.66"
+  }, {
+    "userId" : 7,
+    "value" : "241.88"
+  }, {
+    "userId" : 32,
+    "value" : "109.53"
+  } ],
+  "result" : {
+    "3" : "284.66",
+    "7" : "241.88",
+    "32" : "109.53",
+    "54" : "62.64"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.00",
+  "participants" : [ {
+    "userId" : 50,
+    "value" : "21.8489"
+  }, {
+    "userId" : 35,
+    "value" : "79.1511"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "0.03",
+  "participants" : [ {
+    "userId" : 14,
+    "value" : "3.08"
+  }, {
+    "userId" : 33,
+    "value" : "2"
+  }, {
+    "userId" : 38,
+    "value" : "4"
+  } ],
+  "result" : {
+    "14" : "0.01",
+    "33" : "0.01",
+    "38" : "0.01"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "333475265.42",
+  "participants" : [ {
+    "userId" : 43,
+    "value" : "53824527.60"
+  }, {
+    "userId" : 8,
+    "value" : null
+  }, {
+    "userId" : 11,
+    "value" : "50057093.69"
+  }, {
+    "userId" : 35,
+    "value" : null
+  }, {
+    "userId" : 53,
+    "value" : "42346836.62"
+  }, {
+    "userId" : 33,
+    "value" : null
+  } ],
+  "result" : {
+    "8" : "31207801.26",
+    "11" : "81264894.94",
+    "33" : "31207801.25",
+    "35" : "31207801.25",
+    "43" : "85032328.85",
+    "53" : "73554637.87"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 25,
+    "value" : null
+  } ],
+  "result" : {
+    "25" : "0.05"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "9.89",
+  "participants" : [ {
+    "userId" : 45,
+    "value" : "0.53"
+  }, {
+    "userId" : 11,
+    "value" : "2.17"
+  }, {
+    "userId" : 17,
+    "value" : "4.13"
+  }, {
+    "userId" : 32,
+    "value" : "0.39"
+  }, {
+    "userId" : 37,
+    "value" : "2.67"
+  } ],
+  "result" : {
+    "11" : "2.17",
+    "17" : "4.13",
+    "32" : "0.39",
+    "37" : "2.67",
+    "45" : "0.53"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.00",
+  "participants" : [ {
+    "userId" : 18,
+    "value" : "5"
+  }, {
+    "userId" : 22,
+    "value" : "1"
+  }, {
+    "userId" : 59,
+    "value" : "3"
+  }, {
+    "userId" : 31,
+    "value" : "12"
+  }, {
+    "userId" : 9,
+    "value" : "79"
+  }, {
+    "userId" : 6,
+    "value" : "0"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "589674462.85",
+  "participants" : [ {
+    "userId" : 27,
+    "value" : "2"
+  }, {
+    "userId" : 48,
+    "value" : "0"
+  }, {
+    "userId" : 38,
+    "value" : "2"
+  } ],
+  "result" : {
+    "27" : "294837231.43",
+    "38" : "294837231.42",
+    "48" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "397724036.57",
+  "participants" : [ {
+    "userId" : 30,
+    "value" : null
+  } ],
+  "result" : {
+    "30" : "397724036.57"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 57,
+    "value" : null
+  } ],
+  "result" : {
+    "57" : "0.05"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "41.32",
+  "participants" : [ {
+    "userId" : 2,
+    "value" : "5.35"
+  }, {
+    "userId" : 24,
+    "value" : "9.22"
+  }, {
+    "userId" : 15,
+    "value" : "14.66"
+  }, {
+    "userId" : 45,
+    "value" : "4.84"
+  }, {
+    "userId" : 14,
+    "value" : "7.25"
+  } ],
+  "result" : {
+    "2" : "5.35",
+    "14" : "7.25",
+    "15" : "14.66",
+    "24" : "9.22",
+    "45" : "4.84"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "90159839.78",
+  "participants" : [ {
+    "userId" : 3,
+    "value" : "20.7182"
+  }, {
+    "userId" : 41,
+    "value" : "10.1309"
+  }, {
+    "userId" : 38,
+    "value" : "27.4006"
+  }, {
+    "userId" : 53,
+    "value" : "37.5006"
+  }, {
+    "userId" : 8,
+    "value" : "4.2497"
+  } ],
+  "result" : {
+    "3" : "18679495.92",
+    "8" : "3831522.71",
+    "38" : "24704337.06",
+    "41" : "9134003.21",
+    "53" : "33810480.88"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.04",
+  "participants" : [ {
+    "userId" : 13,
+    "value" : "3.37"
+  }, {
+    "userId" : 1,
+    "value" : "5"
+  } ],
+  "result" : {
+    "1" : "0.02",
+    "13" : "0.02"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "78292551.34",
+  "participants" : [ {
+    "userId" : 40,
+    "value" : "4462039.27"
+  }, {
+    "userId" : 30,
+    "value" : "9181116.58"
+  }, {
+    "userId" : 57,
+    "value" : null
+  }, {
+    "userId" : 29,
+    "value" : null
+  }, {
+    "userId" : 36,
+    "value" : null
+  } ],
+  "result" : {
+    "29" : "12929879.10",
+    "30" : "22110995.68",
+    "36" : "12929879.10",
+    "40" : "17391918.37",
+    "57" : "12929879.09"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "49.40",
+  "participants" : [ {
+    "userId" : 28,
+    "value" : null
+  }, {
+    "userId" : 22,
+    "value" : null
+  }, {
+    "userId" : 43,
+    "value" : null
+  }, {
+    "userId" : 46,
+    "value" : null
+  } ],
+  "result" : {
+    "22" : "12.35",
+    "28" : "12.35",
+    "43" : "12.35",
+    "46" : "12.35"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "9.49",
+  "participants" : [ {
+    "userId" : 26,
+    "value" : "8.52"
+  }, {
+    "userId" : 29,
+    "value" : "0.98"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "88884.13",
+  "participants" : [ {
+    "userId" : 57,
+    "value" : "101"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "28.13",
+  "participants" : [ {
+    "userId" : 12,
+    "value" : "2.47"
+  }, {
+    "userId" : 49,
+    "value" : "0.15"
+  }, {
+    "userId" : 54,
+    "value" : "1"
+  } ],
+  "result" : {
+    "12" : "19.19",
+    "49" : "1.17",
+    "54" : "7.77"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "1.15",
+  "participants" : [ {
+    "userId" : 10,
+    "value" : "0.07"
+  }, {
+    "userId" : 54,
+    "value" : null
+  }, {
+    "userId" : 33,
+    "value" : null
+  }, {
+    "userId" : 18,
+    "value" : "0.00"
+  }, {
+    "userId" : 12,
+    "value" : "0.18"
+  }, {
+    "userId" : 9,
+    "value" : "0.05"
+  } ],
+  "result" : {
+    "9" : "0.20",
+    "10" : "0.21",
+    "12" : "0.32",
+    "18" : "0.14",
+    "33" : "0.14",
+    "54" : "0.14"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "84649.66",
+  "participants" : [ {
+    "userId" : 42,
+    "value" : null
+  } ],
+  "result" : {
+    "42" : "84649.66"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "715784105.90",
+  "participants" : [ {
+    "userId" : 22,
+    "value" : "215472994.87"
+  }, {
+    "userId" : 31,
+    "value" : "170998326.01"
+  }, {
+    "userId" : 39,
+    "value" : "28193425.88"
+  }, {
+    "userId" : 24,
+    "value" : "130130889.83"
+  }, {
+    "userId" : 1,
+    "value" : "169026362.90"
+  }, {
+    "userId" : 49,
+    "value" : "1962106.41"
+  } ],
+  "result" : {
+    "1" : "169026362.90",
+    "22" : "215472994.87",
+    "24" : "130130889.83",
+    "31" : "170998326.01",
+    "39" : "28193425.88",
+    "49" : "1962106.41"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "90381.99",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : "35"
+  }, {
+    "userId" : 7,
+    "value" : "32"
+  }, {
+    "userId" : 35,
+    "value" : "28"
+  }, {
+    "userId" : 8,
+    "value" : "5"
+  } ],
+  "result" : {
+    "5" : "31633.69",
+    "7" : "28922.24",
+    "8" : "4519.10",
+    "35" : "25306.96"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "54.16",
+  "participants" : [ {
+    "userId" : 45,
+    "value" : "2"
+  }, {
+    "userId" : 43,
+    "value" : "5"
+  }, {
+    "userId" : 44,
+    "value" : "5"
+  }, {
+    "userId" : 40,
+    "value" : "3"
+  } ],
+  "result" : {
+    "40" : "10.83",
+    "43" : "18.06",
+    "44" : "18.05",
+    "45" : "7.22"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "55921860.53",
+  "participants" : [ {
+    "userId" : 33,
+    "value" : "6375685.57"
+  }, {
+    "userId" : 20,
+    "value" : null
+  }, {
+    "userId" : 28,
+    "value" : "4927352.63"
+  }, {
+    "userId" : 3,
+    "value" : "2533842.80"
+  } ],
+  "result" : {
+    "3" : "13055087.69",
+    "20" : "10521244.88",
+    "28" : "15448597.51",
+    "33" : "16896930.45"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "9.37",
+  "participants" : [ {
+    "userId" : 37,
+    "value" : null
+  }, {
+    "userId" : 5,
+    "value" : null
+  } ],
+  "result" : {
+    "5" : "4.69",
+    "37" : "4.68"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "720.52",
+  "participants" : [ {
+    "userId" : 25,
+    "value" : "101.52"
+  }, {
+    "userId" : 27,
+    "value" : "529.23"
+  }, {
+    "userId" : 55,
+    "value" : "89.77"
+  } ],
+  "result" : {
+    "25" : "101.52",
+    "27" : "529.23",
+    "55" : "89.77"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "20680.70",
+  "participants" : [ {
+    "userId" : 32,
+    "value" : "100"
+  } ],
+  "result" : {
+    "32" : "20680.70"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "67711.87",
+  "participants" : [ {
+    "userId" : 28,
+    "value" : "2"
+  }, {
+    "userId" : 27,
+    "value" : "4.78"
+  } ],
+  "result" : {
+    "27" : "47737.87",
+    "28" : "19974.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.03",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : "0.00"
+  }, {
+    "userId" : 10,
+    "value" : "0.01"
+  } ],
+  "result" : {
+    "7" : "0.01",
+    "10" : "0.02"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "15762.30",
+  "participants" : [ {
+    "userId" : 25,
+    "value" : null
+  }, {
+    "userId" : 48,
+    "value" : null
+  } ],
+  "result" : {
+    "25" : "7881.15",
+    "48" : "7881.15"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "71.25",
+  "participants" : [ {
+    "userId" : 42,
+    "value" : "0.79"
+  }, {
+    "userId" : 52,
+    "value" : "10.94"
+  }, {
+    "userId" : 27,
+    "value" : "37.29"
+  }, {
+    "userId" : 43,
+    "value" : "15.38"
+  }, {
+    "userId" : 3,
+    "value" : "6.85"
+  } ],
+  "result" : {
+    "3" : "6.85",
+    "27" : "37.29",
+    "42" : "0.79",
+    "43" : "15.38",
+    "52" : "10.94"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.00",
+  "participants" : [ {
+    "userId" : 57,
+    "value" : "37.4383"
+  }, {
+    "userId" : 56,
+    "value" : "6.8304"
+  }, {
+    "userId" : 51,
+    "value" : "2.2448"
+  }, {
+    "userId" : 50,
+    "value" : "8.0962"
+  }, {
+    "userId" : 43,
+    "value" : "42.8851"
+  }, {
+    "userId" : 30,
+    "value" : "3.5052"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "775588300.30",
+  "participants" : [ {
+    "userId" : 2,
+    "value" : "2"
+  }, {
+    "userId" : 51,
+    "value" : "5"
+  } ],
+  "result" : {
+    "2" : "221596657.23",
+    "51" : "553991643.07"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "21913.22",
+  "participants" : [ {
+    "userId" : 21,
+    "value" : "2371.13"
+  }, {
+    "userId" : 49,
+    "value" : "2145.26"
+  }, {
+    "userId" : 29,
+    "value" : "2563.10"
+  }, {
+    "userId" : 44,
+    "value" : "2566.25"
+  }, {
+    "userId" : 20,
+    "value" : null
+  }, {
+    "userId" : 10,
+    "value" : null
+  } ],
+  "result" : {
+    "10" : "2044.58",
+    "20" : "2044.58",
+    "21" : "4415.71",
+    "29" : "4607.68",
+    "44" : "4610.83",
+    "49" : "4189.84"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "337202187.46",
+  "participants" : [ {
+    "userId" : 13,
+    "value" : null
+  }, {
+    "userId" : 40,
+    "value" : null
+  }, {
+    "userId" : 14,
+    "value" : null
+  }, {
+    "userId" : 48,
+    "value" : null
+  }, {
+    "userId" : 44,
+    "value" : null
+  }, {
+    "userId" : 41,
+    "value" : null
+  } ],
+  "result" : {
+    "13" : "56200364.58",
+    "14" : "56200364.58",
+    "40" : "56200364.58",
+    "41" : "56200364.58",
+    "44" : "56200364.57",
+    "48" : "56200364.57"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : "0.00"
+  }, {
+    "userId" : 28,
+    "value" : "0.02"
+  }, {
+    "userId" : 40,
+    "value" : "0.01"
+  }, {
+    "userId" : 52,
+    "value" : "0.00"
+  }, {
+    "userId" : 2,
+    "value" : "0.02"
+  } ],
+  "result" : {
+    "2" : "0.02",
+    "7" : "0.00",
+    "28" : "0.02",
+    "40" : "0.01",
+    "52" : "0.00"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "682350471.31",
+  "participants" : [ {
+    "userId" : 19,
+    "value" : "63"
+  }, {
+    "userId" : 52,
+    "value" : "7"
+  }, {
+    "userId" : 13,
+    "value" : "30"
+  } ],
+  "result" : {
+    "13" : "204705141.39",
+    "19" : "429880796.93",
+    "52" : "47764532.99"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "49082.76",
+  "participants" : [ {
+    "userId" : 48,
+    "value" : "3"
+  }, {
+    "userId" : 18,
+    "value" : "3"
+  } ],
+  "result" : {
+    "18" : "24541.38",
+    "48" : "24541.38"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "859957349.64",
+  "participants" : [ {
+    "userId" : 13,
+    "value" : "150385854.52"
+  }, {
+    "userId" : 5,
+    "value" : "93269512.03"
+  }, {
+    "userId" : 26,
+    "value" : "110627657.77"
+  }, {
+    "userId" : 57,
+    "value" : "7892938.62"
+  }, {
+    "userId" : 2,
+    "value" : "126285855.07"
+  } ],
+  "result" : {
+    "2" : "200584961.40",
+    "5" : "167568618.36",
+    "13" : "224684960.85",
+    "26" : "184926764.09",
+    "57" : "82192044.94"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.02",
+  "participants" : [ {
+    "userId" : 36,
+    "value" : null
+  } ],
+  "result" : {
+    "36" : "0.02"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "34357.07",
+  "participants" : [ {
+    "userId" : 17,
+    "value" : "14813.16"
+  }, {
+    "userId" : 9,
+    "value" : "3383.18"
+  }, {
+    "userId" : 25,
+    "value" : "14811.12"
+  }, {
+    "userId" : 29,
+    "value" : "1349.62"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "67031.43",
+  "participants" : [ {
+    "userId" : 12,
+    "value" : "19"
+  }, {
+    "userId" : 18,
+    "value" : "6"
+  }, {
+    "userId" : 25,
+    "value" : "38"
+  }, {
+    "userId" : 31,
+    "value" : "37"
+  } ],
+  "result" : {
+    "12" : "12735.97",
+    "18" : "4021.89",
+    "25" : "25471.94",
+    "31" : "24801.63"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "7280.47",
+  "participants" : [ {
+    "userId" : 58,
+    "value" : "1"
+  }, {
+    "userId" : 1,
+    "value" : "0"
+  }, {
+    "userId" : 23,
+    "value" : "1"
+  }, {
+    "userId" : 59,
+    "value" : "0"
+  }, {
+    "userId" : 53,
+    "value" : "2"
+  }, {
+    "userId" : 52,
+    "value" : "0"
+  } ],
+  "result" : {
+    "1" : "0.00",
+    "23" : "1820.12",
+    "52" : "0.00",
+    "53" : "3640.23",
+    "58" : "1820.12",
+    "59" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.01",
+  "participants" : [ {
+    "userId" : 19,
+    "value" : "0.01"
+  }, {
+    "userId" : 27,
+    "value" : "0.01"
+  }, {
+    "userId" : 40,
+    "value" : "0.01"
+  }, {
+    "userId" : 10,
+    "value" : "0.01"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "31.98",
+  "participants" : [ {
+    "userId" : 49,
+    "value" : null
+  }, {
+    "userId" : 59,
+    "value" : null
+  }, {
+    "userId" : 55,
+    "value" : null
+  } ],
+  "result" : {
+    "49" : "10.66",
+    "55" : "10.66",
+    "59" : "10.66"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "55885.37",
+  "participants" : [ {
+    "userId" : 50,
+    "value" : "25963.69"
+  }, {
+    "userId" : 58,
+    "value" : "3422.57"
+  }, {
+    "userId" : 9,
+    "value" : "12786.94"
+  }, {
+    "userId" : 1,
+    "value" : "4278.63"
+  }, {
+    "userId" : 26,
+    "value" : "9433.54"
+  } ],
+  "result" : {
+    "1" : "4278.63",
+    "9" : "12786.94",
+    "26" : "9433.54",
+    "50" : "25963.69",
+    "58" : "3422.57"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "765774536.62",
+  "participants" : [ {
+    "userId" : 37,
+    "value" : "83.9953"
+  }, {
+    "userId" : 53,
+    "value" : "16.0047"
+  } ],
+  "result" : {
+    "37" : "643214619.36",
+    "53" : "122559917.26"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.03",
+  "participants" : [ {
+    "userId" : 37,
+    "value" : "3"
+  }, {
+    "userId" : 39,
+    "value" : "3.21"
+  } ],
+  "result" : {
+    "37" : "0.01",
+    "39" : "0.02"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "0.07"
+  }, {
+    "userId" : 15,
+    "value" : "0.07"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : null
+  }, {
+    "userId" : 38,
+    "value" : null
+  }, {
+    "userId" : 22,
+    "value" : null
+  }, {
+    "userId" : 6,
+    "value" : null
+  }, {
+    "userId" : 55,
+    "value" : null
+  } ],
+  "result" : {
+    "1" : "0.02",
+    "6" : "0.01",
+    "22" : "0.01",
+    "38" : "0.01",
+    "55" : "0.01"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "624673171.41",
+  "participants" : [ {
+    "userId" : 48,
+    "value" : "624673171.41"
+  } ],
+  "result" : {
+    "48" : "624673171.41"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "8.20",
+  "participants" : [ {
+    "userId" : 42,
+    "value" : "74"
+  }, {
+    "userId" : 43,
+    "value" : "16"
+  }, {
+    "userId" : 32,
+    "value" : "10"
+  } ],
+  "result" : {
+    "32" : "0.82",
+    "42" : "6.07",
+    "43" : "1.31"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "2410.50",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : "0.58"
+  } ],
+  "result" : {
+    "5" : "2410.50"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "90.56",
+  "participants" : [ {
+    "userId" : 56,
+    "value" : null
+  }, {
+    "userId" : 55,
+    "value" : null
+  }, {
+    "userId" : 25,
+    "value" : "0.61"
+  } ],
+  "result" : {
+    "25" : "30.60",
+    "55" : "29.98",
+    "56" : "29.98"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "3859.12",
+  "participants" : [ {
+    "userId" : 26,
+    "value" : null
+  }, {
+    "userId" : 27,
+    "value" : null
+  }, {
+    "userId" : 33,
+    "value" : null
+  }, {
+    "userId" : 53,
+    "value" : null
+  }, {
+    "userId" : 40,
+    "value" : null
+  }, {
+    "userId" : 13,
+    "value" : null
+  } ],
+  "result" : {
+    "13" : "643.19",
+    "26" : "643.19",
+    "27" : "643.19",
+    "33" : "643.19",
+    "40" : "643.18",
+    "53" : "643.18"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.04",
+  "participants" : [ {
+    "userId" : 28,
+    "value" : "0.00"
+  }, {
+    "userId" : 42,
+    "value" : "0.01"
+  }, {
+    "userId" : 24,
+    "value" : "0.01"
+  }, {
+    "userId" : 46,
+    "value" : "0.00"
+  }, {
+    "userId" : 33,
+    "value" : "0.02"
+  }, {
+    "userId" : 20,
+    "value" : "0.00"
+  } ],
+  "result" : {
+    "20" : "0.00",
+    "24" : "0.01",
+    "28" : "0.00",
+    "33" : "0.02",
+    "42" : "0.01",
+    "46" : "0.00"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "34.54",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : "73.6604"
+  }, {
+    "userId" : 38,
+    "value" : "19.8312"
+  }, {
+    "userId" : 4,
+    "value" : "6.5084"
+  } ],
+  "result" : {
+    "4" : "2.25",
+    "38" : "6.85",
+    "44" : "25.44"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "279535198.32",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : "0"
+  }, {
+    "userId" : 21,
+    "value" : "1"
+  } ],
+  "result" : {
+    "7" : "0.00",
+    "21" : "279535198.32"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "81.29",
+  "participants" : [ {
+    "userId" : 47,
+    "value" : "81.29"
+  }, {
+    "userId" : 42,
+    "value" : "81.29"
+  }, {
+    "userId" : 57,
+    "value" : "81.29"
+  }, {
+    "userId" : 38,
+    "value" : "81.29"
+  }, {
+    "userId" : 5,
+    "value" : "81.29"
+  }, {
+    "userId" : 16,
+    "value" : "81.29"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "31467.08",
+  "participants" : [ {
+    "userId" : 58,
+    "value" : null
+  }, {
+    "userId" : 23,
+    "value" : null
+  } ],
+  "result" : {
+    "23" : "15733.54",
+    "58" : "15733.54"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "90.99",
+  "participants" : [ {
+    "userId" : 6,
+    "value" : "30.88"
+  }, {
+    "userId" : 12,
+    "value" : "23.44"
+  }, {
+    "userId" : 44,
+    "value" : "17.61"
+  }, {
+    "userId" : 16,
+    "value" : "16.70"
+  }, {
+    "userId" : 19,
+    "value" : "2.37"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "57699.96",
+  "participants" : [ {
+    "userId" : 57,
+    "value" : "16.9771"
+  }, {
+    "userId" : 33,
+    "value" : "11.4907"
+  }, {
+    "userId" : 30,
+    "value" : "15.0754"
+  }, {
+    "userId" : 34,
+    "value" : "11.2219"
+  }, {
+    "userId" : 7,
+    "value" : "46.2349"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "86.23",
+  "participants" : [ {
+    "userId" : 34,
+    "value" : "1.125"
+  }, {
+    "userId" : 17,
+    "value" : "4"
+  }, {
+    "userId" : 6,
+    "value" : "2"
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "27.12",
+  "participants" : [ {
+    "userId" : 7,
+    "value" : "2.81"
+  }, {
+    "userId" : 14,
+    "value" : null
+  }, {
+    "userId" : 23,
+    "value" : null
+  }, {
+    "userId" : 56,
+    "value" : "4.37"
+  }, {
+    "userId" : 30,
+    "value" : "1.26"
+  }, {
+    "userId" : 16,
+    "value" : "3.17"
+  } ],
+  "result" : {
+    "7" : "5.40",
+    "14" : "2.59",
+    "16" : "5.76",
+    "23" : "2.58",
+    "30" : "3.84",
+    "56" : "6.95"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "59324.21",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : null
+  }, {
+    "userId" : 38,
+    "value" : null
+  } ],
+  "result" : {
+    "1" : "29662.11",
+    "38" : "29662.10"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "24.75",
+  "participants" : [ {
+    "userId" : 19,
+    "value" : "23.18"
+  }, {
+    "userId" : 48,
+    "value" : "1.58"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "99.14",
+  "participants" : [ {
+    "userId" : 30,
+    "value" : "15"
+  }, {
+    "userId" : 49,
+    "value" : "0"
+  }, {
+    "userId" : 56,
+    "value" : "8"
+  }, {
+    "userId" : 55,
+    "value" : "15"
+  }, {
+    "userId" : 16,
+    "value" : "0"
+  }, {
+    "userId" : 54,
+    "value" : "62"
+  } ],
+  "result" : {
+    "16" : "0.00",
+    "30" : "14.87",
+    "49" : "0.00",
+    "54" : "61.47",
+    "55" : "14.87",
+    "56" : "7.93"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "202721542.43",
+  "participants" : [ {
+    "userId" : 29,
+    "value" : "3"
+  }, {
+    "userId" : 41,
+    "value" : "5"
+  }, {
+    "userId" : 44,
+    "value" : "3"
+  }, {
+    "userId" : 6,
+    "value" : "2.46"
+  }, {
+    "userId" : 57,
+    "value" : "2"
+  }, {
+    "userId" : 17,
+    "value" : "5"
+  } ],
+  "result" : {
+    "6" : "24374144.39",
+    "17" : "49540943.90",
+    "29" : "29724566.34",
+    "41" : "49540943.90",
+    "44" : "29724566.34",
+    "57" : "19816377.56"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "53.30",
+  "participants" : [ {
+    "userId" : 19,
+    "value" : null
+  }, {
+    "userId" : 8,
+    "value" : null
+  }, {
+    "userId" : 60,
+    "value" : null
+  }, {
+    "userId" : 37,
+    "value" : null
+  } ],
+  "result" : {
+    "8" : "13.33",
+    "19" : "13.33",
+    "37" : "13.32",
+    "60" : "13.32"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "78.58",
+  "participants" : [ {
+    "userId" : 9,
+    "value" : null
+  }, {
+    "userId" : 15,
+    "value" : null
+  }, {
+    "userId" : 2,
+    "value" : null
+  }, {
+    "userId" : 24,
+    "value" : null
+  } ],
+  "result" : {
+    "2" : "19.65",
+    "9" : "19.65",
+    "15" : "19.64",
+    "24" : "19.64"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "0.04",
+  "participants" : [ {
+    "userId" : 34,
+    "value" : "0.001"
+  }, {
+    "userId" : 52,
+    "value" : "0.03"
+  }, {
+    "userId" : 12,
+    "value" : "0.01"
+  }, {
+    "userId" : 13,
+    "value" : "0.00"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 37,
+    "value" : "64.3236"
+  }, {
+    "userId" : 39,
+    "value" : "36.5987"
+  }, {
+    "userId" : 32,
+    "value" : "0.0777"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "68265.72",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "4.45"
+  }, {
+    "userId" : 37,
+    "value" : "4.26"
+  }, {
+    "userId" : 16,
+    "value" : "1"
+  }, {
+    "userId" : 9,
+    "value" : "0"
+  }, {
+    "userId" : 51,
+    "value" : "5"
+  }, {
+    "userId" : 38,
+    "value" : "2.03"
+  } ],
+  "result" : {
+    "1" : "18147.10",
+    "9" : "0.00",
+    "16" : "4078.00",
+    "37" : "17372.28",
+    "38" : "8278.34",
+    "51" : "20390.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.06",
+  "participants" : [ {
+    "userId" : 28,
+    "value" : "0.06"
+  }, {
+    "userId" : 45,
+    "value" : "0.06"
+  }, {
+    "userId" : 32,
+    "value" : "0.06"
+  }, {
+    "userId" : 24,
+    "value" : "0.06"
+  }, {
+    "userId" : 8,
+    "value" : "0.06"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "97160.42",
+  "participants" : [ {
+    "userId" : 47,
+    "value" : null
+  }, {
+    "userId" : 35,
+    "value" : null
+  }, {
+    "userId" : 13,
+    "value" : null
+  }, {
+    "userId" : 48,
+    "value" : null
+  }, {
+    "userId" : 32,
+    "value" : null
+  }, {
+    "userId" : 31,
+    "value" : null
+  } ],
+  "result" : {
+    "13" : "16193.41",
+    "31" : "16193.41",
+    "32" : "16193.40",
+    "35" : "16193.40",
+    "47" : "16193.40",
+    "48" : "16193.40"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "62091.66",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "9819.36"
+  }, {
+    "userId" : 41,
+    "value" : "4461.80"
+  }, {
+    "userId" : 8,
+    "value" : "10533.86"
+  }, {
+    "userId" : 12,
+    "value" : "37276.64"
+  } ],
+  "result" : {
+    "1" : "9819.36",
+    "8" : "10533.86",
+    "12" : "37276.64",
+    "41" : "4461.80"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "29065.75",
+  "participants" : [ {
+    "userId" : 15,
+    "value" : "7.00001"
+  }, {
+    "userId" : 7,
+    "value" : "13"
+  }, {
+    "userId" : 30,
+    "value" : "35"
+  }, {
+    "userId" : 13,
+    "value" : "24"
+  }, {
+    "userId" : 45,
+    "value" : "10"
+  }, {
+    "userId" : 49,
+    "value" : "11"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "0.04",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : "5"
+  }, {
+    "userId" : 45,
+    "value" : "2.40"
+  } ],
+  "result" : {
+    "44" : "0.03",
+    "45" : "0.01"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "46498.20",
+  "participants" : [ {
+    "userId" : 26,
+    "value" : null
+  }, {
+    "userId" : 7,
+    "value" : "6848.09"
+  } ],
+  "result" : {
+    "7" : "26673.15",
+    "26" : "19825.05"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 48,
+    "value" : null
+  }, {
+    "userId" : 22,
+    "value" : null
+  }, {
+    "userId" : 38,
+    "value" : null
+  }, {
+    "userId" : 18,
+    "value" : null
+  }, {
+    "userId" : 45,
+    "value" : null
+  } ],
+  "result" : {
+    "18" : "0.02",
+    "22" : "0.02",
+    "38" : "0.01",
+    "45" : "0.01",
+    "48" : "0.01"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "86.74",
+  "participants" : [ {
+    "userId" : 40,
+    "value" : "20.54"
+  }, {
+    "userId" : 35,
+    "value" : "46.30"
+  }, {
+    "userId" : 17,
+    "value" : "19.90"
+  } ],
+  "result" : {
+    "17" : "19.90",
+    "35" : "46.30",
+    "40" : "20.54"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "54332.08",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "100"
+  } ],
+  "result" : {
+    "1" : "54332.08"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "116508207.06",
+  "participants" : [ {
+    "userId" : 19,
+    "value" : "4.84"
+  }, {
+    "userId" : 6,
+    "value" : "0"
+  } ],
+  "result" : {
+    "6" : "0.00",
+    "19" : "116508207.06"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.03",
+  "participants" : [ {
+    "userId" : 20,
+    "value" : "0.03"
+  }, {
+    "userId" : 7,
+    "value" : "0.03"
+  }, {
+    "userId" : 12,
+    "value" : "0.03"
+  }, {
+    "userId" : 44,
+    "value" : "0.03"
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "48493.96",
+  "participants" : [ {
+    "userId" : 31,
+    "value" : null
+  }, {
+    "userId" : 59,
+    "value" : null
+  } ],
+  "result" : {
+    "31" : "24246.98",
+    "59" : "24246.98"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "83568.05",
+  "participants" : [ {
+    "userId" : 55,
+    "value" : "36266.30"
+  }, {
+    "userId" : 35,
+    "value" : "21199.57"
+  }, {
+    "userId" : 13,
+    "value" : "10021.53"
+  }, {
+    "userId" : 16,
+    "value" : "9845.45"
+  }, {
+    "userId" : 40,
+    "value" : "6235.20"
+  } ],
+  "result" : {
+    "13" : "10021.53",
+    "16" : "9845.45",
+    "35" : "21199.57",
+    "40" : "6235.20",
+    "55" : "36266.30"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "52.13",
+  "participants" : [ {
+    "userId" : 59,
+    "value" : "0.6059"
+  }, {
+    "userId" : 1,
+    "value" : "13.6297"
+  }, {
+    "userId" : 57,
+    "value" : "43.6574"
+  }, {
+    "userId" : 34,
+    "value" : "42.107"
+  } ],
+  "result" : {
+    "1" : "7.10",
+    "34" : "21.95",
+    "57" : "22.76",
+    "59" : "0.32"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "20373.72",
+  "participants" : [ {
+    "userId" : 21,
+    "value" : "4.16"
+  }, {
+    "userId" : 46,
+    "value" : "1.87"
+  } ],
+  "result" : {
+    "21" : "14055.50",
+    "46" : "6318.22"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "59.28",
+  "participants" : [ {
+    "userId" : 18,
+    "value" : "8.23"
+  }, {
+    "userId" : 27,
+    "value" : null
+  }, {
+    "userId" : 22,
+    "value" : null
+  }, {
+    "userId" : 59,
+    "value" : "7.49"
+  } ],
+  "result" : {
+    "18" : "19.12",
+    "22" : "10.89",
+    "27" : "10.89",
+    "59" : "18.38"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "151139724.79",
+  "participants" : [ {
+    "userId" : 19,
+    "value" : null
+  }, {
+    "userId" : 17,
+    "value" : null
+  } ],
+  "result" : {
+    "17" : "75569862.40",
+    "19" : "75569862.39"
+  }
+}, {
+  "type" : "EXACT",
+  "total" : "850593766.80",
+  "participants" : [ {
+    "userId" : 44,
+    "value" : "513683977.34"
+  }, {
+    "userId" : 6,
+    "value" : "241854157.24"
+  }, {
+    "userId" : 14,
+    "value" : "33910796.65"
+  }, {
+    "userId" : 30,
+    "value" : "61144835.57"
+  } ],
+  "result" : {
+    "6" : "241854157.24",
+    "14" : "33910796.65",
+    "30" : "61144835.57",
+    "44" : "513683977.34"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "676709361.03",
+  "participants" : [ {
+    "userId" : 34,
+    "value" : "100"
+  } ],
+  "result" : {
+    "34" : "676709361.03"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.07",
+  "participants" : [ {
+    "userId" : 14,
+    "value" : "2.31"
+  }, {
+    "userId" : 37,
+    "value" : "4"
+  }, {
+    "userId" : 2,
+    "value" : "1"
+  } ],
+  "result" : {
+    "2" : "0.01",
+    "14" : "0.02",
+    "37" : "0.04"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.00",
+  "participants" : [ {
+    "userId" : 8,
+    "value" : null
+  }, {
+    "userId" : 50,
+    "value" : null
+  }, {
+    "userId" : 7,
+    "value" : "3.14"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "100.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "50.00005"
+  }, {
+    "userId" : 2,
+    "value" : "49.99995"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "100.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "33.3333"
+  }, {
+    "userId" : 2,
+    "value" : "33.3333"
+  }, {
+    "userId" : 3,
+    "value" : "33.3334"
+  } ],
+  "result" : {
+    "1" : "33.33",
+    "2" : "33.33",
+    "3" : "33.34"
+  }
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "10.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "150"
+  }, {
+    "userId" : 2,
+    "value" : "-50"
+  } ],
+  "result" : null
+}, {
+  "type" : "PERCENTAGE",
+  "total" : "10.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "100"
+  }, {
+    "userId" : 2,
+    "value" : "0"
+  } ],
+  "result" : {
+    "1" : "10.00",
+    "2" : "0.00"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "0.05",
+  "participants" : [ {
+    "userId" : 3,
+    "value" : "0"
+  }, {
+    "userId" : 1,
+    "value" : "0"
+  }, {
+    "userId" : 2,
+    "value" : "1"
+  } ],
+  "result" : {
+    "1" : "0.00",
+    "2" : "0.05",
+    "3" : "0.00"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "10.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "1000000"
+  }, {
+    "userId" : 2,
+    "value" : "1"
+  } ],
+  "result" : {
+    "1" : "10.00",
+    "2" : "0.00"
+  }
+}, {
+  "type" : "SHARES",
+  "total" : "10.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "1000000.01"
+  }, {
+    "userId" : 2,
+    "value" : "1"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "10.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "1.125"
+  }, {
+    "userId" : 2,
+    "value" : "0.875"
+  } ],
+  "result" : null
+}, {
+  "type" : "SHARES",
+  "total" : "10.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "1"
+  }, {
+    "userId" : 2,
+    "value" : null
+  } ],
+  "result" : null
+}, {
+  "type" : "EXACT",
+  "total" : "10.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "11.00"
+  }, {
+    "userId" : 2,
+    "value" : "-1.00"
+  } ],
+  "result" : null
+}, {
+  "type" : "EXACT",
+  "total" : "10.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "10.00"
+  }, {
+    "userId" : 2,
+    "value" : "0"
+  } ],
+  "result" : {
+    "1" : "10.00",
+    "2" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "10.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "10.00"
+  }, {
+    "userId" : 2,
+    "value" : null
+  } ],
+  "result" : {
+    "1" : "10.00",
+    "2" : "0.00"
+  }
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "10.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : "-1.00"
+  }, {
+    "userId" : 2,
+    "value" : null
+  } ],
+  "result" : null
+}, {
+  "type" : "ADJUSTMENT",
+  "total" : "0.01",
+  "participants" : [ {
+    "userId" : 5,
+    "value" : null
+  }, {
+    "userId" : 4,
+    "value" : null
+  }, {
+    "userId" : 3,
+    "value" : null
+  } ],
+  "result" : {
+    "3" : "0.01",
+    "4" : "0.00",
+    "5" : "0.00"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "0.01",
+  "participants" : [ {
+    "userId" : 9,
+    "value" : null
+  }, {
+    "userId" : 2,
+    "value" : null
+  }, {
+    "userId" : 5,
+    "value" : null
+  } ],
+  "result" : {
+    "2" : "0.01",
+    "5" : "0.00",
+    "9" : "0.00"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "100.00",
+  "participants" : [ {
+    "userId" : 3,
+    "value" : null
+  }, {
+    "userId" : 1,
+    "value" : null
+  }, {
+    "userId" : 2,
+    "value" : null
+  } ],
+  "result" : {
+    "1" : "33.34",
+    "2" : "33.33",
+    "3" : "33.33"
+  }
+}, {
+  "type" : "EQUAL",
+  "total" : "100.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : null
+  }, {
+    "userId" : 1,
+    "value" : null
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "10.10",
+  "participants" : [ ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "-5.00",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : null
+  } ],
+  "result" : null
+}, {
+  "type" : "EQUAL",
+  "total" : "999999999.99",
+  "participants" : [ {
+    "userId" : 1,
+    "value" : null
+  }, {
+    "userId" : 2,
+    "value" : null
+  }, {
+    "userId" : 3,
+    "value" : null
+  }, {
+    "userId" : 4,
+    "value" : null
+  }, {
+    "userId" : 5,
+    "value" : null
+  }, {
+    "userId" : 6,
+    "value" : null
+  }, {
+    "userId" : 7,
+    "value" : null
+  } ],
+  "result" : {
+    "1" : "142857142.86",
+    "2" : "142857142.86",
+    "3" : "142857142.86",
+    "4" : "142857142.86",
+    "5" : "142857142.85",
+    "6" : "142857142.85",
+    "7" : "142857142.85"
+  }
+} ]

@@ -32,13 +32,18 @@ public class ExpenseShare {
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
 
+    /** What was entered for this person (percentage, shares, exact amount or adjustment); null for EQUAL. */
+    @Column(name = "split_value", precision = 19, scale = 4)
+    private BigDecimal splitValue;
+
     protected ExpenseShare() {
     }
 
-    ExpenseShare(Expense expense, User user, BigDecimal amount) {
+    ExpenseShare(Expense expense, User user, BigDecimal amount, BigDecimal splitValue) {
         this.expense = expense;
         this.user = user;
         this.amount = Money.of(amount);
+        this.splitValue = splitValue;
     }
 
     public Long getId() {
@@ -57,7 +62,15 @@ public class ExpenseShare {
         return amount;
     }
 
+    public BigDecimal getSplitValue() {
+        return splitValue;
+    }
+
     void setAmount(BigDecimal amount) {
         this.amount = Money.of(amount);
+    }
+
+    void setSplitValue(BigDecimal splitValue) {
+        this.splitValue = splitValue;
     }
 }

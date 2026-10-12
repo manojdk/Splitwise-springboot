@@ -1,6 +1,16 @@
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
-import type { FriendBalance, FriendTotals, Group, User } from '../api/types'
+import type {
+  CreateExpenseRequest,
+  Expense,
+  FriendBalance,
+  FriendTotals,
+  Group,
+  Settlement,
+  UpdateExpenseRequest,
+  User,
+} from '../api/types'
+import { computeSplit, paiseToString } from '../lib/split'
 
 /**
  * A fake API with the same paths, shapes and error bodies as the Spring Boot backend, backed by a small
@@ -15,11 +25,89 @@ export const VALID_TOKEN = 'token-alice'
 
 const USERS = [ALICE, BOB, CAROL, DAN]
 
-type Db = { groups: Group[]; friends: FriendBalance[]; nextId: number }
+type Db = { groups: Group[]; friends: FriendBalance[]; expenses: Expense[]; settlements: Settlement[]; nextId: number }
+
+/** An expense as the API would return it, with shares from the same split rules the API uses. */
+export function makeExpense(fields: {
+  id: number
+  groupId: number | null
+  description: string
+  amount: number
+  paidBy: User
+  splitType: Expense['splitType']
+  shares: { user: User; value?: string }[]
+  date?: string
+  category?: Expense['category']
+  currency?: string
+  /** false: as saved before split values were kept */
+  storeValues?: boolean
+}): Expense {
+  const split = computeSplit(
+    fields.splitType,
+    fields.amount.toFixed(2),
+    fields.shares.map((s) => ({ userId: s.user.id, value: s.value ?? null })),
+  )
+  if (!split.ok) throw new Error(split.error)
+  return {
+    id: fields.id,
+    description: fields.description,
+    amount: fields.amount,
+    currency: fields.currency ?? 'INR',
+    paidBy: { id: fields.paidBy.id, name: fields.paidBy.name },
+    groupId: fields.groupId,
+    date: fields.date ?? '2026-09-10',
+    splitType: fields.splitType,
+    category: fields.category ?? 'GENERAL',
+    notes: null,
+    shares: fields.shares.map((s) => ({
+      userId: s.user.id,
+      name: s.user.name,
+      amount: Number(paiseToString(split.owed.get(s.user.id)!)),
+      value: fields.storeValues === false || fields.splitType === 'EQUAL' || !s.value ? null : Number(s.value),
+    })),
+    version: 0,
+    createdById: fields.paidBy.id,
+    createdAt: '2026-09-10T10:00:00Z',
+    updatedById: null,
+    updatedAt: null,
+    deleted: false,
+    recurringExpenseId: null,
+  }
+}
 
 function initialDb(): Db {
   return {
     nextId: 100,
+    settlements: [],
+    // Goa Trip: Alice paid the villa (shares 2:1:1), Bob paid dinner (equal)
+    expenses: [
+      makeExpense({
+        id: 50,
+        groupId: 10,
+        description: 'Villa (3 nights)',
+        amount: 9000,
+        paidBy: ALICE,
+        splitType: 'SHARES',
+        shares: [
+          { user: ALICE, value: '2' },
+          { user: BOB, value: '1' },
+          { user: CAROL, value: '1' },
+        ],
+        date: '2026-09-10',
+        category: 'RENT',
+      }),
+      makeExpense({
+        id: 51,
+        groupId: 10,
+        description: 'Beach shack dinner',
+        amount: 1200,
+        paidBy: BOB,
+        splitType: 'EQUAL',
+        shares: [{ user: ALICE }, { user: BOB }, { user: CAROL }],
+        date: '2026-09-12',
+        category: 'FOOD_AND_DRINK',
+      }),
+    ],
     groups: [
       { id: 10, name: 'Goa Trip', currency: 'INR', createdById: ALICE.id, createdAt: '2026-09-01T10:00:00Z', members: [ALICE, BOB, CAROL] },
       { id: 11, name: 'Paris', currency: 'EUR', createdById: CAROL.id, createdAt: '2026-09-05T10:00:00Z', members: [CAROL, ALICE] },
@@ -179,4 +267,193 @@ export const handlers = [
   }),
 ]
 
+/** Net balance in paise per member of a group, from its expenses and payments (positive = is owed money). */
+function groupBalances(group: Group): Map<number, number> {
+  const net = new Map<number, number>(group.members.map((m) => [m.id, 0]))
+  const addTo = (id: number, paise: number) => net.set(id, (net.get(id) ?? 0) + paise)
+  for (const e of db.expenses.filter((x) => x.groupId === group.id && !x.deleted)) {
+    addTo(e.paidBy.id, Math.round(e.amount * 100))
+    for (const share of e.shares) addTo(share.userId, -Math.round(share.amount * 100))
+  }
+  for (const p of db.settlements.filter((x) => x.groupId === group.id)) {
+    addTo(p.fromUserId, Math.round(p.amount * 100))
+    addTo(p.toUserId, -Math.round(p.amount * 100))
+  }
+  return net
+}
+
+const nameOf = (id: number) => USERS.find((u) => u.id === id)?.name ?? `User ${id}`
+
+function saveExpense(body: CreateExpenseRequest | UpdateExpenseRequest, existing?: Expense): Expense | Response {
+  const split = computeSplit(
+    body.splitType,
+    String(body.amount),
+    body.shares.map((s) => ({ userId: s.userId, value: s.value === undefined ? null : String(s.value) })),
+  )
+  if (!split.ok) return errorBody(400, split.error, '/api/expenses')
+  const groupId = existing ? existing.groupId : 'groupId' in body ? (body.groupId ?? null) : null
+  return {
+    id: existing?.id ?? db.nextId++,
+    description: body.description,
+    amount: body.amount,
+    currency: db.groups.find((g) => g.id === groupId)?.currency ?? 'INR',
+    paidBy: { id: body.paidById, name: nameOf(body.paidById) },
+    groupId,
+    date: body.date ?? '2026-10-12',
+    splitType: body.splitType,
+    category: body.category ?? 'GENERAL',
+    notes: body.notes ?? null,
+    shares: body.shares.map((s) => ({
+      userId: s.userId,
+      name: nameOf(s.userId),
+      amount: Number(paiseToString(split.owed.get(s.userId)!)),
+      value: body.splitType === 'EQUAL' ? null : (s.value ?? null),
+    })),
+    version: existing ? existing.version + 1 : 0,
+    createdById: existing?.createdById ?? ALICE.id,
+    createdAt: existing?.createdAt ?? '2026-10-12T10:00:00Z',
+    updatedById: existing ? ALICE.id : null,
+    updatedAt: existing ? '2026-10-12T11:00:00Z' : null,
+    deleted: false,
+    recurringExpenseId: null,
+  }
+}
+
+handlers.push(
+  http.get('*/api/groups/:groupId/expenses', ({ params, request }) => {
+    const { group, error } = memberGroup(Number(params.groupId), '/api/groups/expenses')
+    if (error) return error
+    const url = new URL(request.url)
+    const page = Number(url.searchParams.get('page') ?? 0)
+    const size = Number(url.searchParams.get('size') ?? 20)
+    const q = url.searchParams.get('q')?.toLowerCase()
+    const category = url.searchParams.get('category')
+    const paidBy = url.searchParams.get('paidBy')
+    const from = url.searchParams.get('from')
+    const to = url.searchParams.get('to')
+    const matching = db.expenses
+      .filter((e) => e.groupId === group.id && !e.deleted)
+      .filter((e) => !q || e.description.toLowerCase().includes(q))
+      .filter((e) => !category || e.category === category)
+      .filter((e) => !paidBy || e.paidBy.id === Number(paidBy))
+      .filter((e) => (!from || e.date >= from) && (!to || e.date <= to))
+      .sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id)
+    const totalPages = Math.ceil(matching.length / size)
+    return HttpResponse.json({
+      content: matching.slice(page * size, page * size + size),
+      page,
+      size,
+      totalElements: matching.length,
+      totalPages,
+      last: page >= totalPages - 1,
+    })
+  }),
+
+  http.post('*/api/expenses', async ({ request }) => {
+    const saved = saveExpense((await request.json()) as CreateExpenseRequest)
+    if (saved instanceof Response) return saved
+    db.expenses.push(saved)
+    return HttpResponse.json(saved, { status: 201 })
+  }),
+
+  http.get('*/api/expenses/:id', ({ params }) => {
+    const expense = db.expenses.find((e) => e.id === Number(params.id))
+    return expense ? HttpResponse.json(expense) : errorBody(404, `Expense ${params.id} not found`, '/api/expenses')
+  }),
+
+  http.put('*/api/expenses/:id', async ({ params, request }) => {
+    const index = db.expenses.findIndex((e) => e.id === Number(params.id))
+    const existing = db.expenses[index]
+    if (!existing) return errorBody(404, `Expense ${params.id} not found`, '/api/expenses')
+    const body = (await request.json()) as UpdateExpenseRequest
+    if (body.version !== existing.version) {
+      return errorBody(
+        409,
+        `Expense ${existing.id} was changed by someone else (now version ${existing.version}); reload it and try again`,
+        '/api/expenses',
+      )
+    }
+    const saved = saveExpense(body, existing)
+    if (saved instanceof Response) return saved
+    db.expenses[index] = saved
+    return HttpResponse.json(saved)
+  }),
+
+  http.delete('*/api/expenses/:id', ({ params }) => {
+    const expense = db.expenses.find((e) => e.id === Number(params.id))
+    if (!expense) return errorBody(404, `Expense ${params.id} not found`, '/api/expenses')
+    expense.deleted = true
+    return new HttpResponse(null, { status: 204 })
+  }),
+
+  http.post('*/api/expenses/:id/restore', ({ params }) => {
+    const expense = db.expenses.find((e) => e.id === Number(params.id))
+    if (!expense) return errorBody(404, `Expense ${params.id} not found`, '/api/expenses')
+    expense.deleted = false
+    return HttpResponse.json(expense)
+  }),
+
+  http.get('*/api/groups/:groupId/balances', ({ params }) => {
+    const { group, error } = memberGroup(Number(params.groupId), '/api/groups/balances')
+    if (error) return error
+    return HttpResponse.json(
+      [...groupBalances(group)].map(([userId, paise]) => ({
+        userId,
+        name: nameOf(userId),
+        netBalance: paise / 100,
+        currency: group.currency,
+      })),
+    )
+  }),
+
+  http.get('*/api/groups/:groupId/debts/simplified', ({ params }) => {
+    const { group, error } = memberGroup(Number(params.groupId), '/api/groups/debts')
+    if (error) return error
+    // Greedy: the biggest debtor pays the biggest creditor until everyone is at zero
+    const net = [...groupBalances(group)].map(([id, paise]) => ({ id, paise })).filter((x) => x.paise !== 0)
+    const transfers = []
+    for (;;) {
+      const debtor = net.filter((x) => x.paise < 0).sort((a, b) => a.paise - b.paise)[0]
+      const creditor = net.filter((x) => x.paise > 0).sort((a, b) => b.paise - a.paise)[0]
+      if (!debtor || !creditor) break
+      const paise = Math.min(-debtor.paise, creditor.paise)
+      debtor.paise += paise
+      creditor.paise -= paise
+      transfers.push({
+        fromUserId: debtor.id,
+        fromName: nameOf(debtor.id),
+        toUserId: creditor.id,
+        toName: nameOf(creditor.id),
+        amount: paise / 100,
+        currency: group.currency,
+      })
+    }
+    return HttpResponse.json(transfers)
+  }),
+
+  http.post('*/api/settlements', async ({ request }) => {
+    const body = (await request.json()) as { fromUserId: number; toUserId: number; amount: number; groupId?: number; date?: string }
+    if (body.fromUserId !== ALICE.id && body.toUserId !== ALICE.id) {
+      return errorBody(403, 'You can only record settlements you paid or received', '/api/settlements')
+    }
+    const settlement: Settlement = {
+      id: db.nextId++,
+      fromUserId: body.fromUserId,
+      fromName: nameOf(body.fromUserId),
+      toUserId: body.toUserId,
+      toName: nameOf(body.toUserId),
+      amount: body.amount,
+      currency: 'INR',
+      groupId: body.groupId ?? null,
+      date: body.date ?? '2026-10-12',
+      note: null,
+      version: 0,
+      deleted: false,
+    }
+    db.settlements.push(settlement)
+    return HttpResponse.json(settlement, { status: 201 })
+  }),
+)
+
 export const server = setupServer(...handlers)
+

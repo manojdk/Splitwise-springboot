@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +90,7 @@ public class ExpenseService {
         Expense expense = new Expense(request.description().trim(), request.amount(), split.currency(),
                 split.payer(), group, dateOrToday(request.date()), request.splitType(), caller);
         expense.describe(request.category(), request.notes());
-        split.shares().forEach(expense::addShare);
+        split.addSharesTo(expense);
         Expense saved = expenseRepository.save(expense);
         activity.expenseAdded(callerId, saved);
         return ExpenseResponse.from(saved);
@@ -114,8 +115,8 @@ public class ExpenseService {
         ExpenseSnapshot before = ExpenseSnapshot.of(expense);
 
         expense.update(request.description().trim(), request.amount(), split.currency(), split.payer(),
-                dateOrToday(request.date()), request.splitType(), split.shares(), userService.getById(callerId),
-                Instant.now(clock));
+                dateOrToday(request.date()), request.splitType(), split.shares(), split.splitValues(),
+                userService.getById(callerId), Instant.now(clock));
         expense.describe(request.category(), request.notes());
         // Flush so the new version is in the response and a lost race fails here, inside the transaction
         Expense saved = expenseRepository.saveAndFlush(expense);
@@ -182,7 +183,7 @@ public class ExpenseService {
                 split.payer(), template.getGroup(), occurrence, template.getSplitType(), template.getCreatedBy());
         expense.describe(template.getCategory(), template.getNotes());
         expense.linkToRecurring(template, occurrence);
-        split.shares().forEach(expense::addShare);
+        split.addSharesTo(expense);
         Expense saved = expenseRepository.save(expense);
         activity.expenseAdded(creatorId, saved);
         return saved;
@@ -215,7 +216,16 @@ public class ExpenseService {
 
     // ------------------------------------------------------------------ helpers
 
-    private record ValidatedSplit(String currency, User payer, Map<User, BigDecimal> shares) {
+    /**
+     * @param shares      owed amount per user
+     * @param splitValues what was entered per user (null for EQUAL, and for an adjustment left empty)
+     */
+    private record ValidatedSplit(String currency, User payer, Map<User, BigDecimal> shares,
+                                  Map<Long, BigDecimal> splitValues) {
+
+        void addSharesTo(Expense expense) {
+            shares.forEach((user, amount) -> expense.addShare(user, amount, splitValues.get(user.getId())));
+        }
     }
 
     /**
@@ -246,7 +256,11 @@ public class ExpenseService {
         }
         Map<User, BigDecimal> shares = new LinkedHashMap<>();
         owed.forEach((userId, value) -> shares.put(users.get(userId), value));
-        return new ValidatedSplit(currency, users.get(paidById), shares);
+        Map<Long, BigDecimal> splitValues = new HashMap<>();
+        if (splitType != SplitType.EQUAL) {
+            shareRequests.forEach(s -> splitValues.put(s.userId(), s.value()));
+        }
+        return new ValidatedSplit(currency, users.get(paidById), shares, splitValues);
     }
 
     private Expense findExpense(Long expenseId) {

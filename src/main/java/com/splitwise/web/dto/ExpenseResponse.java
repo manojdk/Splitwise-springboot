@@ -23,9 +23,19 @@ public record ExpenseResponse(Long id, String description, BigDecimal amount, St
     public record UserSummary(Long id, String name) {
     }
 
+    /** 2.5000 -> 2.5 and 100.0000 -> 100 (not 1E+2). */
+    private static BigDecimal plain(BigDecimal value) {
+        if (value == null) {
+            return null;
+        }
+        BigDecimal stripped = value.stripTrailingZeros();
+        return stripped.scale() < 0 ? stripped.setScale(0) : stripped;
+    }
+
     public static ExpenseResponse from(Expense e) {
         List<ShareResponse> shares = e.getShares().stream()
-                .map(s -> new ShareResponse(s.getUser().getId(), s.getUser().getName(), s.getAmount()))
+                .map(s -> new ShareResponse(s.getUser().getId(), s.getUser().getName(), s.getAmount(),
+                        plain(s.getSplitValue())))
                 .toList();
         // Only ids for createdBy / updatedBy: reading the id of a lazy reference does not load the user
         return new ExpenseResponse(e.getId(), e.getDescription(), e.getAmount(), e.getCurrency(),
