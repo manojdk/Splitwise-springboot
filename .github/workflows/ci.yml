@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Make Maven wrapper executable
+        run: chmod +x mvnw
+
+      - name: Build and test
+        run: ./mvnw -B verify
+
+  postgres:
+    # Same test suite against a real PostgreSQL 16 instead of H2, to prove the Flyway migration and
+    # the queries on the production database engine.
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: splitwise_ci
+          POSTGRES_USER: splitwise
+          POSTGRES_PASSWORD: splitwise-ci-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U splitwise -d splitwise_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # Environment variables override the H2 settings of the test profile
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/splitwise_ci
+      SPRING_DATASOURCE_USERNAME: splitwise
+      SPRING_DATASOURCE_PASSWORD: splitwise-ci-only
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Make Maven wrapper executable
+        run: chmod +x mvnw
+
+      - name: Test against PostgreSQL
+        run: ./mvnw -B verify

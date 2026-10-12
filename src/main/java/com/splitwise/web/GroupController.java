@@ -1,0 +1,113 @@
+package com.splitwise.web;
+
+import com.splitwise.security.CurrentUser;
+import com.splitwise.service.BalanceService;
+import com.splitwise.service.ExpenseService;
+import com.splitwise.service.GroupService;
+import com.splitwise.service.SettlementService;
+import com.splitwise.web.dto.AddMemberRequest;
+import com.splitwise.web.dto.BalanceResponse;
+import com.splitwise.web.dto.CreateGroupRequest;
+import com.splitwise.web.dto.ExpenseResponse;
+import com.splitwise.web.dto.GroupResponse;
+import com.splitwise.web.dto.SettlementResponse;
+import com.splitwise.web.dto.TransferResponse;
+import com.splitwise.web.dto.UpdateGroupRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+/** Group management plus the group-scoped read views. Every endpoint requires group membership. */
+@RestController
+@RequestMapping("/api/groups")
+@Tag(name = "Groups")
+public class GroupController {
+
+    private final GroupService groupService;
+    private final ExpenseService expenseService;
+    private final SettlementService settlementService;
+    private final BalanceService balanceService;
+
+    public GroupController(GroupService groupService, ExpenseService expenseService,
+                           SettlementService settlementService, BalanceService balanceService) {
+        this.groupService = groupService;
+        this.expenseService = expenseService;
+        this.settlementService = settlementService;
+        this.balanceService = balanceService;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a group; the caller becomes a member")
+    public GroupResponse create(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody CreateGroupRequest request) {
+        return groupService.create(CurrentUser.id(jwt), request);
+    }
+
+    @GetMapping
+    @Operation(summary = "Groups the caller belongs to")
+    public List<GroupResponse> list(@AuthenticationPrincipal Jwt jwt) {
+        return groupService.listForUser(CurrentUser.id(jwt));
+    }
+
+    @GetMapping("/{groupId}")
+    public GroupResponse get(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId) {
+        return groupService.get(CurrentUser.id(jwt), groupId);
+    }
+
+    @PutMapping("/{groupId}")
+    @Operation(summary = "Rename a group")
+    public GroupResponse rename(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId,
+                                @Valid @RequestBody UpdateGroupRequest request) {
+        return groupService.rename(CurrentUser.id(jwt), groupId, request);
+    }
+
+    @DeleteMapping("/{groupId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete an empty group (creator only)")
+    public void delete(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId) {
+        groupService.delete(CurrentUser.id(jwt), groupId);
+    }
+
+    @PostMapping("/{groupId}/members")
+    @Operation(summary = "Add a registered user to the group by email")
+    public GroupResponse addMember(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId,
+                                   @Valid @RequestBody AddMemberRequest request) {
+        return groupService.addMember(CurrentUser.id(jwt), groupId, request);
+    }
+
+    @GetMapping("/{groupId}/expenses")
+    public List<ExpenseResponse> expenses(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId) {
+        return expenseService.listForGroup(CurrentUser.id(jwt), groupId);
+    }
+
+    @GetMapping("/{groupId}/settlements")
+    public List<SettlementResponse> settlements(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId) {
+        return settlementService.listForGroup(CurrentUser.id(jwt), groupId);
+    }
+
+    @GetMapping("/{groupId}/balances")
+    @Operation(summary = "Net balance per member (positive = is owed, negative = owes)")
+    public List<BalanceResponse> balances(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId) {
+        return balanceService.groupBalances(CurrentUser.id(jwt), groupId);
+    }
+
+    @GetMapping("/{groupId}/debts/simplified")
+    @Operation(summary = "Suggested payments that settle the whole group with few transfers")
+    public List<TransferResponse> simplifiedDebts(@AuthenticationPrincipal Jwt jwt, @PathVariable Long groupId) {
+        return balanceService.simplifiedDebts(CurrentUser.id(jwt), groupId);
+    }
+}
