@@ -3,7 +3,6 @@ package com.splitwise.service;
 import com.splitwise.domain.Expense;
 import com.splitwise.domain.ExpenseShare;
 import com.splitwise.domain.Group;
-import com.splitwise.domain.Money;
 import com.splitwise.exception.BadRequestException;
 import com.splitwise.report.ExpenseCsv;
 import com.splitwise.report.GroupReport;
@@ -40,7 +39,7 @@ public class ReportService {
         List<Expense> expenses = expensesInRange(groupId, from, to);
         Map<Long, String> names = names(expenses);
         GroupReport report = GroupReport.of(expenses.stream().map(ReportLine::of).toList());
-        return new GroupReportResponse(groupId, group.getName(), from, to, Money.DEFAULT_CURRENCY,
+        return new GroupReportResponse(groupId, group.getName(), from, to, group.getCurrency(),
                 report.expenseCount(), report.totalSpent(),
                 report.byCategory().stream()
                         .map(c -> new GroupReportResponse.CategoryTotal(c.category(), c.total(), c.count()))

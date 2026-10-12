@@ -62,7 +62,7 @@ class SplitTypesAndCategoryIntegrationTest extends ApiTestSupport {
         addExpense(alice, expenseBody(groupId, alice, "10.00", "SPLIT_BY_VIBES", Share.of(alice)))
                 .andExpect(status().isBadRequest());
 
-        call(alice, get("/api/groups/" + groupId + "/expenses")).andExpect(jsonPath("$.length()").value(0));
+        call(alice, get("/api/groups/" + groupId + "/expenses")).andExpect(jsonPath("$.totalElements").value(0));
     }
 
     @Test

@@ -47,24 +47,26 @@ class FriendBalanceIntegrationTest extends ApiTestSupport {
 
         call(w.alice(), get("/api/users/me/friends"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.youAreOwed").value(40.00))
-                .andExpect(jsonPath("$.youOwe").value(0.00))
-                .andExpect(jsonPath("$.net").value(40.00))
+                .andExpect(jsonPath("$.totals", hasSize(1)))
+                .andExpect(jsonPath("$.totals[0].currency").value("INR"))
+                .andExpect(jsonPath("$.totals[0].youAreOwed").value(40.00))
+                .andExpect(jsonPath("$.totals[0].youOwe").value(0.00))
+                .andExpect(jsonPath("$.totals[0].net").value(40.00))
                 .andExpect(jsonPath("$.friends", hasSize(1)))
                 .andExpect(jsonPath("$.friends[0].userId").value(w.bob().id()))
                 .andExpect(jsonPath("$.friends[0].name").value("Bob"))
-                .andExpect(jsonPath("$.friends[0].balance").value(40.00))
+                .andExpect(jsonPath("$.friends[0].balances[0].amount").value(40.00))
                 .andExpect(jsonPath("$.friends[0].breakdown", hasSize(3)));
 
         // Bob: owes Alice 40, is owed 30 by Carol; largest balance first
         call(w.bob(), get("/api/users/me/friends"))
-                .andExpect(jsonPath("$.youAreOwed").value(30.00))
-                .andExpect(jsonPath("$.youOwe").value(40.00))
-                .andExpect(jsonPath("$.net").value(-10.00))
+                .andExpect(jsonPath("$.totals[0].youAreOwed").value(30.00))
+                .andExpect(jsonPath("$.totals[0].youOwe").value(40.00))
+                .andExpect(jsonPath("$.totals[0].net").value(-10.00))
                 .andExpect(jsonPath("$.friends[0].userId").value(w.alice().id()))
-                .andExpect(jsonPath("$.friends[0].balance").value(-40.00))
+                .andExpect(jsonPath("$.friends[0].balances[0].amount").value(-40.00))
                 .andExpect(jsonPath("$.friends[1].userId").value(w.carol().id()))
-                .andExpect(jsonPath("$.friends[1].balance").value(30.00));
+                .andExpect(jsonPath("$.friends[1].balances[0].amount").value(30.00));
 
         // The friends total always equals the overall balance
         assertThat(myOverallBalance(w.alice())).isEqualByComparingTo("40.00");
@@ -77,7 +79,8 @@ class FriendBalanceIntegrationTest extends ApiTestSupport {
 
         call(w.alice(), get("/api/users/me/friends/" + w.bob().id()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.balance").value(40.00))
+                .andExpect(jsonPath("$.balances[0].amount").value(40.00))
+                .andExpect(jsonPath("$.breakdown[0].currency").value("INR"))
                 .andExpect(jsonPath("$.breakdown[?(@.groupId == " + w.flat() + ")].amount").value(50.00))
                 .andExpect(jsonPath("$.breakdown[?(@.groupId == " + w.trip() + ")].amount").value(-30.00))
                 .andExpect(jsonPath("$.breakdown[?(@.groupId == " + w.trip() + ")].groupName").isNotEmpty())
@@ -85,11 +88,11 @@ class FriendBalanceIntegrationTest extends ApiTestSupport {
 
         // Mirror image from Bob's side
         call(w.bob(), get("/api/users/me/friends/" + w.alice().id()))
-                .andExpect(jsonPath("$.balance").value(-40.00));
+                .andExpect(jsonPath("$.balances[0].amount").value(-40.00));
         // Alice and Carol share a group but owe each other nothing there (the group's debts are simplified)
         call(w.alice(), get("/api/users/me/friends/" + w.carol().id()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.balance").value(0.00))
+                .andExpect(jsonPath("$.balances", hasSize(0)))
                 .andExpect(jsonPath("$.breakdown", hasSize(0)));
     }
 
@@ -104,7 +107,7 @@ class FriendBalanceIntegrationTest extends ApiTestSupport {
         call(w.alice(), post("/api/users/me/friends/" + stranger.id() + "/settle-up")).andExpect(status().isNotFound());
         call(stranger, get("/api/users/me/friends"))
                 .andExpect(jsonPath("$.friends", hasSize(0)))
-                .andExpect(jsonPath("$.net").value(0.00));
+                .andExpect(jsonPath("$.totals", hasSize(0)));
     }
 
     @Test
@@ -114,7 +117,7 @@ class FriendBalanceIntegrationTest extends ApiTestSupport {
         JsonNode result = read(call(w.alice(), post("/api/users/me/friends/" + w.bob().id() + "/settle-up"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.settlements", hasSize(3)))
-                .andExpect(jsonPath("$.balance.balance").value(0.00))
+                .andExpect(jsonPath("$.balance.balances", hasSize(0)))
                 .andExpect(jsonPath("$.balance.breakdown", hasSize(0))));
         // Each bucket is paid in the direction of its own debt
         assertThat(result.at("/settlements").findValuesAsText("fromUserId"))

@@ -84,7 +84,8 @@ class FriendSettleUpConcurrencyTest extends ApiTestSupport {
         assertThat(successes).isEqualTo(1);
         assertThat(failures).singleElement().isInstanceOf(ConflictException.class);
         // Exactly one payment per bucket, not two
-        assertThat(settlementService.listForUser(alice.id())).hasSize(expectedSettlements);
-        assertThat(friendBalanceService.balanceWith(alice.id(), bob.id()).balance()).isEqualByComparingTo("0.00");
+        assertThat(settlementService.listForUser(alice.id(), null, null, 0, 100).totalElements())
+                .isEqualTo(expectedSettlements);
+        assertThat(friendBalanceService.balanceWith(alice.id(), bob.id()).balances()).isEmpty();
     }
 }

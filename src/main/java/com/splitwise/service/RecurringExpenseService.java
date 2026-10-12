@@ -86,7 +86,7 @@ public class RecurringExpenseService {
         Map<Long, BigDecimal> shares = new LinkedHashMap<>();
         request.shares().forEach(s -> shares.put(s.userId(), s.value()));
         RecurringExpense template = new RecurringExpense(group, request.description().trim(), request.amount(),
-                ExpenseService.resolveCurrency(request.currency()), userService.getById(request.paidById()),
+                CurrencyRules.resolve(request.currency(), group), userService.getById(request.paidById()),
                 request.splitType(), request.category() == null ? Category.GENERAL : request.category(),
                 blankToNull(request.notes()), shares, request.frequency(), request.startDate(), request.endDate(),
                 userService.getById(callerId), Instant.now(clock));

@@ -1,8 +1,12 @@
 package com.splitwise.service;
 
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Sort;
+import com.splitwise.web.dto.PageResponse;
+import com.splitwise.query.SettlementSpecs;
+import com.splitwise.query.Paging;
 import com.splitwise.activity.ActivityRecorder;
 import com.splitwise.domain.Group;
-import com.splitwise.domain.Money;
 import com.splitwise.domain.Settlement;
 import com.splitwise.domain.User;
 import com.splitwise.exception.BadRequestException;
@@ -25,6 +29,8 @@ import java.util.Set;
 @Service
 @Transactional(readOnly = true)
 public class SettlementService {
+
+    private static final Sort NEWEST_FIRST = Sort.by(Sort.Direction.DESC, "settledOn", "id");
 
     private final SettlementRepository settlementRepository;
     private final GroupService groupService;
@@ -64,22 +70,30 @@ public class SettlementService {
                 : userService.getAllById(Set.of(request.fromUserId(), request.toUserId()));
         LocalDate date = request.date() != null ? request.date() : LocalDate.now(clock);
         Settlement settlement = new Settlement(users.get(request.fromUserId()), users.get(request.toUserId()),
-                request.amount(), Money.DEFAULT_CURRENCY, group, date,
+                request.amount(), CurrencyRules.resolve(request.currency(), group), group, date,
                 request.note() == null ? null : request.note().trim(), users.get(callerId));
         Settlement saved = settlementRepository.save(settlement);
         activity.settlementAdded(callerId, saved);
         return SettlementResponse.from(saved);
     }
 
-    public List<SettlementResponse> listForGroup(Long callerId, Long groupId) {
+    /** A group's settlements (not deleted), newest first, optionally within dates, paged. */
+    public PageResponse<SettlementResponse> listForGroup(Long callerId, Long groupId, LocalDate from, LocalDate to,
+                                                         int page, int size) {
         groupService.requireMemberGroup(groupId, callerId);
-        return settlementRepository.findByGroupIdAndDeletedAtIsNullOrderBySettledOnDescIdDesc(groupId).stream()
-                .map(SettlementResponse::from)
-                .toList();
+        Specification<Settlement> spec = SettlementSpecs.notDeleted().and(SettlementSpecs.inGroup(groupId))
+                .and(SettlementSpecs.between(from, to));
+        return PageResponse.of(settlementRepository.findAll(spec, Paging.of(page, size, NEWEST_FIRST)),
+                SettlementResponse::from);
     }
 
-    public List<SettlementResponse> listForUser(Long callerId) {
-        return settlementRepository.findInvolvingUser(callerId).stream().map(SettlementResponse::from).toList();
+    /** Settlements the user paid or received, newest first, optionally within dates, paged. */
+    public PageResponse<SettlementResponse> listForUser(Long callerId, LocalDate from, LocalDate to, int page,
+                                                        int size) {
+        Specification<Settlement> spec = SettlementSpecs.notDeleted().and(SettlementSpecs.involving(callerId))
+                .and(SettlementSpecs.between(from, to));
+        return PageResponse.of(settlementRepository.findAll(spec, Paging.of(page, size, NEWEST_FIRST)),
+                SettlementResponse::from);
     }
 
     /** Also returns deleted settlements (flagged), so they can be shown and restored. */

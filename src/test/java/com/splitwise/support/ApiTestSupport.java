@@ -177,8 +177,19 @@ public abstract class ApiTestSupport {
         return result;
     }
 
+    /** My overall balance in INR (0 when square). */
     protected BigDecimal myOverallBalance(Session caller) throws Exception {
-        return read(call(caller, get("/api/users/me/balance")).andExpect(status().isOk())).get("netBalance").decimalValue();
+        return myOverallBalance(caller, "INR");
+    }
+
+    protected BigDecimal myOverallBalance(Session caller, String currency) throws Exception {
+        JsonNode balances = read(call(caller, get("/api/users/me/balance")).andExpect(status().isOk())).get("balances");
+        for (JsonNode balance : balances) {
+            if (balance.get("currency").asText().equals(currency)) {
+                return balance.get("amount").decimalValue();
+            }
+        }
+        return BigDecimal.ZERO;
     }
 
     protected ResultActions removeMember(Session caller, long groupId, Session member) throws Exception {

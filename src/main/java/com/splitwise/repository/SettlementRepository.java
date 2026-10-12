@@ -1,5 +1,6 @@
 package com.splitwise.repository;
 
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.Collection;
 import java.util.Optional;
 import com.splitwise.domain.Settlement;
@@ -10,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface SettlementRepository extends JpaRepository<Settlement, Long> {
+public interface SettlementRepository extends JpaRepository<Settlement, Long>, JpaSpecificationExecutor<Settlement> {
 
     @EntityGraph(attributePaths = {"payer", "payee", "group"})
     Optional<Settlement> findDetailedById(Long id);

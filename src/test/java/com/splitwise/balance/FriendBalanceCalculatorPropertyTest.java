@@ -21,22 +21,27 @@ import java.util.TreeSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Property-based tests: jqwik generates many random ledgers (up to 6 people, 2 groups plus non-group, random
- * expenses and settlements) and checks that the friend balances always obey the money invariants. When a
- * property fails, jqwik shrinks the input to a minimal failing example.
+ * Property-based tests: jqwik generates many random ledgers (up to 6 people; group 10 in INR, group 20 in USD,
+ * non-group expenses in either currency) and checks that the friend balances always obey the money invariants,
+ * currency by currency. When a property fails, jqwik shrinks the input to a minimal failing example.
  */
 class FriendBalanceCalculatorPropertyTest {
 
     private static final List<Long> USERS = List.of(1L, 2L, 3L, 4L, 5L, 6L);
+    private static final List<String> CURRENCIES = List.of("INR", "USD");
+    private static final Map<Long, String> GROUP_CURRENCY = Map.of(10L, "INR", 20L, "USD");
 
     @Property(tries = 500)
-    void friendBalancesAddUpToTheOverallBalance(@ForAll("ledgers") List<Entry> ledger) {
-        Map<Long, BigDecimal> overall = FriendBalanceCalculator.netBalances(ledger);
-        for (long user : USERS) {
-            BigDecimal sumOfFriends = FriendBalanceCalculator.forUser(user, ledger).stream()
-                    .map(Item::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
-            assertThat(sumOfFriends).as("user %d", user)
-                    .isEqualByComparingTo(overall.getOrDefault(user, BigDecimal.ZERO));
+    void friendBalancesAddUpToTheOverallBalanceInEachCurrency(@ForAll("ledgers") List<Entry> ledger) {
+        for (String currency : CURRENCIES) {
+            Map<Long, BigDecimal> overall = FriendBalanceCalculator.netBalances(ledger, currency);
+            for (long user : USERS) {
+                BigDecimal sumOfFriends = FriendBalanceCalculator.forUser(user, ledger).stream()
+                        .filter(item -> item.currency().equals(currency))
+                        .map(Item::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
+                assertThat(sumOfFriends).as("user %d in %s", user, currency)
+                        .isEqualByComparingTo(overall.getOrDefault(user, BigDecimal.ZERO));
+            }
         }
     }
 
@@ -45,12 +50,12 @@ class FriendBalanceCalculatorPropertyTest {
         Map<String, BigDecimal> seen = new HashMap<>();
         for (long user : USERS) {
             for (Item item : FriendBalanceCalculator.forUser(user, ledger)) {
-                seen.put(user + ">" + item.friendId() + "@" + item.groupId(), item.amount());
+                seen.put(user + ">" + item.friendId() + "@" + item.groupId() + "#" + item.currency(), item.amount());
             }
         }
         seen.forEach((key, amount) -> {
-            String[] parts = key.split("[>@]");
-            String mirror = parts[1] + ">" + parts[0] + "@" + parts[2];
+            String[] parts = key.split("[>@#]");
+            String mirror = parts[1] + ">" + parts[0] + "@" + parts[2] + "#" + parts[3];
             assertThat(seen.get(mirror)).as(key).isNotNull().isEqualByComparingTo(amount.negate());
         });
     }
@@ -59,24 +64,29 @@ class FriendBalanceCalculatorPropertyTest {
     void settlingEveryBucketLeavesNothingOutstanding(@ForAll("ledgers") List<Entry> ledger, @ForAll("user") long user) {
         List<Entry> settled = new ArrayList<>(ledger);
         for (Item item : FriendBalanceCalculator.forUser(user, ledger)) {
-            // friend owes me (positive): friend pays me; I owe friend (negative): I pay friend
+            // friend owes me (positive): friend pays me; I owe friend (negative): I pay friend; same currency
             settled.add(item.amount().signum() > 0
-                    ? new Entry(item.groupId(), item.friendId(), Map.of(user, item.amount()))
-                    : new Entry(item.groupId(), user, Map.of(item.friendId(), item.amount().negate())));
+                    ? new Entry(item.groupId(), item.currency(), item.friendId(), Map.of(user, item.amount()))
+                    : new Entry(item.groupId(), item.currency(), user, Map.of(item.friendId(), item.amount().negate())));
         }
 
         assertThat(FriendBalanceCalculator.forUser(user, settled)).isEmpty();
-        assertThat(FriendBalanceCalculator.netBalances(settled).getOrDefault(user, BigDecimal.ZERO))
-                .isEqualByComparingTo("0");
+        for (String currency : CURRENCIES) {
+            assertThat(FriendBalanceCalculator.netBalances(settled, currency).getOrDefault(user, BigDecimal.ZERO))
+                    .isEqualByComparingTo("0");
+        }
     }
 
     @Property(tries = 300)
-    void bucketsAreNeverZeroAndAlwaysInCents(@ForAll("ledgers") List<Entry> ledger) {
+    void bucketsAreNeverZeroAlwaysInCentsAndInTheGroupsCurrency(@ForAll("ledgers") List<Entry> ledger) {
         for (long user : USERS) {
             for (Item item : FriendBalanceCalculator.forUser(user, ledger)) {
                 assertThat(item.amount().signum()).isNotZero();
                 assertThat(item.amount().scale()).isEqualTo(2);
                 assertThat(item.friendId()).isNotEqualTo(user);
+                if (item.groupId() != null) {
+                    assertThat(item.currency()).isEqualTo(GROUP_CURRENCY.get(item.groupId()));
+                }
             }
         }
     }
@@ -95,17 +105,18 @@ class FriendBalanceCalculatorPropertyTest {
 
     private Arbitrary<Entry> entry() {
         Arbitrary<Long> group = Arbitraries.of(10L, 20L).injectNull(0.3);
+        Arbitrary<String> nonGroupCurrency = Arbitraries.of(CURRENCIES);
         Arbitrary<Long> creditor = Arbitraries.of(USERS);
         Arbitrary<Set<Long>> debtors = Arbitraries.of(USERS).set().ofMinSize(1).ofMaxSize(5).map(TreeSet::new);
         Arbitrary<List<BigDecimal>> amounts = Arbitraries.longs().between(1, 1_000_000)
                 .map(cents -> BigDecimal.valueOf(cents, 2)).list().ofSize(5);
-        return Combinators.combine(group, creditor, debtors, amounts).as((g, c, ds, as) -> {
+        return Combinators.combine(group, nonGroupCurrency, creditor, debtors, amounts).as((g, cur, c, ds, as) -> {
             Map<Long, BigDecimal> debts = new LinkedHashMap<>();
             int i = 0;
             for (Long debtor : ds) {
                 debts.put(debtor, as.get(i++));
             }
-            return new Entry(g, c, debts);
+            return new Entry(g, g == null ? cur : GROUP_CURRENCY.get(g), c, debts);
         });
     }
 }

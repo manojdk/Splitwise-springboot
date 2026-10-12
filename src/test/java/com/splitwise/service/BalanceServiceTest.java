@@ -142,7 +142,10 @@ class BalanceServiceTest {
         when(settlementRepository.findInvolvingUser(2L)).thenReturn(List.of(settlement(bob, alice, "40")));
 
         // Bob: -100 (share) + 50 (paid) - 25 (own share) + 40 (paid Alice) = -35
-        assertThat(service.overallBalance(2L).netBalance()).isEqualByComparingTo("-35");
+        assertThat(service.overallBalance(2L).balances()).singleElement().satisfies(b -> {
+            assertThat(b.currency()).isEqualTo("INR");
+            assertThat(b.amount()).isEqualByComparingTo("-35");
+        });
     }
 
     @Test

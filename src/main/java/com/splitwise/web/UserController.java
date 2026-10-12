@@ -1,5 +1,8 @@
 package com.splitwise.web;
 
+import java.time.LocalDate;
+import com.splitwise.query.ExpenseFilter;
+import com.splitwise.domain.Category;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.splitwise.web.dto.PageResponse;
 import com.splitwise.web.dto.ActivityResponse;
@@ -29,7 +32,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users/me")
@@ -70,14 +72,26 @@ public class UserController {
 
     @GetMapping("/expenses")
     @Operation(summary = "All expenses the user paid for or has a share in")
-    public List<ExpenseResponse> myExpenses(@AuthenticationPrincipal Jwt jwt) {
-        return expenseService.listForUser(CurrentUser.id(jwt));
+    public PageResponse<ExpenseResponse> myExpenses(@AuthenticationPrincipal Jwt jwt,
+                                                @RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "20") int size,
+                                                @RequestParam(required = false) LocalDate from,
+                                                @RequestParam(required = false) LocalDate to,
+                                                @RequestParam(required = false) Category category,
+                                                @RequestParam(required = false) Long paidBy,
+                                                @RequestParam(required = false) String q) {
+        return expenseService.listForUser(CurrentUser.id(jwt), new ExpenseFilter(from, to, category, paidBy, q),
+                page, size);
     }
 
     @GetMapping("/settlements")
     @Operation(summary = "All settlements the user paid or received")
-    public List<SettlementResponse> mySettlements(@AuthenticationPrincipal Jwt jwt) {
-        return settlementService.listForUser(CurrentUser.id(jwt));
+    public PageResponse<SettlementResponse> mySettlements(@AuthenticationPrincipal Jwt jwt,
+                                                      @RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "20") int size,
+                                                      @RequestParam(required = false) LocalDate from,
+                                                      @RequestParam(required = false) LocalDate to) {
+        return settlementService.listForUser(CurrentUser.id(jwt), from, to, page, size);
     }
 
     @GetMapping("/balance")
