@@ -67,6 +67,15 @@ docs in Swagger UI.
 - **Consistent errors**: every error returns `{timestamp, status, error, message, path}` with an
   appropriate `400 / 401 / 403 / 404 / 409` status.
 
+## UI prototype
+
+A clickable prototype of the frontend, in three themes, lives in [`docs/prototype`](docs/prototype/README.md).
+Open `docs/prototype/index.html` in a browser; it needs no build or server.
+
+| Neon | Solar | Aurora |
+|---|---|---|
+| ![Neon](docs/prototype/screenshots/neon-dashboard.png) | ![Solar](docs/prototype/screenshots/solar-dashboard.png) | ![Aurora](docs/prototype/screenshots/aurora-dashboard.png) |
+
 ## Tech stack
 
 | Area | Choice |
