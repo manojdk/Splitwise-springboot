@@ -1,5 +1,6 @@
 package com.splitwise.activity;
 
+import com.splitwise.domain.RecurringExpense;
 import com.splitwise.domain.Activity;
 import com.splitwise.domain.ActivityType;
 import com.splitwise.domain.Expense;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -143,6 +145,34 @@ public class ActivityRecorder {
     private void saveGroup(ActivityType type, User actor, Group g, String summary, String details,
                            Collection<Long> involved) {
         activityRepository.save(new Activity(type, actor, g.getId(), null, null, summary, details, now(), involved));
+    }
+
+    // ------------------------------------------------------------------ recurring expenses
+
+    public void recurringCreated(Long actorId, RecurringExpense r) {
+        User actor = userService.getById(actorId);
+        saveRecurring(ActivityType.RECURRING_CREATED, actor, r, actor.getName() + " set up \"" + r.getDescription()
+                + "\" (" + money(r.getCurrency(), r.getAmount()) + ") to repeat " + r.getFrequency().name().toLowerCase()
+                + " from " + r.getStartDate());
+    }
+
+    public void recurringStopped(Long actorId, RecurringExpense r) {
+        User actor = userService.getById(actorId);
+        saveRecurring(ActivityType.RECURRING_STOPPED, actor, r,
+                actor.getName() + " stopped the recurring \"" + r.getDescription() + "\"");
+    }
+
+    /** The scheduler could not create an occurrence; recorded in the name of the template's creator. */
+    public void recurringPaused(RecurringExpense r, String reason) {
+        saveRecurring(ActivityType.RECURRING_PAUSED, r.getCreatedBy(), r,
+                "Recurring \"" + r.getDescription() + "\" was paused: " + reason);
+    }
+
+    private void saveRecurring(ActivityType type, User actor, RecurringExpense r, String summary) {
+        Set<Long> involved = new HashSet<>(r.getShares().keySet());
+        involved.add(r.getPaidBy().getId());
+        activityRepository.save(new Activity(type, actor, groupId(r.getGroup()), null, null, summary, null, now(),
+                involved));
     }
 
     // ------------------------------------------------------------------ helpers

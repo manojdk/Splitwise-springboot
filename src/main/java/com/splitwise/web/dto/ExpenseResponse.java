@@ -12,11 +12,12 @@ import java.util.List;
 /**
  * @param version   send it back when editing (optimistic locking)
  * @param deleted   true for a soft-deleted expense (only returned by GET /api/expenses/{id})
+ * @param recurringExpenseId the recurring template this expense was created from, if any
  */
 public record ExpenseResponse(Long id, String description, BigDecimal amount, String currency,
                               UserSummary paidBy, Long groupId, LocalDate date, SplitType splitType,
                               Category category, String notes, List<ShareResponse> shares, long version, Long createdById, Instant createdAt,
-                              Long updatedById, Instant updatedAt, boolean deleted) {
+                              Long updatedById, Instant updatedAt, boolean deleted, Long recurringExpenseId) {
 
     public record UserSummary(Long id, String name) {
     }
@@ -31,6 +32,7 @@ public record ExpenseResponse(Long id, String description, BigDecimal amount, St
                 e.getGroup() == null ? null : e.getGroup().getId(),
                 e.getExpenseDate(), e.getSplitType(), e.getCategory(), e.getNotes(), shares, e.getVersion(),
                 e.getCreatedBy().getId(), e.getCreatedAt(),
-                e.getUpdatedBy() == null ? null : e.getUpdatedBy().getId(), e.getUpdatedAt(), e.isDeleted());
+                e.getUpdatedBy() == null ? null : e.getUpdatedBy().getId(), e.getUpdatedAt(), e.isDeleted(),
+                e.getRecurringExpense() == null ? null : e.getRecurringExpense().getId());
     }
 }
