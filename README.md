@@ -13,11 +13,17 @@ docs in Swagger UI.
 - **Groups**: create, rename, delete (creator only, and only while empty), add members by email,
   **leave or remove members** - only with a zero balance in the group, so nobody walks away owing money or
   being owed. Members can leave; only the creator removes others; the creator cannot leave.
-- **Expenses**: three split strategies, all exact to the cent:
+- **Expenses**: five split strategies, all exact to the cent (done in whole cents with integer arithmetic):
   - `EQUAL`: leftover cents go one each to the lowest user ids (100.00 / 3 = 33.34 + 33.33 + 33.33).
   - `EXACT`: given amounts must add up to the expense amount exactly.
   - `PERCENTAGE`: percentages must add up to 100; rounding uses the largest-remainder method, so the
     shares always add up to the total.
+  - `SHARES`: a number of shares per person (2 : 1 for a couple and a single, 1.5 allowed, 0 allowed);
+    divided in proportion, same largest-remainder rounding, and a 0 share never gets a stray cent.
+  - `ADJUSTMENT`: an extra amount per person (the dessert), the rest split equally:
+    330 with Carol +30 = 100 / 100 / 130.
+  - Each expense has a **category** (`GENERAL`, `FOOD_AND_DRINK`, `GROCERIES`, `RENT`, `UTILITIES`,
+    `TRANSPORT`, `TRAVEL`, `ENTERTAINMENT`, `SHOPPING`, `HEALTH`; default `GENERAL`) and optional **notes**.
   - Expenses can belong to a group, or sit outside any group (for example, two friends sharing a cab).
 - **Edit, delete and restore**: any group member can fix a group expense (as in Splitwise); for non-group
   expenses, anyone involved. Edits use **optimistic locking**: the client sends the `version` it read, and an
@@ -26,6 +32,12 @@ docs in Swagger UI.
   (only while everyone in it is still in the group). Settlements recorded by mistake can be undone and
   restored the same way.
 - **Balances**: net balance per member of a group, plus each user's overall balance.
+- **Friends**: the Splitwise home screen - everyone you have an open balance with ("you owe Bob 40",
+  "Carol owes you 30"), with a per-group breakdown and totals that always equal your overall balance. Group
+  parts come from the group's simplified debts, the same transfers the group suggests.
+- **Settle up with a friend**: one call records the payments that clear every open balance with that friend,
+  one settlement per group (so each group's balances stay right) plus one for non-group expenses. Two
+  simultaneous settle-ups between the same people never pay twice: both users are locked first.
 - **Debt simplification**: turns a group's balances into a short list of "X pays Y amount" transfers.
 - **Settle up**: record payments between users; balances and suggested transfers update immediately.
 - **Access control**: only members of a group can see or change its data (others get `403`).
@@ -173,6 +185,9 @@ All endpoints except register, login, the API docs and `/actuator/health` need
 | GET | `/api/users/me/expenses` | Expenses I paid for or share in |
 | GET | `/api/users/me/settlements` | Settlements I paid or received |
 | GET | `/api/users/me/balance` | My overall net balance |
+| GET | `/api/users/me/friends` | Everyone I have an open balance with, per group, plus totals |
+| GET | `/api/users/me/friends/{userId}` | My balance with one friend, per group |
+| POST | `/api/users/me/friends/{userId}/settle-up` | Record the payments that settle everything with a friend |
 | POST | `/api/groups` | Create a group (caller becomes a member) |
 | GET | `/api/groups` | My groups |
 | GET / PUT / DELETE | `/api/groups/{id}` | Get, rename, delete a group |
@@ -212,7 +227,8 @@ curl -s -X POST localhost:8080/api/expenses -H "Authorization: Bearer $TOKEN" \
 ```
 
 For `EQUAL` splits the `value` of each share is ignored; for `EXACT` it is the amount owed; for
-`PERCENTAGE` it is the percentage. `currency` is optional and defaults to `INR`. Only a single
+`PERCENTAGE` it is the percentage; for `SHARES` the number of shares; for `ADJUSTMENT` the extra amount on
+top of an equal split (may be left out = 0). `category` and `notes` are optional. `currency` is optional and defaults to `INR`. Only a single
 currency is supported for now.
 
 Error example:
@@ -247,6 +263,19 @@ PostgreSQL mode.
   balances, restore refused once a participant has left.
 - **Membership and settlements** (`MembershipAndSettlementIntegrationTest`): leaving only at a zero balance,
   creator rules, re-adding a former member, undoing and restoring settlements, access rules.
+- **Property-based tests for every split type** (jqwik, `SplitStrategyPropertyTest`): random totals from
+  0.01 to 10,000,000.00, 1-8 people and valid values for each of the five types; checks that the parts add up
+  to the total exactly, are whole cents, never negative, independent of input order, and fair (EQUAL within one
+  cent of each other, PERCENTAGE / SHARES within one cent of the exact proportional value, ADJUSTMENT an equal
+  split once the adjustments are removed). Checked against a deliberately wrong rounding rule: caught, with a
+  zero-share participant receiving a cent as the minimal example.
+- **Property-based tests** (jqwik, `FriendBalanceCalculatorPropertyTest`): thousands of random ledgers
+  (up to 6 people, groups and non-group, expenses and settlements) check that friend balances add up to the
+  overall balance, that A's balance with B is exactly minus B's with A, that settling every bucket leaves
+  nothing, and that amounts are never zero or fractional cents. A failing case is shrunk to a minimal example.
+- **Friends** (`FriendBalanceIntegrationTest`, `FriendSettleUpConcurrencyTest`): the friends screen, per-group
+  breakdown, settle-up per group, deleted expenses ignored, strangers rejected, and simultaneous settle-ups
+  paying only once (also without any group, where only the user lock protects; checked by removing it).
 - **Concurrency** (`ConcurrentEditsIntegrationTest`): four simultaneous edits of the same version give exactly
   one success; a member leaving while an expense for them is added never ends with both succeeding. Both tests
   were checked against the code with the safeguard removed (they fail: lost updates, and a member leaving while

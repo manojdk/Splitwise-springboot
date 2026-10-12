@@ -74,6 +74,7 @@ public class ExpenseService {
         User caller = userService.getById(callerId);
         Expense expense = new Expense(request.description().trim(), request.amount(), split.currency(),
                 split.payer(), group, dateOrToday(request.date()), request.splitType(), caller);
+        expense.describe(request.category(), request.notes());
         split.shares().forEach(expense::addShare);
         return ExpenseResponse.from(expenseRepository.save(expense));
     }
@@ -98,6 +99,7 @@ public class ExpenseService {
         expense.update(request.description().trim(), request.amount(), split.currency(), split.payer(),
                 dateOrToday(request.date()), request.splitType(), split.shares(), userService.getById(callerId),
                 Instant.now(clock));
+        expense.describe(request.category(), request.notes());
         // Flush so the new version is in the response and a lost race fails here, inside the transaction
         return ExpenseResponse.from(expenseRepository.saveAndFlush(expense));
     }

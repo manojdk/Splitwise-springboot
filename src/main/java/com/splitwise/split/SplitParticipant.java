@@ -7,7 +7,8 @@ import java.math.BigDecimal;
  *
  * @param userId the participant
  * @param value  meaning depends on the split type: ignored for EQUAL, the exact amount for EXACT,
- *               the percentage (0-100) for PERCENTAGE
+ *               the percentage (0-100) for PERCENTAGE, the number of shares for SHARES, the extra amount
+ *               for ADJUSTMENT (missing = 0)
  */
 public record SplitParticipant(Long userId, BigDecimal value) {
 

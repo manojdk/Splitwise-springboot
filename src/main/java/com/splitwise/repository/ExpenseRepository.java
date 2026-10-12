@@ -1,5 +1,6 @@
 package com.splitwise.repository;
 
+import java.util.Collection;
 import com.splitwise.domain.Expense;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,6 +31,10 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findInvolvingUser(@Param("userId") Long userId);
 
     boolean existsByGroupId(Long groupId);
+
+    /** Non-deleted expenses of several groups at once (one query instead of one per group). */
+    @EntityGraph(attributePaths = {"paidBy", "group", "shares", "shares.user"})
+    List<Expense> findByGroupIdInAndDeletedAtIsNull(Collection<Long> groupIds);
 
     /** The expense's group id (empty for a non-group or unknown expense), read without loading the expense. */
     @Query("select e.group.id from Expense e where e.id = :id and e.group is not null")

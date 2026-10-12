@@ -22,6 +22,10 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
      * No fetch join here: PostgreSQL does not allow FOR UPDATE on the nullable side of an outer join; members are
      * loaded afterwards, under the lock.
      */
+    /** Ids of the groups the user belongs to, without loading (and caching) the groups. */
+    @Query("select g.id from Group g join g.members m where m.id = :userId")
+    List<Long> findIdsForMember(@Param("userId") Long userId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select g from Group g where g.id = :id")
     Optional<Group> findByIdForUpdate(@Param("id") Long id);

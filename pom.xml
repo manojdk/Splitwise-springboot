@@ -19,6 +19,7 @@
     <properties>
         <java.version>17</java.version>
         <springdoc.version>2.8.17</springdoc.version>
+        <jqwik.version>1.9.3</jqwik.version>
     </properties>
 
     <dependencies>
@@ -79,6 +80,13 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Property-based testing: checks money invariants on thousands of generated cases -->
+        <dependency>
+            <groupId>net.jqwik</groupId>
+            <artifactId>jqwik</artifactId>
+            <version>${jqwik.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

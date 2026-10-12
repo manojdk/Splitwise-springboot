@@ -49,7 +49,7 @@ class ConcurrentEditsIntegrationTest extends ApiTestSupport {
         List<Callable<Object>> edits = new ArrayList<>();
         for (String amount : List.of("111.00", "222.00", "333.00", "444.00")) {
             edits.add(() -> expenseService.updateExpense(alice.id(), id, new UpdateExpenseRequest("Edit", new BigDecimal(amount),
-                    null, alice.id(), null, SplitType.EQUAL,
+                    null, alice.id(), null, SplitType.EQUAL, null, null,
                     List.of(new ShareRequest(alice.id(), null), new ShareRequest(bob.id(), null)), 0L)));
         }
 
@@ -69,7 +69,7 @@ class ConcurrentEditsIntegrationTest extends ApiTestSupport {
         long groupId = group(alice, bob);
 
         Callable<Object> addExpenseForBob = () -> expenseService.addExpense(alice.id(), new CreateExpenseRequest(
-                "Taxi", new BigDecimal("60.00"), null, alice.id(), groupId, null, SplitType.EQUAL,
+                "Taxi", new BigDecimal("60.00"), null, alice.id(), groupId, null, SplitType.EQUAL, null, null,
                 List.of(new ShareRequest(alice.id(), null), new ShareRequest(bob.id(), null))));
         Callable<Object> bobLeaves = () -> groupService.removeMember(bob.id(), groupId, bob.id());
 
