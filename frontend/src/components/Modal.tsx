@@ -6,13 +6,14 @@ type ModalProps = {
   children: ReactNode
   /** Blocks closing while a request is in flight. */
   busy?: boolean
+  size?: 'md' | 'lg'
 }
 
 /**
  * Accessible dialog: labelled by its title, focus moves inside on open and back to the opener on close,
  * Tab stays inside, Escape and a click on the backdrop close it.
  */
-export function Modal({ title, onClose, children, busy = false }: ModalProps) {
+export function Modal({ title, onClose, children, busy = false, size = 'md' }: ModalProps) {
   const titleId = useId()
   const panel = useRef<HTMLDivElement>(null)
   const onCloseRef = useRef(onClose)
@@ -68,7 +69,7 @@ export function Modal({ title, onClose, children, busy = false }: ModalProps) {
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className="card max-h-[90vh] w-full max-w-lg overflow-auto bg-[var(--surface-solid)] p-6 outline-none"
+        className={`card max-h-[92vh] w-full overflow-auto bg-[var(--surface-solid)] p-6 outline-none ${size === 'lg' ? 'max-w-2xl' : 'max-w-lg'}`}
       >
         <div className="mb-4 flex items-center justify-between gap-3">
           <h2 id={titleId} className="m-0 text-lg">

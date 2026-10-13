@@ -121,7 +121,12 @@ public class Expense {
     }
 
     public void addShare(User user, BigDecimal shareAmount) {
-        shares.add(new ExpenseShare(this, user, shareAmount));
+        addShare(user, shareAmount, null);
+    }
+
+    /** @param splitValue what was entered for this person, kept so the split can be edited as entered */
+    public void addShare(User user, BigDecimal shareAmount, BigDecimal splitValue) {
+        shares.add(new ExpenseShare(this, user, shareAmount, splitValue));
     }
 
     public void linkToRecurring(RecurringExpense template, LocalDate occurrence) {
@@ -137,14 +142,15 @@ public class Expense {
 
     /** Replaces every editable field. The caller has already validated the split. */
     public void update(String description, BigDecimal amount, String currency, User paidBy, LocalDate expenseDate,
-                       SplitType splitType, Map<User, BigDecimal> newShares, User editor, Instant now) {
+                       SplitType splitType, Map<User, BigDecimal> newShares, Map<Long, BigDecimal> splitValues,
+                       User editor, Instant now) {
         this.description = description;
         this.amount = Money.of(amount);
         this.currency = currency;
         this.paidBy = paidBy;
         this.expenseDate = expenseDate;
         this.splitType = splitType;
-        replaceShares(newShares);
+        replaceShares(newShares, splitValues);
         this.updatedBy = editor;
         this.updatedAt = now;
     }
@@ -154,7 +160,7 @@ public class Expense {
      * are removed and new ones added. Removing and re-inserting the same user would break the unique
      * (expense_id, user_id) constraint, because Hibernate runs inserts before orphan deletes.
      */
-    private void replaceShares(Map<User, BigDecimal> newShares) {
+    private void replaceShares(Map<User, BigDecimal> newShares, Map<Long, BigDecimal> splitValues) {
         Map<Long, BigDecimal> byUserId = new HashMap<>();
         Map<Long, User> users = new HashMap<>();
         newShares.forEach((user, value) -> {
@@ -165,11 +171,12 @@ public class Expense {
         Set<Long> kept = new HashSet<>();
         for (ExpenseShare share : shares) {
             share.setAmount(byUserId.get(share.getUser().getId()));
+            share.setSplitValue(splitValues.get(share.getUser().getId()));
             kept.add(share.getUser().getId());
         }
         byUserId.forEach((userId, value) -> {
             if (!kept.contains(userId)) {
-                shares.add(new ExpenseShare(this, users.get(userId), value));
+                shares.add(new ExpenseShare(this, users.get(userId), value, splitValues.get(userId)));
             }
         });
     }

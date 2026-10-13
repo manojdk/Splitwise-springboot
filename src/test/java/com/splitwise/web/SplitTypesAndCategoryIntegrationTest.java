@@ -1,5 +1,6 @@
 package com.splitwise.web;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.splitwise.support.ApiTestSupport;
 import org.junit.jupiter.api.Test;
 
@@ -46,6 +47,51 @@ class SplitTypesAndCategoryIntegrationTest extends ApiTestSupport {
                 .containsEntry(bob.id(), money("-100.00"))
                 .containsEntry(carol.id(), money("-130.00"))
                 .containsEntry(alice.id(), money("230.00"));
+    }
+
+    @Test
+    void anExpenseRemembersWhatWasEnteredForEachPerson() throws Exception {
+        Session alice = user("Alice");
+        Session bob = user("Bob");
+        Session carol = user("Carol");
+        long groupId = group(alice, bob, carol);
+        String bobShare = "$.shares[?(@.userId == " + bob.id() + ")]";
+        String carolShare = "$.shares[?(@.userId == " + carol.id() + ")]";
+
+        JsonNode created = read(addExpense(alice, expenseBody(groupId, alice, "400.00", "SHARES",
+                Share.of(alice, "2"), Share.of(bob, "1.5"), Share.of(carol, "0.50")))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath(bobShare + ".value").value(1.5))
+                .andExpect(jsonPath(carolShare + ".value").value(0.5))
+                .andExpect(jsonPath(bobShare + ".amount").value(150.00)));
+        long id = created.get("id").asLong();
+
+        // Edited to percentages: the stored values follow, and stay readable (100, not 1E+2)
+        updateExpense(alice, id, updateBody(created.get("version").asLong(), alice, "400.00", "PERCENTAGE",
+                Share.of(alice, "50"), Share.of(bob, "37.5"), Share.of(carol, "12.5")))
+                .andExpect(status().isOk());
+        String body = call(alice, get("/api/expenses/" + id)).andReturn().getResponse().getContentAsString();
+        assertThat(body).doesNotContain("E+");
+        call(alice, get("/api/expenses/" + id))
+                .andExpect(jsonPath(bobShare + ".value").value(37.5))
+                .andExpect(jsonPath(bobShare + ".amount").value(150.00));
+
+        // EQUAL keeps no values; an empty adjustment is null, a given one is kept
+        JsonNode equal = equalExpense(alice, groupId, alice, "90.00", alice, bob, carol);
+        assertThat(equal.get("shares").findValues("value")).allMatch(JsonNode::isNull);
+        JsonNode adjusted = read(addExpense(alice, expenseBody(groupId, alice, "100.00", "ADJUSTMENT",
+                Share.of(alice), Share.of(bob, "100"))).andExpect(status().isCreated()));
+        assertThat(shareOf(adjusted, bob).get("value").toString()).isEqualTo("100");
+        assertThat(shareOf(adjusted, alice).get("value").isNull()).isTrue();
+    }
+
+    private static JsonNode shareOf(JsonNode expense, Session user) {
+        for (JsonNode share : expense.get("shares")) {
+            if (share.get("userId").asLong() == user.id()) {
+                return share;
+            }
+        }
+        throw new AssertionError("no share for user " + user.id());
     }
 
     @Test

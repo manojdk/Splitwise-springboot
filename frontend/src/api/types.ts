@@ -18,3 +18,16 @@ export type SettleUpResult = Schemas['SettleUpResponse']
 
 export type Group = Schemas['GroupResponse']
 export type CreateGroupRequest = Schemas['CreateGroupRequest']
+
+export type Expense = Schemas['ExpenseResponse']
+export type ExpenseShare = Schemas['ShareResponse']
+export type ExpensePage = Schemas['PageResponseExpenseResponse']
+export type CreateExpenseRequest = Schemas['CreateExpenseRequest']
+export type UpdateExpenseRequest = Schemas['UpdateExpenseRequest']
+export type ShareRequest = Schemas['ShareRequest']
+export type Category = Expense['category']
+
+export type MemberBalance = Schemas['BalanceResponse']
+export type Transfer = Schemas['TransferResponse']
+export type Settlement = Schemas['SettlementResponse']
+export type CreateSettlementRequest = Schemas['CreateSettlementRequest']

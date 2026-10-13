@@ -815,6 +815,7 @@ export interface components {
             name: string;
             /** Format: int64 */
             userId: number;
+            value: number | null;
         };
         TokenResponse: {
             accessToken: string;
