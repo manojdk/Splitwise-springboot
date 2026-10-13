@@ -1,32 +1,32 @@
 import type { RouteObject } from 'react-router'
-import { LoginPage } from '../auth/LoginPage'
-import { RegisterPage } from '../auth/RegisterPage'
 import { RequireAuth } from '../auth/RequireAuth'
 import { AppShell } from '../layout/AppShell'
-import { ActivityPage } from '../pages/ActivityPage'
-import { DashboardPage } from '../pages/DashboardPage'
-import { GroupPage } from '../pages/GroupPage'
-import { GroupsPage } from '../pages/GroupsPage'
-import { NotFoundPage } from '../pages/NotFoundPage'
-import { RecurringPage } from '../pages/RecurringPage'
 
+// Each page is its own chunk, fetched the first time it is opened: the sign-in page does not
+// download the expense form, and a signed-in user does not download the sign-in page.
 export const routes: RouteObject[] = [
-  { path: '/login', element: <LoginPage /> },
-  { path: '/register', element: <RegisterPage /> },
   {
-    element: <RequireAuth />,
+    // Shown on a fresh page load while the first page's chunk arrives (usually a blink)
+    hydrateFallbackElement: <div role="status" aria-label="Loading" className="page-loading" />,
     children: [
+      { path: '/login', lazy: async () => ({ Component: (await import('../auth/LoginPage')).LoginPage }) },
+      { path: '/register', lazy: async () => ({ Component: (await import('../auth/RegisterPage')).RegisterPage }) },
       {
-        element: <AppShell />,
+        element: <RequireAuth />,
         children: [
-          { index: true, element: <DashboardPage /> },
-          { path: 'groups', element: <GroupsPage /> },
-          { path: 'groups/:groupId', element: <GroupPage /> },
-          { path: 'activity', element: <ActivityPage /> },
-          { path: 'recurring', element: <RecurringPage /> },
+          {
+            element: <AppShell />,
+            children: [
+              { index: true, lazy: async () => ({ Component: (await import('../pages/DashboardPage')).DashboardPage }) },
+              { path: 'groups', lazy: async () => ({ Component: (await import('../pages/GroupsPage')).GroupsPage }) },
+              { path: 'groups/:groupId', lazy: async () => ({ Component: (await import('../pages/GroupPage')).GroupPage }) },
+              { path: 'activity', lazy: async () => ({ Component: (await import('../pages/ActivityPage')).ActivityPage }) },
+              { path: 'recurring', lazy: async () => ({ Component: (await import('../pages/RecurringPage')).RecurringPage }) },
+            ],
+          },
         ],
       },
+      { path: '*', lazy: async () => ({ Component: (await import('../pages/NotFoundPage')).NotFoundPage }) },
     ],
   },
-  { path: '*', element: <NotFoundPage /> },
 ]
