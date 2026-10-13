@@ -18,11 +18,22 @@ jobs:
           java-version: '17'
           cache: maven
 
+      - name: Set up Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
       - name: Make Maven wrapper executable
         run: chmod +x mvnw
 
+      # The frontend profile builds the React app into the jar, so this also proves one jar serves both
       - name: Build and test
-        run: ./mvnw -B verify
+        run: ./mvnw -B -Pfrontend verify
+
+      - name: The jar carries the web app
+        run: unzip -l target/splitwise-api.jar | grep -q 'BOOT-INF/classes/static/index.html'
 
   postgres:
     # Same test suite against a real PostgreSQL 16 instead of H2, to prove the Flyway migration and

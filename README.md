@@ -182,8 +182,8 @@ cp .env.example .env      # then set DB_PASSWORD and JWT_SECRET (at least 32 byt
 docker compose up --build
 ```
 
-The API listens on `http://localhost:8080` and Swagger UI is at
-`http://localhost:8080/swagger-ui.html`.
+The web app and the API are both on `http://localhost:8080` (the image builds the React app into the
+jar), and Swagger UI is at `http://localhost:8080/swagger-ui.html`.
 
 ### Locally
 
@@ -218,6 +218,19 @@ npm run dev        # http://localhost:5173, /api is proxied to :8080
 ```
 
 See [`frontend/README.md`](frontend/README.md) for tests and the generated API types.
+
+### One jar for the app and the API
+
+```bash
+./mvnw -Pfrontend package              # also needs Node 22.12+; builds frontend/ into the jar
+java -jar target/splitwise-api.jar      # same environment variables as above
+```
+
+Spring Boot serves the built app from the same origin as the API, so there is no CORS setup. Page
+links such as `/groups/12` get the app's `index.html` and its router shows the page; hashed files
+under `/assets` are cached for a year, and `index.html` is rechecked on every visit so a new release
+shows up straight away. Everything under `/api` still needs a token. Without `-Pfrontend` the jar is
+the API alone.
 
 ## API overview
 
