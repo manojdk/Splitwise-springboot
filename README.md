@@ -72,7 +72,7 @@ docs in Swagger UI.
 A React + TypeScript app in [`frontend/`](frontend/README.md), being built screen by screen. Sign-in, sign-up,
 the dashboard (per-currency balances, friends, settle-up), groups (create, members) and the group page
 (expenses with filters, the add/edit form with a live split preview proven against the API's own split code,
-balances, payments) are done, in three themes (Aurora is the default). The screens were designed first as a
+balances, payments), activity, recurring expenses and reports with CSV export are done, in three themes (Aurora is the default). The screens were designed first as a
 clickable prototype in [`docs/prototype`](docs/prototype/README.md): open `docs/prototype/index.html` in a
 browser, no build needed.
 

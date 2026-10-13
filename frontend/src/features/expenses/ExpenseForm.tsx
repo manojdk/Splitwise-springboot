@@ -1,15 +1,24 @@
 import { useId, useMemo, useState } from 'react'
 import { api, ApiError } from '../../api/client'
-import { useSaveExpense } from '../../api/queries'
-import type { Category, Expense, Group, User } from '../../api/types'
+import { useCreateRecurring, useSaveExpense } from '../../api/queries'
+import type { Category, Expense, Frequency, Group, User } from '../../api/types'
 import { useAuth } from '../../auth/AuthProvider'
 import { Modal } from '../../components/Modal'
 import { Avatar } from '../../components/States'
 import { useToast } from '../../components/Toast'
 import { CATEGORIES } from '../../lib/categories'
+import { today } from '../../lib/dates'
 import { formatMoney } from '../../lib/money'
 import type { SplitType } from '../../lib/split'
-import { draftFromExpense, newDraft, previewSplit, toCreateRequest, toUpdateRequest, type ExpenseDraft } from './expenseDraft'
+import {
+  draftFromExpense,
+  newDraft,
+  previewSplit,
+  toCreateRequest,
+  toRecurringRequest,
+  toUpdateRequest,
+  type ExpenseDraft,
+} from './expenseDraft'
 
 const SPLIT_TYPES: { type: SplitType; label: string; hint: string; unit: string }[] = [
   { type: 'EQUAL', label: 'Equally', hint: 'Everyone pays the same. Leftover paise go one each to the first people.', unit: '' },
@@ -19,11 +28,32 @@ const SPLIT_TYPES: { type: SplitType; label: string; hint: string; unit: string 
   { type: 'ADJUSTMENT', label: 'Adjust', hint: 'Extra amounts for some people; the rest is split equally.', unit: '+ currency' },
 ]
 
-/** Add or edit an expense in a group, with each person's share shown live as the split is typed. */
-export function ExpenseForm({ group, expense, onClose }: { group: Group; expense?: Expense; onClose: () => void }) {
+const FREQUENCIES: { value: Frequency; label: string }[] = [
+  { value: 'WEEKLY', label: 'Every week' },
+  { value: 'MONTHLY', label: 'Every month' },
+  { value: 'YEARLY', label: 'Every year' },
+]
+
+/**
+ * Add or edit an expense in a group, with each person's share shown live as the split is typed. With
+ * recurring, it sets up an expense that repeats instead (same split, plus how often and from when).
+ */
+export function ExpenseForm({
+  group,
+  expense,
+  recurring = false,
+  onClose,
+}: {
+  group: Group
+  expense?: Expense
+  recurring?: boolean
+  onClose: () => void
+}) {
   const { user } = useAuth()
   const toast = useToast()
-  const save = useSaveExpense()
+  const saveExpense = useSaveExpense()
+  const createRecurring = useCreateRecurring()
+  const save = recurring ? createRecurring : saveExpense
   const formId = useId()
   const [draft, setDraft] = useState<ExpenseDraft>(() => (expense ? draftFromExpense(expense) : newDraft(group, user!.id)))
   const [version, setVersion] = useState(expense?.version)
@@ -47,8 +77,13 @@ export function ExpenseForm({ group, expense, onClose }: { group: Group; expense
       ? 'Use at most 255 characters'
       : null
   const notesError = draft.notes.length > 1000 ? 'Use at most 1000 characters' : null
-  const dateError = draft.date ? null : 'Pick a date'
-  const valid = split.ok && !descriptionError && !notesError && !dateError
+  const dateError = !draft.date
+    ? 'Pick a date'
+    : recurring && draft.date < today()
+      ? 'The first one cannot be in the past'
+      : null
+  const endError = recurring && draft.endDate && draft.endDate < draft.date ? 'The end must be on or after the start' : null
+  const valid = split.ok && !descriptionError && !notesError && !dateError && !endError
 
   function update(patch: Partial<ExpenseDraft>) {
     setDraft((d) => ({ ...d, ...patch }))
@@ -66,7 +101,14 @@ export function ExpenseForm({ group, expense, onClose }: { group: Group; expense
     setFormError(null)
     if (!valid) return
     try {
-      const saved = await save.mutateAsync(
+      if (recurring) {
+        const template = await createRecurring.mutateAsync(toRecurringRequest(draft, ids, group.id))
+        const how = FREQUENCIES.find((f) => f.value === template.frequency)!.label.toLowerCase()
+        toast.show(`"${template.description}" will repeat ${how}`)
+        onClose()
+        return
+      }
+      const saved = await saveExpense.mutateAsync(
         expense
           ? { id: expense.id, body: toUpdateRequest(draft, ids, version!) }
           : { body: toCreateRequest(draft, ids, group.id) },
@@ -98,7 +140,12 @@ export function ExpenseForm({ group, expense, onClose }: { group: Group; expense
   const show = (error: string | null) => (submitted ? error : null)
 
   return (
-    <Modal title={expense ? 'Edit expense' : `Add expense · ${group.name}`} onClose={onClose} busy={save.isPending} size="lg">
+    <Modal
+      title={recurring ? `New recurring expense · ${group.name}` : expense ? 'Edit expense' : `Add expense · ${group.name}`}
+      onClose={onClose}
+      busy={save.isPending}
+      size="lg"
+    >
       <form noValidate onSubmit={submit} className="grid gap-4" aria-describedby={`${formId}-status`}>
         {conflict && (
           <div role="alert" className="alert alert-error flex flex-wrap items-center justify-between gap-3">
@@ -152,12 +199,13 @@ export function ExpenseForm({ group, expense, onClose }: { group: Group; expense
               ))}
             </select>
           </Field>
-          <Field id={`${formId}-date`} label="Date" error={show(dateError)}>
+          <Field id={`${formId}-date`} label={recurring ? 'Starts on' : 'Date'} error={show(dateError)}>
             <input
               id={`${formId}-date`}
               type="date"
               className="input"
               value={draft.date}
+              min={recurring ? today() : undefined}
               onChange={(e) => update({ date: e.target.value })}
             />
           </Field>
@@ -176,6 +224,35 @@ export function ExpenseForm({ group, expense, onClose }: { group: Group; expense
             </select>
           </Field>
         </div>
+
+        {recurring && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field id={`${formId}-freq`} label="Repeats">
+              <select
+                id={`${formId}-freq`}
+                className="input"
+                value={draft.frequency}
+                onChange={(e) => update({ frequency: e.target.value as Frequency })}
+              >
+                {FREQUENCIES.map((f) => (
+                  <option key={f.value} value={f.value}>
+                    {f.label}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field id={`${formId}-end`} label="Ends on (optional)" error={show(endError)}>
+              <input
+                id={`${formId}-end`}
+                type="date"
+                className="input"
+                value={draft.endDate}
+                min={draft.date}
+                onChange={(e) => update({ endDate: e.target.value })}
+              />
+            </Field>
+          </div>
+        )}
 
         <fieldset className="m-0 grid gap-2 border-0 p-0">
           <legend className="label mb-1.5">Split</legend>
@@ -276,7 +353,7 @@ export function ExpenseForm({ group, expense, onClose }: { group: Group; expense
             Cancel
           </button>
           <button type="submit" className="btn" disabled={save.isPending || (submitted && !valid)}>
-            {save.isPending ? 'Saving...' : expense ? 'Save changes' : 'Add expense'}
+            {save.isPending ? 'Saving...' : recurring ? 'Set up' : expense ? 'Save changes' : 'Add expense'}
           </button>
         </div>
       </form>

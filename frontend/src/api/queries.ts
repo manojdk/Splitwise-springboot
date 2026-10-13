@@ -1,7 +1,18 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type QueryClient,
+} from '@tanstack/react-query'
 import { api } from './client'
 import type {
+  ActivityPage,
   CreateExpenseRequest,
+  CreateRecurringExpenseRequest,
+  GroupReport,
+  RecurringExpense,
   CreateGroupRequest,
   CreateSettlementRequest,
   Expense,
@@ -26,6 +37,10 @@ export const keys = {
   groupExpenses: (id: number, filters: ExpenseFilters) => ['groups', id, 'expenses', filters] as const,
   groupBalances: (id: number) => ['groups', id, 'balances'] as const,
   groupDebts: (id: number) => ['groups', id, 'debts'] as const,
+  groupActivity: (id: number) => ['groups', id, 'activity'] as const,
+  groupReport: (id: number, from?: string, to?: string) => ['groups', id, 'report', { from, to }] as const,
+  myActivity: ['activity'] as const,
+  recurring: ['recurring'] as const,
 }
 
 export type ExpenseFilters = {
@@ -39,12 +54,69 @@ export type ExpenseFilters = {
 
 export const PAGE_SIZE = 20
 
-/** After any change of money: balances anywhere may have moved. */
+/** After any change of money: balances, reports and activity anywhere may have moved. */
 function moneyChanged(queryClient: QueryClient) {
   return Promise.all([
     queryClient.invalidateQueries({ queryKey: keys.friends }),
     queryClient.invalidateQueries({ queryKey: keys.groups }),
+    queryClient.invalidateQueries({ queryKey: keys.myActivity }),
   ])
+}
+
+const ACTIVITY_PAGE_SIZE = 20
+
+/** An activity feed read page by page ("Show more"): the user's own, or one group's. */
+export function useActivity(groupId?: number) {
+  const base = groupId === undefined ? '/users/me/activity' : `/groups/${groupId}/activity`
+  return useInfiniteQuery({
+    queryKey: groupId === undefined ? keys.myActivity : keys.groupActivity(groupId),
+    queryFn: ({ pageParam, signal }) => api<ActivityPage>(`${base}?page=${pageParam}&size=${ACTIVITY_PAGE_SIZE}`, { signal }),
+    initialPageParam: 0,
+    getNextPageParam: (last) => (last.last ? undefined : last.page + 1),
+  })
+}
+
+export function useRecurringExpenses() {
+  return useQuery({
+    queryKey: keys.recurring,
+    queryFn: ({ signal }) => api<RecurringExpense[]>('/recurring-expenses', { signal }),
+  })
+}
+
+export function useCreateRecurring() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (body: CreateRecurringExpenseRequest) =>
+      api<RecurringExpense>('/recurring-expenses', { method: 'POST', body }),
+    // Starting today creates the first expense straight away
+    onSuccess: () => Promise.all([queryClient.invalidateQueries({ queryKey: keys.recurring }), moneyChanged(queryClient)]),
+  })
+}
+
+export function useStopRecurring() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => api<void>(`/recurring-expenses/${id}`, { method: 'DELETE' }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: keys.recurring }),
+        queryClient.invalidateQueries({ queryKey: keys.myActivity }),
+      ]),
+  })
+}
+
+export function useGroupReport(groupId: number, from?: string, to?: string) {
+  return useQuery({
+    queryKey: keys.groupReport(groupId, from, to),
+    queryFn: ({ signal }) => {
+      const params = new URLSearchParams()
+      if (from) params.set('from', from)
+      if (to) params.set('to', to)
+      const query = params.size > 0 ? `?${params}` : ''
+      return api<GroupReport>(`/groups/${groupId}/report${query}`, { signal })
+    },
+    placeholderData: keepPreviousData,
+  })
 }
 
 export function useGroupExpenses(groupId: number, filters: ExpenseFilters) {
