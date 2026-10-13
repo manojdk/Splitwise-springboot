@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router'
+import { NavLink, Outlet, useNavigation } from 'react-router'
 import { useAuth } from '../auth/AuthProvider'
 import { initials } from '../lib/initials'
 import { ThemeSwitch } from '../theme/ThemeSwitch'
@@ -15,9 +15,12 @@ const NAV: NavEntry[] = [
 /** Signed-in layout: sidebar on wide screens, bottom navigation on phones. */
 export function AppShell() {
   const { user, logout } = useAuth()
+  // Pages are fetched the first time they are opened; show that something is happening meanwhile
+  const loadingPage = useNavigation().state === 'loading'
 
   return (
     <div className="min-h-screen md:grid md:grid-cols-[240px_1fr]">
+      {loadingPage && <div role="progressbar" aria-label="Loading page" className="page-loading" />}
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-surface focus:p-2"

@@ -237,6 +237,16 @@
     background: var(--hero);
     color: var(--hero-ink);
   }
+  .page-loading {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 60;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+    background-size: 50% 100%;
+    background-repeat: no-repeat;
+    animation: page-loading 1s ease-in-out infinite;
+  }
   .nav-item {
     display: flex;
     align-items: center;
@@ -297,6 +307,14 @@
     radial-gradient(45% 40% at 60% 80%, #ff4fa8 0%, transparent 70%),
     radial-gradient(30% 30% at 15% 85%, #3a7bff 0%, transparent 70%);
   animation: aurora-drift 22s ease-in-out infinite alternate;
+}
+@keyframes page-loading {
+  from {
+    background-position: -50% 0;
+  }
+  to {
+    background-position: 150% 0;
+  }
 }
 @keyframes aurora-drift {
   0% {
