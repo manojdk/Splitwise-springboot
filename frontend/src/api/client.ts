@@ -32,8 +32,35 @@ export function configureApi(next: ApiConfig): void {
 }
 
 export async function api<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const response = await send(path, options, 'application/json')
+  if (response.status === 204) return undefined as T
+  return (await response.json()) as T
+}
+
+/**
+ * Downloads a file the API serves (the CSV export), with the same sign-in and error handling as api(). The
+ * file name comes from the API's Content-Disposition header when it sends one.
+ */
+export async function downloadFile(path: string, fallbackName: string): Promise<void> {
+  const response = await send(path, {}, '*/*')
+  const header = response.headers.get('Content-Disposition') ?? ''
+  const name = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(header)?.[1]
+  const url = URL.createObjectURL(await response.blob())
+  try {
+    const link = document.createElement('a')
+    link.href = url
+    link.download = name ? decodeURIComponent(name) : fallbackName
+    document.body.append(link)
+    link.click()
+    link.remove()
+  } finally {
+    URL.revokeObjectURL(url)
+  }
+}
+
+async function send(path: string, options: RequestOptions, accept: string): Promise<Response> {
   const token = config.getToken()
-  const headers: Record<string, string> = { Accept: 'application/json' }
+  const headers: Record<string, string> = { Accept: accept }
   if (token) headers.Authorization = `Bearer ${token}`
   if (options.body !== undefined) headers['Content-Type'] = 'application/json'
 
@@ -52,8 +79,7 @@ export async function api<T>(path: string, options: RequestOptions = {}): Promis
 
   if (response.status === 401 && token) config.onUnauthorized()
   if (!response.ok) throw new ApiError(response.status, await errorMessage(response))
-  if (response.status === 204) return undefined as T
-  return (await response.json()) as T
+  return response
 }
 
 /** The API answers errors with {status, error, message, path}; fall back to a generic text otherwise. */

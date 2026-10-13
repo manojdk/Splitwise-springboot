@@ -3,11 +3,12 @@ import { LoginPage } from '../auth/LoginPage'
 import { RegisterPage } from '../auth/RegisterPage'
 import { RequireAuth } from '../auth/RequireAuth'
 import { AppShell } from '../layout/AppShell'
+import { ActivityPage } from '../pages/ActivityPage'
 import { DashboardPage } from '../pages/DashboardPage'
 import { GroupPage } from '../pages/GroupPage'
 import { GroupsPage } from '../pages/GroupsPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
-import { PlaceholderPage } from '../pages/PlaceholderPage'
+import { RecurringPage } from '../pages/RecurringPage'
 
 export const routes: RouteObject[] = [
   { path: '/login', element: <LoginPage /> },
@@ -21,14 +22,8 @@ export const routes: RouteObject[] = [
           { index: true, element: <DashboardPage /> },
           { path: 'groups', element: <GroupsPage /> },
           { path: 'groups/:groupId', element: <GroupPage /> },
-          {
-            path: 'activity',
-            element: <PlaceholderPage title="Activity" description="Every change to your expenses will show up here." />,
-          },
-          {
-            path: 'recurring',
-            element: <PlaceholderPage title="Recurring" description="Bills that repeat every week or month will live here." />,
-          },
+          { path: 'activity', element: <ActivityPage /> },
+          { path: 'recurring', element: <RecurringPage /> },
         ],
       },
     ],

@@ -1,4 +1,13 @@
-import type { Category, CreateExpenseRequest, Expense, Group, UpdateExpenseRequest, User } from '../../api/types'
+import type {
+  Category,
+  CreateExpenseRequest,
+  CreateRecurringExpenseRequest,
+  Expense,
+  Frequency,
+  Group,
+  UpdateExpenseRequest,
+  User,
+} from '../../api/types'
 import { today } from '../../lib/dates'
 import { computeSplit, paiseToString, type SplitResult, type SplitType } from '../../lib/split'
 
@@ -17,6 +26,9 @@ export type ExpenseDraft = {
   values: Record<number, string>
   /** The expense was saved before split values were kept, so it is shown as exact amounts. */
   convertedToExact: boolean
+  /** Recurring only: how often, and an optional last date (date is then the first one). */
+  frequency: Frequency
+  endDate: string
 }
 
 export function newDraft(group: Group, me: number): ExpenseDraft {
@@ -31,6 +43,8 @@ export function newDraft(group: Group, me: number): ExpenseDraft {
     included: Object.fromEntries(group.members.map((m) => [m.id, true])),
     values: {},
     convertedToExact: false,
+    frequency: 'MONTHLY',
+    endDate: '',
   }
 }
 
@@ -49,6 +63,8 @@ export function draftFromExpense(expense: Expense): ExpenseDraft {
     category: expense.category,
     notes: expense.notes ?? '',
     included,
+    frequency: 'MONTHLY' as Frequency,
+    endDate: '',
   }
   const asEntered: ExpenseDraft = {
     ...base,
@@ -96,6 +112,12 @@ export function toCreateRequest(draft: ExpenseDraft, people: number[], groupId: 
 /** version: the one the form was loaded with, so a concurrent edit is refused instead of overwritten. */
 export function toUpdateRequest(draft: ExpenseDraft, people: number[], version: number): UpdateExpenseRequest {
   return { ...requestBody(draft, people), version }
+}
+
+/** A template that creates this expense every week, month or year from draft.date (the first one). */
+export function toRecurringRequest(draft: ExpenseDraft, people: number[], groupId: number): CreateRecurringExpenseRequest {
+  const { date, ...body } = requestBody(draft, people)
+  return { ...body, groupId, frequency: draft.frequency, startDate: date, endDate: draft.endDate || undefined }
 }
 
 function requestBody(draft: ExpenseDraft, people: number[]) {

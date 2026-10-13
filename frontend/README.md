@@ -43,6 +43,9 @@ backend needs no CORS setup.
 | Dashboard | What you are owed and what you owe, **per currency** (never added together); friends with each balance and where it comes from; settle up with a friend after confirming the payments it records; your balance in each group |
 | Groups | Your groups with members and your balance; new group with a currency and people to add by email (people without an account are listed, the group is kept) |
 | Group | Expenses with search, category, payer and date filters (kept in the address) and paging; balances; the fewest payments to settle, recordable by the people involved; members (add, remove, leave) |
+| Activity | Everything that happened, newest first, with exactly what changed in each edit; "Show more" pages back; also per group |
+| Recurring | Rent, wifi, subscriptions: next date, how often, stopped ones with the reason; set one up in a group with the same live split form; stop with a confirmation |
+| Report (group tab) | Spending by category (a CSS donut, no chart library) and paid / share / net per member, for any date range; CSV export of the same range |
 | Add / edit expense | All five split types with **each person's share shown live, to the paisa**; edits open in the terms they were entered (2 : 1 : 1 shares, 50 %); a concurrent edit is caught (409) and the other version offered; delete with Undo |
 
 ## The split calculator matches the API

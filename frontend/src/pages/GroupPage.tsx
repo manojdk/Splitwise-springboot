@@ -10,10 +10,12 @@ import { useAuth } from '../auth/AuthProvider'
 import { Modal } from '../components/Modal'
 import { Avatar, ErrorState, Loading } from '../components/States'
 import { useToast } from '../components/Toast'
+import { ActivityFeed } from '../features/activity/ActivityFeed'
 import { ExpenseDetail } from '../features/expenses/ExpenseDetail'
 import { ExpenseForm } from '../features/expenses/ExpenseForm'
 import { ExpenseList } from '../features/expenses/ExpenseList'
 import { GroupBalances, SettleUpPanel } from '../features/groups/GroupBalances'
+import { GroupReport } from '../features/reports/GroupReport'
 import { NotFoundPage } from './NotFoundPage'
 
 export function GroupPage() {
@@ -41,11 +43,13 @@ function GroupView({ id }: { id: number }) {
   return <GroupContent group={group.data} />
 }
 
-type Tab = 'expenses' | 'balances' | 'settle'
+type Tab = 'expenses' | 'balances' | 'settle' | 'activity' | 'report'
 const TABS: { id: Tab; label: string }[] = [
   { id: 'expenses', label: 'Expenses' },
   { id: 'balances', label: 'Balances' },
   { id: 'settle', label: 'Settle up' },
+  { id: 'activity', label: 'Activity' },
+  { id: 'report', label: 'Report' },
 ]
 
 function GroupContent({ group }: { group: Group }) {
@@ -97,6 +101,8 @@ function GroupContent({ group }: { group: Group }) {
             {tab === 'expenses' && <ExpenseList group={group} onOpen={setViewing} />}
             {tab === 'balances' && <GroupBalances group={group} />}
             {tab === 'settle' && <SettleUpPanel group={group} />}
+            {tab === 'activity' && <ActivityFeed groupId={group.id} />}
+            {tab === 'report' && <GroupReport group={group} />}
           </div>
         </section>
         <Members group={group} />

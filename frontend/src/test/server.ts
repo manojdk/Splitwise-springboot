@@ -1,7 +1,10 @@
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import type {
+  Activity,
   CreateExpenseRequest,
+  CreateRecurringExpenseRequest,
+  RecurringExpense,
   Expense,
   FriendBalance,
   FriendTotals,
@@ -10,6 +13,7 @@ import type {
   UpdateExpenseRequest,
   User,
 } from '../api/types'
+import { today } from '../lib/dates'
 import { computeSplit, paiseToString } from '../lib/split'
 
 /**
@@ -25,7 +29,15 @@ export const VALID_TOKEN = 'token-alice'
 
 const USERS = [ALICE, BOB, CAROL, DAN]
 
-type Db = { groups: Group[]; friends: FriendBalance[]; expenses: Expense[]; settlements: Settlement[]; nextId: number }
+type Db = {
+  groups: Group[]
+  friends: FriendBalance[]
+  expenses: Expense[]
+  settlements: Settlement[]
+  activity: Activity[]
+  recurring: RecurringExpense[]
+  nextId: number
+}
 
 /** An expense as the API would return it, with shares from the same split rules the API uses. */
 export function makeExpense(fields: {
@@ -79,6 +91,33 @@ function initialDb(): Db {
   return {
     nextId: 100,
     settlements: [],
+    // 25 entries, newest first: more than one page of 20
+    activity: Array.from({ length: 25 }, (_, i): Activity => ({
+      id: 1000 - i,
+      type: i === 0 ? 'EXPENSE_UPDATED' : i % 2 ? 'EXPENSE_ADDED' : 'SETTLEMENT_ADDED',
+      actorId: i === 0 ? BOB.id : ALICE.id,
+      actorName: i === 0 ? BOB.name : ALICE.name,
+      groupId: i % 5 === 4 ? 11 : 10,
+      expenseId: i % 2 ? 50 : null,
+      settlementId: null,
+      summary: i === 0 ? 'Bob Jones updated "Beach shack dinner"' : `Entry ${i}`,
+      details: i === 0 ? ['Amount: 1,000.00 -> 1,200.00', 'Carol White added to the split'] : [],
+      createdAt: new Date(Date.UTC(2026, 9, 12, 10, 0) - i * 3_600_000).toISOString(),
+    })),
+    recurring: [
+      {
+        id: 300, description: 'Rent', amount: 24000, currency: 'INR', paidById: ALICE.id, groupId: 10, splitType: 'EQUAL',
+        category: 'RENT', notes: null, shares: [{ userId: ALICE.id }, { userId: BOB.id }, { userId: CAROL.id }],
+        frequency: 'MONTHLY', startDate: '2026-09-30', endDate: null, nextDate: '2026-10-31', active: true,
+        stoppedReason: null, createdById: ALICE.id, createdAt: '2026-09-01T10:00:00Z',
+      },
+      {
+        id: 301, description: 'Netflix', amount: 649, currency: 'INR', paidById: CAROL.id, groupId: 10, splitType: 'EQUAL',
+        category: 'ENTERTAINMENT', notes: null, shares: [{ userId: ALICE.id }, { userId: CAROL.id }],
+        frequency: 'MONTHLY', startDate: '2026-05-05', endDate: null, nextDate: null, active: false,
+        stoppedReason: 'Stopped by Carol White', createdById: CAROL.id, createdAt: '2026-05-01T10:00:00Z',
+      },
+    ],
     // Goa Trip: Alice paid the villa (shares 2:1:1), Bob paid dinner (equal)
     expenses: [
       makeExpense({
@@ -452,6 +491,111 @@ handlers.push(
     }
     db.settlements.push(settlement)
     return HttpResponse.json(settlement, { status: 201 })
+  }),
+)
+
+function activityPage(items: Activity[], request: Request) {
+  const url = new URL(request.url)
+  const page = Number(url.searchParams.get('page') ?? 0)
+  const size = Number(url.searchParams.get('size') ?? 20)
+  const totalPages = Math.ceil(items.length / size)
+  return HttpResponse.json({
+    content: items.slice(page * size, page * size + size),
+    page,
+    size,
+    totalElements: items.length,
+    totalPages,
+    last: page >= totalPages - 1,
+  })
+}
+
+handlers.push(
+  http.get('*/api/users/me/activity', ({ request }) => activityPage(db.activity, request)),
+
+  http.get('*/api/groups/:groupId/activity', ({ params, request }) => {
+    const { group, error } = memberGroup(Number(params.groupId), '/api/groups/activity')
+    return error ?? activityPage(db.activity.filter((a) => a.groupId === group.id), request)
+  }),
+
+  http.get('*/api/recurring-expenses', () => HttpResponse.json(db.recurring)),
+
+  http.post('*/api/recurring-expenses', async ({ request }) => {
+    const body = (await request.json()) as CreateRecurringExpenseRequest
+    if (body.startDate < today()) {
+      return errorBody(400, 'startDate cannot be in the past', '/api/recurring-expenses')
+    }
+    const template: RecurringExpense = {
+      id: db.nextId++,
+      description: body.description,
+      amount: body.amount,
+      currency: db.groups.find((g) => g.id === body.groupId)?.currency ?? 'INR',
+      paidById: body.paidById,
+      groupId: body.groupId ?? null,
+      splitType: body.splitType,
+      category: body.category ?? 'GENERAL',
+      notes: body.notes ?? null,
+      shares: body.shares,
+      frequency: body.frequency,
+      startDate: body.startDate,
+      endDate: body.endDate ?? null,
+      nextDate: body.startDate,
+      active: true,
+      stoppedReason: null,
+      createdById: ALICE.id,
+      createdAt: '2026-10-12T10:00:00Z',
+    }
+    db.recurring.unshift(template)
+    return HttpResponse.json(template, { status: 201 })
+  }),
+
+  http.delete('*/api/recurring-expenses/:id', ({ params }) => {
+    const template = db.recurring.find((r) => r.id === Number(params.id))
+    if (!template) return errorBody(404, `Recurring expense ${params.id} not found`, '/api/recurring-expenses')
+    Object.assign(template, { active: false, nextDate: null, stoppedReason: `Stopped by ${ALICE.name}` })
+    return new HttpResponse(null, { status: 204 })
+  }),
+
+  http.get('*/api/groups/:groupId/report', ({ params, request }) => {
+    const { group, error } = memberGroup(Number(params.groupId), '/api/groups/report')
+    if (error) return error
+    const url = new URL(request.url)
+    const from = url.searchParams.get('from')
+    const to = url.searchParams.get('to')
+    const expenses = db.expenses.filter(
+      (e) => e.groupId === group.id && !e.deleted && (!from || e.date >= from) && (!to || e.date <= to),
+    )
+    const byCategory = new Map<string, { total: number; count: number }>()
+    for (const e of expenses) {
+      const c = byCategory.get(e.category) ?? { total: 0, count: 0 }
+      byCategory.set(e.category, { total: c.total + e.amount, count: c.count + 1 })
+    }
+    const byMember = group.members.map((m) => {
+      const paid = expenses.filter((e) => e.paidBy.id === m.id).reduce((a, e) => a + e.amount, 0)
+      const share = expenses.flatMap((e) => e.shares).filter((s) => s.userId === m.id).reduce((a, s) => a + s.amount, 0)
+      return { userId: m.id, name: m.name, paid, share, net: paid - share }
+    })
+    return HttpResponse.json({
+      groupId: group.id,
+      groupName: group.name,
+      from,
+      to,
+      currency: group.currency,
+      expenseCount: expenses.length,
+      totalSpent: expenses.reduce((a, e) => a + e.amount, 0),
+      byCategory: [...byCategory].map(([category, c]) => ({ category, ...c })).sort((a, b) => b.total - a.total),
+      byMember,
+    })
+  }),
+
+  http.get('*/api/groups/:groupId/expenses.csv', ({ params }) => {
+    const { group, error } = memberGroup(Number(params.groupId), '/api/groups/expenses.csv')
+    if (error) return error
+    return new HttpResponse('Date,Description,Amount\n2026-09-10,Villa,9000.00\n', {
+      headers: {
+        'Content-Type': 'text/csv',
+        'Content-Disposition': `attachment; filename="group-${group.id}-expenses.csv"`,
+      },
+    })
   }),
 )
 
