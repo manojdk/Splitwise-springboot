@@ -2,7 +2,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import { http } from 'msw'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { CreateRecurringExpenseRequest } from '../api/types'
-import { today } from '../lib/dates'
+import { formatDate, today } from '../lib/dates'
 import { renderApp, signedIn } from '../test/renderApp'
 import { ALICE, BOB, CAROL, db, errorBody, server } from '../test/server'
 
@@ -49,7 +49,8 @@ describe('recurring expenses', () => {
     const rent = (await screen.findByRole('heading', { name: 'Rent' })).closest('li')!
     expect(rent).toHaveTextContent('Monthly')
     expect(rent).toHaveTextContent('₹24,000.00')
-    expect(rent).toHaveTextContent(/Goa Trip · next on 31 Oct 2026/)
+    // Dates follow the browser's locale ("31 Oct 2026", "Oct 31, 2026"), so the expectation does too
+    expect(rent).toHaveTextContent(`Goa Trip · next on ${formatDate('2026-10-31')}`)
     const netflix = screen.getByRole('heading', { name: 'Netflix' }).closest('li')!
     expect(netflix).toHaveTextContent('Stopped')
     expect(netflix).toHaveTextContent('Stopped by Carol White')
