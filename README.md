@@ -4,8 +4,12 @@ A REST API for tracking shared expenses, modelled on the core of Splitwise: user
 who paid for what, split each expense equally, by exact amounts or by percentage, see who owes whom,
 and get a short list of payments that settles everyone up.
 
-It is a backend-only portfolio project (no UI). Interaction is via JSON over HTTP, with interactive
-docs in Swagger UI.
+A portfolio project: the Spring Boot API, with interactive docs in Swagger UI, and a React app in
+[`frontend/`](frontend/README.md) that the same jar serves.
+
+**Live demo: https://manojdk.github.io/Splitwise-springboot/** (sign in as `alice@example.com` /
+`password123`, or register any email). The demo runs the API's rules in your browser, so it needs no
+server and your changes stay on your device; see [The demo](frontend/README.md#the-demo-on-github-pages).
 
 ## Features
 

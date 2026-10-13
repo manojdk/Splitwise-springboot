@@ -33,6 +33,7 @@ backend needs no CORS setup.
 | `npm run lint` | oxlint (React hooks, accessibility); warnings fail the build |
 | `npm run typecheck` | `tsc` in strict mode |
 | `npm run build` | Type check, then the production bundle in `dist/` |
+| `npm run dev:demo` / `npm run build:demo` | The GitHub Pages demo (see below), served locally or built into `dist-demo/` |
 | `npm run api:types` | Regenerates `src/api/schema.d.ts` from `openapi.json` |
 
 ## Screens
@@ -47,6 +48,24 @@ backend needs no CORS setup.
 | Recurring | Rent, wifi, subscriptions: next date, how often, stopped ones with the reason; set one up in a group with the same live split form; stop with a confirmation |
 | Report (group tab) | Spending by category (a CSS donut, no chart library) and paid / share / net per member, for any date range; CSV export of the same range |
 | Add / edit expense | All five split types with **each person's share shown live, to the paisa**; edits open in the terms they were entered (2 : 1 : 1 shares, 50 %); a concurrent edit is caught (409) and the other version offered; delete with Undo |
+
+## The demo on GitHub Pages
+
+The live demo is this app with its API running in the browser, so it needs no server:
+
+- `src/demo/backend.ts` is the API in TypeScript, with the backend's rules: membership checks, the five split
+  types (through the same `split.ts` the form uses), balances from each group's simplified debts, version checks
+  on edits (409), soft delete and restore, recurring expenses that catch up, reports and CSV export, and an
+  activity entry for every change, worded like the backend's.
+- `src/demo/seed.ts` builds the sample data (four people, three groups in INR and EUR, a non-group expense in
+  USD, a running and a stopped recurring expense) through those same operations, dated relative to today, so the
+  balances and the activity feed are what the app would really show.
+- `src/demo/handlers.ts` answers the app's `/api` calls through a Service Worker (MSW) with the real status codes
+  and error bodies, and saves the data in `localStorage`. A banner says it is a demo and offers a reset.
+
+`vite build --mode demo` puts the app under `/Splitwise-springboot/` and copies `index.html` to `404.html`, so a
+shared link such as `/Splitwise-springboot/groups/12` opens the app too. None of this is in the normal build or
+the jar. The `Demo on GitHub Pages` workflow publishes it on every frontend change to `main`.
 
 ## The split calculator matches the API
 

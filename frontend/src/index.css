@@ -247,6 +247,38 @@
     background-repeat: no-repeat;
     animation: page-loading 1s ease-in-out infinite;
   }
+  .demo-banner {
+    position: relative;
+    z-index: 45;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 14px;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-solid);
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+  }
+  .demo-banner strong {
+    color: var(--warn);
+  }
+  .demo-banner code {
+    color: var(--text);
+    font-size: 12px;
+  }
+  .demo-banner-reset {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 12px;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .demo-banner-reset:hover {
+    border-color: var(--primary);
+  }
   .nav-item {
     display: flex;
     align-items: center;
