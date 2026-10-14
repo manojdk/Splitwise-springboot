@@ -1008,6 +1008,28 @@
         "tags" : [ "Auth" ]
       }
     },
+    "/api/auth/refresh" : {
+      "post" : {
+        "operationId" : "refresh",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TokenResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ],
+        "summary" : "Exchange a valid token for a fresh one in the same session (at most app.jwt.max-session)",
+        "tags" : [ "Auth" ]
+      }
+    },
     "/api/auth/register" : {
       "post" : {
         "operationId" : "register",

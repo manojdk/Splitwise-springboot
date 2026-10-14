@@ -21,6 +21,7 @@ import com.splitwise.exception.NotFoundException;
 import com.splitwise.repository.ExpenseRepository;
 import com.splitwise.split.SplitParticipant;
 import com.splitwise.split.SplitStrategyResolver;
+import com.splitwise.web.CallerToday;
 import com.splitwise.web.dto.CreateExpenseRequest;
 import com.splitwise.web.dto.ExpenseResponse;
 import com.splitwise.web.dto.ShareRequest;
@@ -63,13 +64,14 @@ public class ExpenseService {
     private final Clock clock;
     private final ActivityRecorder activity;
     private final ContactService contacts;
+    private final CallerToday today;
 
     /** Says who without naming anyone: the id may belong to someone the caller has never met. */
     static final String NOT_ALL_MEMBERS = "Someone in it is not a member of this group (they may have just left)";
 
     public ExpenseService(ExpenseRepository expenseRepository, GroupService groupService,
                           UserService userService, SplitStrategyResolver splitStrategies, Clock clock,
-                          ActivityRecorder activity, ContactService contacts) {
+                          ActivityRecorder activity, ContactService contacts, CallerToday today) {
         this.expenseRepository = expenseRepository;
         this.groupService = groupService;
         this.userService = userService;
@@ -77,6 +79,7 @@ public class ExpenseService {
         this.clock = clock;
         this.activity = activity;
         this.contacts = contacts;
+        this.today = today;
     }
 
     /**
@@ -303,6 +306,6 @@ public class ExpenseService {
     }
 
     private LocalDate dateOrToday(LocalDate date) {
-        return date != null ? date : LocalDate.now(clock);
+        return date != null ? date : today.get();
     }
 }

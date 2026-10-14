@@ -21,6 +21,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Exchange a valid token for a fresh one in the same session (at most app.jwt.max-session) */
+        post: operations["refresh"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/register": {
         parameters: {
             query?: never;
@@ -895,6 +912,26 @@ export interface operations {
                 "application/json": components["schemas"]["LoginRequest"];
             };
         };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TokenResponse"];
+                };
+            };
+        };
+    };
+    refresh: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description OK */
             200: {

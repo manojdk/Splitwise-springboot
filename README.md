@@ -13,7 +13,13 @@ docs in Swagger UI.
   Password guessing is slowed down: after 5 wrong passwords in 15 minutes an account's sign-in is paused
   (`429` with `Retry-After`), and one address gets at most 30 sign-in/sign-up requests a minute. An unknown
   email gets the same answer as a wrong password, after the same bcrypt work, so sign-in does not reveal who
-  has an account.
+  has an account. `POST /api/auth/refresh` swaps a valid token for a fresh one in the same session, so someone
+  using the app is not signed out every hour; a session cannot be renewed past `JWT_MAX_SESSION` (7 days by
+  default) from sign-in, and that refusal is a `403` so the client keeps its token until it expires.
+- **The user's own "today"**: the web app sends its time zone (`X-Time-Zone: Asia/Kolkata`), and the API uses
+  it for a default date and for "a recurring expense cannot start in the past", so a user in California or
+  Samoa is not told their today is in the past by a server on UTC. Without the header, the server's zone is
+  used; the hourly recurring job runs on server time.
 - **Groups**: create, rename, delete (creator only, and only while empty), add members by email,
   **leave or remove members** - only with a zero balance in the group, so nobody walks away owing money or
   being owed. Members can leave; only the creator removes others; the creator cannot leave.
@@ -214,6 +220,7 @@ export JWT_SECRET=$(openssl rand -base64 48)
 | `DB_PASSWORD` | yes | (none) |
 | `JWT_SECRET` | yes, at least 32 bytes | (none); the app refuses to start without it |
 | `JWT_EXPIRATION` | no | `PT1H` |
+| `JWT_MAX_SESSION` | no | `P7D` (how long refreshing can keep one sign-in alive) |
 | `RECURRING_CRON` | no | `0 5 * * * *` (hourly at minute 5) |
 
 Behind a reverse proxy or a hosting platform's load balancer, also set

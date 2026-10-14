@@ -6,9 +6,12 @@ import com.splitwise.web.dto.RegisterRequest;
 import com.splitwise.web.dto.TokenResponse;
 import com.splitwise.web.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +37,13 @@ public class AuthController {
     @Operation(summary = "Create an account")
     public UserResponse register(@Valid @RequestBody RegisterRequest request, HttpServletRequest http) {
         return authService.register(request, http.getRemoteAddr());
+    }
+
+    @PostMapping("/refresh")
+    @Operation(summary = "Exchange a valid token for a fresh one in the same session (at most app.jwt.max-session)")
+    @SecurityRequirement(name = "bearerAuth")
+    public TokenResponse refresh(@AuthenticationPrincipal Jwt jwt) {
+        return authService.refresh(jwt);
     }
 
     @PostMapping("/login")

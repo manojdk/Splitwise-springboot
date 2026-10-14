@@ -11,7 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-/** Issues signed HS256 access tokens whose subject is the user id. */
+/**
+ * Issues signed HS256 access tokens whose subject is the user id. Each token carries when its session began
+ * ({@code session_start}, the sign-in time), which a refresh copies forward, so a session cannot be kept alive by
+ * refreshing for longer than {@code app.jwt.max-session}.
+ */
 @Service
 public class TokenService {
 
@@ -23,7 +27,15 @@ public class TokenService {
         this.properties = properties;
     }
 
+    public static final String SESSION_START = "session_start";
+
+    /** A new session, at sign-in. */
     public TokenResponse issue(User user) {
+        return issue(user, Instant.now());
+    }
+
+    /** A token for a session that began at {@code sessionStart}. */
+    public TokenResponse issue(User user, Instant sessionStart) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(properties.issuer())
@@ -31,6 +43,7 @@ public class TokenService {
                 .issuedAt(now)
                 .expiresAt(now.plus(properties.expiration()))
                 .claim("email", user.getEmail())
+                .claim(SESSION_START, sessionStart.getEpochSecond())
                 .build();
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
         String token = encoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();

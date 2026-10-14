@@ -60,7 +60,8 @@ export async function downloadFile(path: string, fallbackName: string): Promise<
 
 async function send(path: string, options: RequestOptions, accept: string): Promise<Response> {
   const token = config.getToken()
-  const headers: Record<string, string> = { Accept: accept }
+  // The API works out "today" (a default date, "not in the past") in the user's own time zone
+  const headers: Record<string, string> = { Accept: accept, 'X-Time-Zone': timeZone() }
   if (token) headers.Authorization = `Bearer ${token}`
   if (options.body !== undefined) headers['Content-Type'] = 'application/json'
 
@@ -80,6 +81,14 @@ async function send(path: string, options: RequestOptions, accept: string): Prom
   if (response.status === 401 && token) config.onUnauthorized()
   if (!response.ok) throw new ApiError(response.status, await errorMessage(response))
   return response
+}
+
+function timeZone(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone
+  } catch {
+    return 'UTC'
+  }
 }
 
 /** The API answers errors with {status, error, message, path}; fall back to a generic text otherwise. */
