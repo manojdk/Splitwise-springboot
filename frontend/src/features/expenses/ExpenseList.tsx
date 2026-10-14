@@ -177,8 +177,21 @@ export function ExpenseList({ group, onOpen }: { group: Group; onOpen: (expense:
   )
 }
 
-/** One expense, with what it means for the signed-in user: what they lent, or what they owe for it. */
-function ExpenseRow({ expense, me, onOpen }: { expense: Expense; me: number | undefined; onOpen: () => void }) {
+/**
+ * One expense, with what it means for the signed-in user: what they lent, or what they owe for it. `where` names
+ * its group (or "Outside groups") on lists that mix groups.
+ */
+export function ExpenseRow({
+  expense,
+  me,
+  onOpen,
+  where,
+}: {
+  expense: Expense
+  me: number | undefined
+  onOpen: () => void
+  where?: string
+}) {
   const category = categoryOf(expense.category)
   const myShare = expense.shares.find((s) => s.userId === me)?.amount ?? 0
   const paidByMe = expense.paidBy.id === me
@@ -216,6 +229,7 @@ function ExpenseRow({ expense, me, onOpen }: { expense: Expense; me: number | un
         <span className="block text-xs text-muted">
           {payer} paid {formatMoney(expense.amount, expense.currency)} {'·'} {SPLIT_LABELS[expense.splitType]} {'·'}{' '}
           {formatDate(expense.date)}
+          {where && <> {'·'} {where}</>}
         </span>
       </span>
       <span className="text-right">{effect}</span>
