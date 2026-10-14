@@ -228,6 +228,13 @@ export const handlers = [
     return HttpResponse.json({ id: 2, name: body.name, email: body.email }, { status: 201 })
   }),
 
+  http.post('*/api/auth/refresh', ({ request }) => {
+    if (request.headers.get('Authorization') === `Bearer ${VALID_TOKEN}`) {
+      return HttpResponse.json({ accessToken: VALID_TOKEN, tokenType: 'Bearer', expiresInSeconds: 3600 })
+    }
+    return errorBody(403, 'Your session has ended; please sign in again', '/api/auth/refresh')
+  }),
+
   http.get('*/api/users/me', ({ request }) => {
     if (request.headers.get('Authorization') === `Bearer ${VALID_TOKEN}`) return HttpResponse.json(ALICE)
     return errorBody(401, 'Missing or invalid access token', '/api/users/me')

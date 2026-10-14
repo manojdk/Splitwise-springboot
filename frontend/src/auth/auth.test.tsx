@@ -90,6 +90,34 @@ describe('an existing session', () => {
     expect(router.state.location.pathname).toBe('/login')
   })
 
+  it('renews the token a few minutes before it runs out, without a flash of loading', async () => {
+    const renewals: number[] = []
+    server.events.on('request:start', ({ request }) => {
+      if (new URL(request.url).pathname === '/api/auth/refresh') renewals.push(Date.now())
+    })
+    signedIn('token-alice', Date.now() + 5 * 60_000 + 300)
+    renderApp('/')
+    await screen.findByRole('heading', { name: 'Welcome, Alice' })
+
+    await waitFor(() => expect(renewals).toHaveLength(1))
+    await waitFor(() => {
+      const saved = JSON.parse(sessionStorage.getItem('splitwise-session')!) as { expiresAt: number }
+      expect(saved.expiresAt).toBeGreaterThan(Date.now() + 50 * 60_000)
+    })
+    expect(screen.getByRole('heading', { name: 'Welcome, Alice' })).toBeInTheDocument()
+    server.events.removeAllListeners()
+  })
+
+  it('keeps the user signed in but says when the session ends once it cannot be renewed', async () => {
+    server.use(http.post('*/api/auth/refresh', () => errorBody(403, 'Your session has ended; please sign in again', '/x')))
+    signedIn('token-alice', Date.now() + 5 * 60_000 + 300)
+    const { router } = renderApp('/')
+
+    expect(await screen.findByText(/this session ends at/)).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/')
+    expect(screen.getByRole('heading', { name: 'Welcome, Alice' })).toBeInTheDocument()
+  })
+
   it('signs the user out when the server rejects the token', async () => {
     signedIn('revoked-token')
     const { router } = renderApp('/')

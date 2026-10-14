@@ -9,6 +9,7 @@ import com.splitwise.exception.ForbiddenException;
 import com.splitwise.exception.NotFoundException;
 import com.splitwise.repository.GroupRepository;
 import com.splitwise.repository.RecurringExpenseRepository;
+import com.splitwise.web.CallerToday;
 import com.splitwise.web.dto.CreateRecurringExpenseRequest;
 import com.splitwise.web.dto.RecurringExpenseResponse;
 import org.slf4j.Logger;
@@ -53,10 +54,11 @@ public class RecurringExpenseService {
     private final UserService userService;
     private final ActivityRecorder activity;
     private final Clock clock;
+    private final CallerToday callerToday;
 
     public RecurringExpenseService(RecurringExpenseRepository recurringRepository, GroupRepository groupRepository,
                                    GroupService groupService, ExpenseService expenseService, UserService userService,
-                                   ActivityRecorder activity, Clock clock) {
+                                   ActivityRecorder activity, Clock clock, CallerToday callerToday) {
         this.recurringRepository = recurringRepository;
         this.groupRepository = groupRepository;
         this.groupService = groupService;
@@ -64,6 +66,7 @@ public class RecurringExpenseService {
         this.userService = userService;
         this.activity = activity;
         this.clock = clock;
+        this.callerToday = callerToday;
     }
 
     /**
@@ -73,7 +76,8 @@ public class RecurringExpenseService {
     @Transactional
     public RecurringExpenseResponse create(Long callerId, CreateRecurringExpenseRequest request) {
         Group group = request.groupId() == null ? null : groupService.lockMemberGroup(request.groupId(), callerId);
-        LocalDate today = LocalDate.now(clock);
+        // The caller's today, so a start date of "today" is accepted wherever they are; the job runs on server time
+        LocalDate today = callerToday.get();
         if (request.startDate().isBefore(today)) {
             throw new BadRequestException("startDate cannot be in the past");
         }

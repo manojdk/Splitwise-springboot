@@ -14,7 +14,7 @@ const NAV: NavEntry[] = [
 
 /** Signed-in layout: sidebar on wide screens, bottom navigation on phones. */
 export function AppShell() {
-  const { user, logout } = useAuth()
+  const { user, logout, endsAt } = useAuth()
   // Pages are fetched the first time they are opened; show that something is happening meanwhile
   const loadingPage = useNavigation().state === 'loading'
 
@@ -60,6 +60,13 @@ export function AppShell() {
         </header>
 
         <main id="main" className="mx-auto w-full max-w-6xl px-4 pt-6 pb-28 md:px-7 md:pb-10">
+          {endsAt !== null && (
+            <p role="alert" className="alert alert-error mt-0">
+              For your security, this session ends at{' '}
+              {new Date(endsAt).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}. Save what you are
+              doing; you will then be asked to sign in again.
+            </p>
+          )}
           <Outlet />
         </main>
       </div>

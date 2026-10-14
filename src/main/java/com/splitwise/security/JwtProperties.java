@@ -15,7 +15,9 @@ import java.time.Duration;
 public record JwtProperties(
         String secret,
         @DefaultValue("PT1H") Duration expiration,
-        @DefaultValue("splitwise-api") String issuer) {
+        @DefaultValue("splitwise-api") String issuer,
+        /* How long a session can be kept alive by refreshing its token, counted from sign-in */
+        @DefaultValue("P7D") Duration maxSession) {
 
     public static final int MIN_SECRET_BYTES = 32;
 
@@ -29,6 +31,9 @@ public record JwtProperties(
         }
         if (expiration == null || expiration.isNegative() || expiration.isZero()) {
             throw new IllegalStateException("app.jwt.expiration must be a positive duration");
+        }
+        if (maxSession == null || maxSession.compareTo(expiration) < 0) {
+            throw new IllegalStateException("app.jwt.max-session must be at least app.jwt.expiration");
         }
     }
 

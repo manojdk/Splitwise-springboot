@@ -29,6 +29,18 @@ describe('api client', () => {
     expect(seen).toEqual({ auth: 'Bearer abc', type: 'application/json', body: { name: 'x' } })
   })
 
+  it("tells the API the user's time zone, so its \"today\" is theirs", async () => {
+    let zone: string | null = null
+    server.use(
+      http.get('*/api/things', ({ request }) => {
+        zone = request.headers.get('X-Time-Zone')
+        return HttpResponse.json([])
+      }),
+    )
+    await api('/things')
+    expect(zone).toBe(Intl.DateTimeFormat().resolvedOptions().timeZone)
+  })
+
   it('returns nothing for 204', async () => {
     server.use(http.delete('*/api/things/1', () => new HttpResponse(null, { status: 204 })))
     await expect(api('/things/1', { method: 'DELETE' })).resolves.toBeUndefined()

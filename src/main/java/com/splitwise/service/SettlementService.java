@@ -7,6 +7,7 @@ import com.splitwise.query.SettlementSpecs;
 import com.splitwise.query.Paging;
 import com.splitwise.activity.ActivityRecorder;
 import com.splitwise.balance.BalanceEffect;
+import com.splitwise.web.CallerToday;
 import com.splitwise.domain.Group;
 import com.splitwise.domain.Settlement;
 import com.splitwise.domain.User;
@@ -39,16 +40,18 @@ public class SettlementService {
     private final Clock clock;
     private final ActivityRecorder activity;
     private final ContactService contacts;
+    private final CallerToday today;
 
     public SettlementService(SettlementRepository settlementRepository, GroupService groupService,
                              UserService userService, Clock clock, ActivityRecorder activity,
-                             ContactService contacts) {
+                             ContactService contacts, CallerToday today) {
         this.settlementRepository = settlementRepository;
         this.groupService = groupService;
         this.userService = userService;
         this.clock = clock;
         this.activity = activity;
         this.contacts = contacts;
+        this.today = today;
     }
 
     @Transactional
@@ -75,7 +78,7 @@ public class SettlementService {
         Map<Long, User> users = group == null
                 ? userService.lockAll(Set.of(request.fromUserId(), request.toUserId()))
                 : userService.getAllById(Set.of(request.fromUserId(), request.toUserId()));
-        LocalDate date = request.date() != null ? request.date() : LocalDate.now(clock);
+        LocalDate date = request.date() != null ? request.date() : today.get();
         Settlement settlement = new Settlement(users.get(request.fromUserId()), users.get(request.toUserId()),
                 request.amount(), CurrencyRules.resolve(request.currency(), group), group, date,
                 request.note() == null ? null : request.note().trim(), users.get(callerId));
