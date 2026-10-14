@@ -21,8 +21,8 @@ type RequestOptions = {
 
 type ApiConfig = {
   getToken: () => string | null
-  /** Called when a request that carried a token gets 401: the token expired or was revoked. */
-  onUnauthorized: () => void
+  /** Called when a request that carried a token gets 401: the token expired or was revoked. The API says which. */
+  onUnauthorized: (message: string) => void
 }
 
 let config: ApiConfig = { getToken: () => null, onUnauthorized: () => {} }
@@ -78,8 +78,11 @@ async function send(path: string, options: RequestOptions, accept: string): Prom
     throw new ApiError(0, 'Cannot reach the server. Check your connection and try again.')
   }
 
-  if (response.status === 401 && token) config.onUnauthorized()
-  if (!response.ok) throw new ApiError(response.status, await errorMessage(response))
+  if (!response.ok) {
+    const message = await errorMessage(response)
+    if (response.status === 401 && token) config.onUnauthorized(message)
+    throw new ApiError(response.status, message)
+  }
   return response
 }
 

@@ -658,6 +658,22 @@ handlers.push(
 const involves = (e: Expense, id: number) => e.paidBy.id === id || e.shares.some((s) => s.userId === id)
 
 handlers.push(
+  http.patch('*/api/users/me', async ({ request }) => {
+    const body = (await request.json()) as { name: string }
+    return HttpResponse.json({ ...ALICE, name: body.name.trim() })
+  }),
+
+  // Like the API: the current password must be right; the answer is a fresh token for this device
+  http.post('*/api/users/me/password', async ({ request }) => {
+    const body = (await request.json()) as { currentPassword: string; newPassword: string }
+    if (body.currentPassword !== ALICE_PASSWORD) {
+      return errorBody(403, 'Current password is incorrect', '/api/users/me/password')
+    }
+    return HttpResponse.json({ accessToken: VALID_TOKEN, tokenType: 'Bearer', expiresInSeconds: 3600 })
+  }),
+
+  http.post('*/api/auth/logout-all', () => new HttpResponse(null, { status: 204 })),
+
   // Alice's contacts: everyone in her groups, plus Dan from a non-group expense
   http.get('*/api/users/me/contacts', () => {
     const inGroups = db.groups.filter((g) => g.members.some((m) => m.id === ALICE.id)).flatMap((g) => g.members)

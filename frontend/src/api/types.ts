@@ -7,6 +7,8 @@ export type User = Schemas['UserResponse']
 export type TokenResponse = Schemas['TokenResponse']
 export type LoginRequest = Schemas['LoginRequest']
 export type RegisterRequest = Schemas['RegisterRequest']
+export type UpdateProfileRequest = Schemas['UpdateProfileRequest']
+export type ChangePasswordRequest = Schemas['ChangePasswordRequest']
 
 export type CurrencyAmount = Schemas['CurrencyAmount']
 export type FriendBalances = Schemas['FriendBalancesResponse']

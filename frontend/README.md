@@ -40,6 +40,7 @@ backend needs no CORS setup.
 | Screen | What it does |
 |---|---|
 | Sign in / Create account | Validation as strict as the API's; server errors shown where they belong. The token is renewed a few minutes before it runs out, so an active session is not cut off every hour; once the session reaches its maximum length the app says when it will end instead of signing out without warning |
+| Settings | Reached from your avatar: change your name; change your password (the current one first, the same rules as sign-up, counted in bytes); sign out of all devices after a confirmation. A device signed out elsewhere is told why on the sign-in page |
 | Dashboard | What you are owed and what you owe, **per currency** (never added together); friends with each balance and where it comes from; settle up with a friend after confirming the payments it records; your balance in each group |
 | Groups | Your groups with members and your balance; new group with a currency and people to add by email (people without an account are listed, the group is kept) |
 | All expenses | Every expense you are in, across groups and outside them, with search and a category filter; each says where it belongs. "+ Add expense" asks where: one of your groups, or no group, split with your contacts in any currency |

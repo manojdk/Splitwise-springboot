@@ -68,6 +68,6 @@ describe('api client', () => {
 
     configureApi({ getToken: () => 'expired', onUnauthorized })
     await failure(api('/things'))
-    expect(onUnauthorized).toHaveBeenCalledOnce()
+    expect(onUnauthorized).toHaveBeenCalledExactlyOnceWith('Missing or invalid access token')
   })
 })

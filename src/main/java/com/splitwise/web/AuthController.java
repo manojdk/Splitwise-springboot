@@ -1,5 +1,7 @@
 package com.splitwise.web;
 
+import com.splitwise.security.CurrentUser;
+import com.splitwise.service.AccountService;
 import com.splitwise.service.AuthService;
 import com.splitwise.web.dto.LoginRequest;
 import com.splitwise.web.dto.RegisterRequest;
@@ -27,9 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final AccountService accountService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, AccountService accountService) {
         this.authService = authService;
+        this.accountService = accountService;
     }
 
     @PostMapping("/register")
@@ -44,6 +48,14 @@ public class AuthController {
     @SecurityRequirement(name = "bearerAuth")
     public TokenResponse refresh(@AuthenticationPrincipal Jwt jwt) {
         return authService.refresh(jwt);
+    }
+
+    @PostMapping("/logout-all")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Sign out of every device, this one included: every token issued so far stops working")
+    @SecurityRequirement(name = "bearerAuth")
+    public void logoutAll(@AuthenticationPrincipal Jwt jwt) {
+        accountService.endAllSessions(CurrentUser.id(jwt));
     }
 
     @PostMapping("/login")

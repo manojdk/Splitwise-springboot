@@ -16,6 +16,11 @@ docs in Swagger UI.
   has an account. `POST /api/auth/refresh` swaps a valid token for a fresh one in the same session, so someone
   using the app is not signed out every hour; a session cannot be renewed past `JWT_MAX_SESSION` (7 days by
   default) from sign-in, and that refusal is a `403` so the client keeps its token until it expires.
+- **Your account**: change your name (`PATCH /api/users/me`) and your password (`POST /api/users/me/password`,
+  which needs the current one under the same throttle as sign-in). Tokens can be revoked: each carries the
+  user's token version, checked on every request, so changing the password signs out every other session at
+  once (this one gets a fresh token), and `POST /api/auth/logout-all` signs out every device. A password is at
+  most 72 **bytes**, not characters, since bcrypt ignores anything after them.
 - **The user's own "today"**: the web app sends its time zone (`X-Time-Zone: Asia/Kolkata`), and the API uses
   it for a default date and for "a recurring expense cannot start in the past", so a user in California or
   Samoa is not told their today is in the past by a server on UTC. Without the header, the server's zone is
@@ -264,6 +269,10 @@ All endpoints except register, login, the API docs and `/actuator/health` need
 | POST | `/api/auth/register` | Create an account |
 | POST | `/api/auth/login` | Get an access token |
 | GET | `/api/users/me` | Current user |
+| PATCH | `/api/users/me` | Change my name |
+| POST | `/api/users/me/password` | Change my password; other sessions end, this one gets a fresh token |
+| POST | `/api/auth/refresh` | A fresh token in the same session |
+| POST | `/api/auth/logout-all` | Sign out of every device |
 | GET | `/api/users/me/expenses` | Expenses I paid for or share in (paged, filterable) |
 | GET | `/api/users/me/settlements` | Settlements I paid or received (paged, `from` / `to`) |
 | GET | `/api/users/me/balance` | My overall net balance, one figure per currency |
@@ -410,5 +419,5 @@ and once against a real PostgreSQL 16 service container.
 ## Roadmap
 
 - Currency conversion (showing a total in one currency at an exchange rate)
-- Refresh tokens and rate limiting on the auth endpoints
+- Password reset by email, and changing the email (both need mail sending)
 - Editing a recurring template (today: stop it and create a new one)

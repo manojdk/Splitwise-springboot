@@ -14,7 +14,8 @@ import java.time.Instant;
 /**
  * Issues signed HS256 access tokens whose subject is the user id. Each token carries when its session began
  * ({@code session_start}, the sign-in time), which a refresh copies forward, so a session cannot be kept alive by
- * refreshing for longer than {@code app.jwt.max-session}.
+ * refreshing for longer than {@code app.jwt.max-session}, and the user's token version, so all of a user's tokens can be
+ * revoked at once.
  */
 @Service
 public class TokenService {
@@ -28,6 +29,8 @@ public class TokenService {
     }
 
     public static final String SESSION_START = "session_start";
+    /** The user's token version when the token was issued; see {@link SessionVersionValidator}. */
+    public static final String TOKEN_VERSION = "ver";
 
     /** A new session, at sign-in. */
     public TokenResponse issue(User user) {
@@ -44,6 +47,7 @@ public class TokenService {
                 .expiresAt(now.plus(properties.expiration()))
                 .claim("email", user.getEmail())
                 .claim(SESSION_START, sessionStart.getEpochSecond())
+                .claim(TOKEN_VERSION, user.getTokenVersion())
                 .build();
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
         String token = encoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();

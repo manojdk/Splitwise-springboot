@@ -25,8 +25,11 @@ import type {
   Settlement,
   SettlementPage,
   SettleUpResult,
+  ChangePasswordRequest,
+  TokenResponse,
   Transfer,
   UpdateExpenseRequest,
+  UpdateProfileRequest,
   User,
 } from './types'
 
@@ -374,4 +377,28 @@ export function useRemoveMember(groupId: number) {
     onSuccess: (group) =>
       Promise.all([groupChanged(queryClient, group), queryClient.invalidateQueries({ queryKey: keys.friends })]),
   })
+}
+
+/** The new name shows everywhere: the profile, and every group, expense and balance that names the user. */
+export function useUpdateProfile() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (body: UpdateProfileRequest) => api<User>('/users/me', { method: 'PATCH', body }),
+    onSuccess: (user) => {
+      queryClient.setQueryData(['me'], user)
+      return queryClient.invalidateQueries({ predicate: (query) => query.queryKey[0] !== 'me' })
+    },
+  })
+}
+
+/** Answers with a fresh token for this device: the change ends every session, this one included. */
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: (body: ChangePasswordRequest) =>
+      api<TokenResponse>('/users/me/password', { method: 'POST', body }),
+  })
+}
+
+export function useSignOutEverywhere() {
+  return useMutation({ mutationFn: () => api<void>('/auth/logout-all', { method: 'POST' }) })
 }

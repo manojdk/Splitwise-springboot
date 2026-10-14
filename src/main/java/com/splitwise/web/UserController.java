@@ -17,6 +17,7 @@ import com.splitwise.web.dto.FriendBalancesResponse;
 import com.splitwise.web.dto.FriendBalanceResponse;
 import com.splitwise.service.FriendBalanceService;
 import com.splitwise.security.CurrentUser;
+import com.splitwise.service.AccountService;
 import com.splitwise.service.BalanceService;
 import com.splitwise.service.ContactService;
 import com.splitwise.service.ExpenseService;
@@ -26,6 +27,13 @@ import com.splitwise.web.dto.ExpenseResponse;
 import com.splitwise.web.dto.SettlementResponse;
 import com.splitwise.web.dto.UserBalanceResponse;
 import com.splitwise.web.dto.UserResponse;
+import com.splitwise.web.dto.ChangePasswordRequest;
+import com.splitwise.web.dto.TokenResponse;
+import com.splitwise.web.dto.UpdateProfileRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -47,11 +55,12 @@ public class UserController {
     private final FriendBalanceService friendBalanceService;
     private final ActivityService activityService;
     private final ContactService contactService;
+    private final AccountService accountService;
 
     public UserController(UserService userService, ExpenseService expenseService,
                           SettlementService settlementService, BalanceService balanceService,
                           FriendBalanceService friendBalanceService, ActivityService activityService,
-                          ContactService contactService) {
+                          ContactService contactService, AccountService accountService) {
         this.userService = userService;
         this.expenseService = expenseService;
         this.settlementService = settlementService;
@@ -59,6 +68,7 @@ public class UserController {
         this.friendBalanceService = friendBalanceService;
         this.activityService = activityService;
         this.contactService = contactService;
+        this.accountService = accountService;
     }
 
     @GetMapping("/activity")
@@ -73,6 +83,20 @@ public class UserController {
     @Operation(summary = "The authenticated user's profile")
     public UserResponse me(@AuthenticationPrincipal Jwt jwt) {
         return UserResponse.from(userService.getById(CurrentUser.id(jwt)));
+    }
+
+    @PatchMapping
+    @Operation(summary = "Change your name")
+    public UserResponse updateMe(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody UpdateProfileRequest request) {
+        return accountService.updateProfile(CurrentUser.id(jwt), request);
+    }
+
+    @PostMapping("/password")
+    @Operation(summary = "Change your password (needs the current one). Signs out every other session; returns a "
+            + "fresh token for this one")
+    public TokenResponse changePassword(@AuthenticationPrincipal Jwt jwt,
+                                        @Valid @RequestBody ChangePasswordRequest request, HttpServletRequest http) {
+        return accountService.changePassword(CurrentUser.id(jwt), request, http.getRemoteAddr());
     }
 
     @GetMapping("/expenses")

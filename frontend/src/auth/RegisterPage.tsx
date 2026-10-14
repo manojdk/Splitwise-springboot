@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { ApiError } from '../api/client'
 import { TextField } from '../components/TextField'
 import { AuthLayout } from './AuthLayout'
+import { newPassword } from './passwordRules'
 import { useAuth } from './AuthProvider'
 import { redirectTarget } from './redirect'
 
@@ -19,7 +20,7 @@ const schema = z
       .min(1, 'Enter your email')
       .max(255, 'Use at most 255 characters')
       .pipe(z.email('Enter a valid email address')),
-    password: z.string().min(8, 'Use at least 8 characters').max(72, 'Use at most 72 characters'),
+    password: newPassword,
     confirmPassword: z.string(),
   })
   .refine((form) => form.password === form.confirmPassword, {

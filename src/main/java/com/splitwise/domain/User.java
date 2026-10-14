@@ -29,6 +29,10 @@ public class User {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+    /** Carried by every access token; a token with an older version is refused (see SessionVersionValidator). */
+    @Column(name = "token_version", nullable = false)
+    private int tokenVersion;
+
     protected User() {
     }
 
@@ -57,5 +61,24 @@ public class User {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public int getTokenVersion() {
+        return tokenVersion;
+    }
+
+    public void rename(String name) {
+        this.name = name;
+    }
+
+    /** Sets a new password and signs out every session that used the old one. */
+    public void changePassword(String passwordHash) {
+        this.passwordHash = passwordHash;
+        endAllSessions();
+    }
+
+    /** Makes every token issued so far invalid. */
+    public void endAllSessions() {
+        tokenVersion++;
     }
 }
