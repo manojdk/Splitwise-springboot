@@ -300,7 +300,9 @@ describe('balances and settling up in a group', () => {
     await user.click(within(dialog).getByRole('button', { name: 'Record payment' }))
 
     expect(await screen.findByText('Payment of ₹2,650.00 recorded')).toBeInTheDocument()
-    await waitFor(() => expect(within(panel).queryByText(/Carol White/)).not.toBeInTheDocument())
+    // The suggestion is gone, and the payment is listed as recorded
+    await waitFor(() => expect(within(panel).queryByText(/Carol White pays/)).not.toBeInTheDocument())
+    expect(await within(panel).findByText('Carol White paid you ₹2,650.00')).toBeInTheDocument()
     expect(db.settlements[0]).toMatchObject({ fromUserId: CAROL.id, toUserId: ALICE.id, amount: 2650, groupId: 10 })
   })
 

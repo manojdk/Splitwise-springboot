@@ -61,13 +61,15 @@ export function ExpenseForm({
   const [formError, setFormError] = useState<string | null>(null)
   const [conflict, setConflict] = useState(false)
 
-  // Members, plus anyone in the expense who has since left (so their share stays visible)
+  // Members, plus anyone in the expense who has since left (so their share and payment stay visible)
   const people: User[] = useMemo(() => {
-    const extra = (expense?.shares ?? [])
-      .filter((s) => !group.members.some((m) => m.id === s.userId))
-      .map((s) => ({ id: s.userId, name: s.name, email: '' }))
+    const involved = [...(expense?.shares ?? []).map((s) => ({ id: s.userId, name: s.name })), ...(expense ? [expense.paidBy] : [])]
+    const extra = involved
+      .filter((p, i) => !group.members.some((m) => m.id === p.id) && involved.findIndex((q) => q.id === p.id) === i)
+      .map((p) => ({ id: p.id, name: p.name, email: '' }))
     return [...group.members, ...extra]
   }, [group.members, expense])
+  const isMember = (id: number) => group.members.some((m) => m.id === id)
   const ids = people.map((p) => p.id)
 
   const split = previewSplit(draft, people)
@@ -192,9 +194,9 @@ export function ExpenseForm({
               value={draft.paidById}
               onChange={(e) => update({ paidById: Number(e.target.value) })}
             >
-              {group.members.map((m) => (
+              {people.map((m) => (
                 <option key={m.id} value={m.id}>
-                  {m.id === user?.id ? `${m.name} (you)` : m.name}
+                  {m.id === user?.id ? `${m.name} (you)` : isMember(m.id) ? m.name : `${m.name} (left the group)`}
                 </option>
               ))}
             </select>

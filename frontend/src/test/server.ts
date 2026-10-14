@@ -496,7 +496,8 @@ handlers.push(
   }),
 )
 
-function activityPage(items: Activity[], request: Request) {
+/** One page of a list, as the API pages activity, expenses and payments. */
+function activityPage<T>(items: T[], request: Request) {
   const url = new URL(request.url)
   const page = Number(url.searchParams.get('page') ?? 0)
   const size = Number(url.searchParams.get('size') ?? 20)
@@ -598,6 +599,52 @@ handlers.push(
         'Content-Disposition': `attachment; filename="group-${group.id}-expenses.csv"`,
       },
     })
+  }),
+)
+
+handlers.push(
+  http.get('*/api/expenses/:id/activity', ({ params }) =>
+    HttpResponse.json(db.activity.filter((a) => a.expenseId === Number(params.id))),
+  ),
+
+  http.get('*/api/groups/:groupId/settlements', ({ params, request }) => {
+    const { group, error } = memberGroup(Number(params.groupId), '/api/groups/settlements')
+    if (error) return error
+    const payments = db.settlements.filter((x) => x.groupId === group.id && !x.deleted).sort((a, b) => b.id - a.id)
+    return activityPage(payments, request)
+  }),
+
+  http.delete('*/api/settlements/:id', ({ params }) => {
+    const payment = db.settlements.find((x) => x.id === Number(params.id))
+    if (!payment) return errorBody(404, `Settlement ${params.id} not found`, '/api/settlements')
+    payment.deleted = true
+    return new HttpResponse(null, { status: 204 })
+  }),
+
+  http.post('*/api/settlements/:id/restore', ({ params }) => {
+    const payment = db.settlements.find((x) => x.id === Number(params.id))
+    if (!payment) return errorBody(404, `Settlement ${params.id} not found`, '/api/settlements')
+    if (!payment.deleted) return errorBody(409, `Settlement ${payment.id} is not deleted`, '/api/settlements')
+    payment.deleted = false
+    return HttpResponse.json(payment)
+  }),
+
+  http.put('*/api/groups/:groupId', async ({ params, request }) => {
+    const { group, error } = memberGroup(Number(params.groupId), '/api/groups')
+    if (error) return error
+    group.name = ((await request.json()) as { name: string }).name
+    return HttpResponse.json(group)
+  }),
+
+  http.delete('*/api/groups/:groupId', ({ params }) => {
+    const { group, error } = memberGroup(Number(params.groupId), '/api/groups')
+    if (error) return error
+    if (group.createdById !== ALICE.id) return errorBody(403, 'Only the group creator can delete the group', '/api/groups')
+    if (db.expenses.some((e) => e.groupId === group.id) || db.settlements.some((x) => x.groupId === group.id)) {
+      return errorBody(409, 'Group has expenses or settlements and cannot be deleted', '/api/groups')
+    }
+    db.groups = db.groups.filter((g) => g !== group)
+    return new HttpResponse(null, { status: 204 })
   }),
 )
 
