@@ -344,7 +344,7 @@ function saveExpense(body: CreateExpenseRequest | UpdateExpenseRequest, existing
     id: existing?.id ?? db.nextId++,
     description: body.description,
     amount: body.amount,
-    currency: db.groups.find((g) => g.id === groupId)?.currency ?? 'INR',
+    currency: db.groups.find((g) => g.id === groupId)?.currency ?? body.currency ?? existing?.currency ?? 'INR',
     paidBy: { id: body.paidById, name: nameOf(body.paidById) },
     groupId,
     date: body.date ?? '2026-10-12',
@@ -652,6 +652,38 @@ handlers.push(
     }
     db.groups = db.groups.filter((g) => g !== group)
     return new HttpResponse(null, { status: 204 })
+  }),
+)
+
+const involves = (e: Expense, id: number) => e.paidBy.id === id || e.shares.some((s) => s.userId === id)
+
+handlers.push(
+  // Alice's contacts: everyone in her groups, plus Dan from a non-group expense
+  http.get('*/api/users/me/contacts', () => {
+    const inGroups = db.groups.filter((g) => g.members.some((m) => m.id === ALICE.id)).flatMap((g) => g.members)
+    const people = [...inGroups, DAN].filter((u, i, all) => u.id !== ALICE.id && all.findIndex((v) => v.id === u.id) === i)
+    return HttpResponse.json(people.sort((a, b) => a.name.localeCompare(b.name)))
+  }),
+
+  http.get('*/api/users/me/expenses', ({ request }) => {
+    const url = new URL(request.url)
+    const q = url.searchParams.get('q')?.toLowerCase()
+    const category = url.searchParams.get('category')
+    const withId = Number(url.searchParams.get('with')) || null
+    const matching = db.expenses
+      .filter((e) => !e.deleted && involves(e, ALICE.id) && (withId === null || involves(e, withId)))
+      .filter((e) => (!q || e.description.toLowerCase().includes(q)) && (!category || e.category === category))
+      .sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id)
+    return activityPage(matching, request)
+  }),
+
+  http.get('*/api/users/me/friends/:friendId', ({ params }) => {
+    const id = Number(params.friendId)
+    const friend = db.friends.find((f) => f.userId === id)
+    if (friend) return HttpResponse.json(friend)
+    const user = USERS.find((u) => u.id === id)
+    if (!user) return errorBody(404, `No shared groups or expenses with user ${id}`, '/api/users/me/friends')
+    return HttpResponse.json({ userId: id, name: user.name, balances: [], breakdown: [] })
   }),
 )
 

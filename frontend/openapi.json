@@ -2054,6 +2054,28 @@
         "tags" : [ "Current user" ]
       }
     },
+    "/api/users/me/contacts" : {
+      "get" : {
+        "operationId" : "contacts",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/UserResponse"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "People the user can split or settle with outside groups: shared groups or earlier non-group expenses and payments",
+        "tags" : [ "Current user" ]
+      }
+    },
     "/api/users/me/expenses" : {
       "get" : {
         "operationId" : "myExpenses",
@@ -2113,6 +2135,14 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "with",
+          "required" : false,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
           }
         } ],
         "responses" : {

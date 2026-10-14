@@ -105,7 +105,11 @@ function FriendsCard({ friends }: { friends: FriendBalance[] }) {
             <li key={friend.userId} className="flex flex-wrap items-center gap-3 border-b border-line py-3 last:border-0">
               <Avatar name={friend.name} size="sm" />
               <div className="min-w-0 flex-1">
-                <p className="m-0 font-semibold">{friend.name}</p>
+                <p className="m-0 font-semibold">
+                  <Link to={`/friends/${friend.userId}`} className="hover:text-primary hover:underline">
+                    {friend.name}
+                  </Link>
+                </p>
                 <p className="m-0 mt-0.5 text-xs text-muted">
                   {friend.breakdown.map((item) => item.groupName ?? 'Outside groups').join(' · ')}
                 </p>

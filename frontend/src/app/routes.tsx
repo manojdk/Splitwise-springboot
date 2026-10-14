@@ -20,6 +20,8 @@ export const routes: RouteObject[] = [
               { index: true, lazy: async () => ({ Component: (await import('../pages/DashboardPage')).DashboardPage }) },
               { path: 'groups', lazy: async () => ({ Component: (await import('../pages/GroupsPage')).GroupsPage }) },
               { path: 'groups/:groupId', lazy: async () => ({ Component: (await import('../pages/GroupPage')).GroupPage }) },
+              { path: 'expenses', lazy: async () => ({ Component: (await import('../pages/ExpensesPage')).ExpensesPage }) },
+              { path: 'friends/:friendId', lazy: async () => ({ Component: (await import('../pages/FriendPage')).FriendPage }) },
               { path: 'activity', lazy: async () => ({ Component: (await import('../pages/ActivityPage')).ActivityPage }) },
               { path: 'recurring', lazy: async () => ({ Component: (await import('../pages/RecurringPage')).RecurringPage }) },
             ],

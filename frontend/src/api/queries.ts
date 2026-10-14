@@ -18,6 +18,7 @@ import type {
   CreateSettlementRequest,
   Expense,
   ExpensePage,
+  FriendBalance,
   FriendBalances,
   Group,
   MemberBalance,
@@ -26,6 +27,7 @@ import type {
   SettleUpResult,
   Transfer,
   UpdateExpenseRequest,
+  User,
 } from './types'
 
 /**
@@ -43,6 +45,9 @@ export const keys = {
   groupReport: (id: number, from?: string, to?: string) => ['groups', id, 'report', { from, to }] as const,
   groupSettlements: (id: number) => ['groups', id, 'settlements'] as const,
   expense: (id: number) => ['expenses', id] as const,
+  myExpenses: (filters: MyExpenseFilters) => ['expenses', 'mine', filters] as const,
+  friend: (id: number) => ['friends', id] as const,
+  contacts: ['contacts'] as const,
   expenseHistory: (id: number) => ['expenses', id, 'history'] as const,
   myActivity: ['activity'] as const,
   recurring: ['recurring'] as const,
@@ -59,6 +64,16 @@ export type ExpenseFilters = {
 
 export const PAGE_SIZE = 20
 
+/** The user's expenses across groups; `with`: only those shared with that person (a friend's page). */
+export type MyExpenseFilters = {
+  page: number
+  q?: string
+  category?: string
+  from?: string
+  to?: string
+  with?: number
+}
+
 /** After any change of money: balances, reports, activity and open expenses anywhere may have moved. */
 function moneyChanged(queryClient: QueryClient) {
   return Promise.all([
@@ -73,6 +88,7 @@ function moneyChanged(queryClient: QueryClient) {
 function groupChanged(queryClient: QueryClient, group: Group) {
   queryClient.setQueryData(keys.group(group.id), group)
   return Promise.all([
+    queryClient.invalidateQueries({ queryKey: keys.contacts }),
     queryClient.invalidateQueries({ queryKey: keys.groups, exact: true }),
     queryClient.invalidateQueries({ queryKey: keys.groupActivity(group.id) }),
     queryClient.invalidateQueries({ queryKey: keys.myActivity }),
@@ -163,6 +179,38 @@ export function useSimplifiedDebts(groupId: number) {
   return useQuery({
     queryKey: keys.groupDebts(groupId),
     queryFn: ({ signal }) => api<Transfer[]>(`/groups/${groupId}/debts/simplified`, { signal }),
+  })
+}
+
+/** Who the user can split with outside groups (shared groups, or earlier non-group expenses and payments). */
+export function useContacts() {
+  return useQuery({
+    queryKey: keys.contacts,
+    queryFn: ({ signal }) => api<User[]>('/users/me/contacts', { signal }),
+  })
+}
+
+/** One friend's balances with the user, per group and outside groups (empty when settled up). */
+export function useFriend(id: number) {
+  return useQuery({
+    queryKey: keys.friend(id),
+    queryFn: ({ signal }) => api<FriendBalance>(`/users/me/friends/${id}`, { signal }),
+  })
+}
+
+export function useMyExpenses(filters: MyExpenseFilters) {
+  return useQuery({
+    queryKey: keys.myExpenses(filters),
+    queryFn: ({ signal }) => {
+      const params = new URLSearchParams({ page: String(filters.page), size: String(PAGE_SIZE) })
+      if (filters.q) params.set('q', filters.q)
+      if (filters.category) params.set('category', filters.category)
+      if (filters.from) params.set('from', filters.from)
+      if (filters.to) params.set('to', filters.to)
+      if (filters.with) params.set('with', String(filters.with))
+      return api<ExpensePage>(`/users/me/expenses?${params}`, { signal })
+    },
+    placeholderData: keepPreviousData,
   })
 }
 
@@ -306,10 +354,7 @@ export function useCreateGroup() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (request: CreateGroupRequest) => api<Group>('/groups', { method: 'POST', body: request }),
-    onSuccess: (group) => {
-      queryClient.setQueryData(keys.group(group.id), group)
-      return queryClient.invalidateQueries({ queryKey: keys.groups, exact: true })
-    },
+    onSuccess: (group) => groupChanged(queryClient, group),
   })
 }
 

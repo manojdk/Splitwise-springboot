@@ -4,7 +4,6 @@ import type {
   CreateRecurringExpenseRequest,
   Expense,
   Frequency,
-  Group,
   UpdateExpenseRequest,
   User,
 } from '../../api/types'
@@ -31,7 +30,8 @@ export type ExpenseDraft = {
   endDate: string
 }
 
-export function newDraft(group: Group, me: number): ExpenseDraft {
+/** A new expense paid by me, split among `included` (everyone in `people` when not given). */
+export function newDraft(people: User[], me: number, included?: number[]): ExpenseDraft {
   return {
     description: '',
     amount: '',
@@ -40,7 +40,7 @@ export function newDraft(group: Group, me: number): ExpenseDraft {
     category: 'GENERAL',
     notes: '',
     splitType: 'EQUAL',
-    included: Object.fromEntries(group.members.map((m) => [m.id, true])),
+    included: Object.fromEntries((included ?? people.map((p) => p.id)).map((id) => [id, true])),
     values: {},
     convertedToExact: false,
     frequency: 'MONTHLY',
@@ -105,13 +105,24 @@ export function previewSplit(draft: ExpenseDraft, people: User[]): SplitResult {
  * The API request. Numbers are sent as JSON numbers; every value here has at most 12 significant digits, which
  * a double carries exactly, so the API's BigDecimal receives what was typed.
  */
-export function toCreateRequest(draft: ExpenseDraft, people: number[], groupId: number): CreateExpenseRequest {
-  return { ...requestBody(draft, people), groupId }
+export function toCreateRequest(
+  draft: ExpenseDraft,
+  people: number[],
+  groupId: number | null,
+  currency: string,
+): CreateExpenseRequest {
+  // A group decides the currency; outside groups it is chosen in the form
+  return groupId === null ? { ...requestBody(draft, people), currency } : { ...requestBody(draft, people), groupId }
 }
 
 /** version: the one the form was loaded with, so a concurrent edit is refused instead of overwritten. */
-export function toUpdateRequest(draft: ExpenseDraft, people: number[], version: number): UpdateExpenseRequest {
-  return { ...requestBody(draft, people), version }
+export function toUpdateRequest(
+  draft: ExpenseDraft,
+  people: number[],
+  version: number,
+  currency?: string,
+): UpdateExpenseRequest {
+  return { ...requestBody(draft, people), version, ...(currency ? { currency } : {}) }
 }
 
 /** A template that creates this expense every week, month or year from draft.date (the first one). */

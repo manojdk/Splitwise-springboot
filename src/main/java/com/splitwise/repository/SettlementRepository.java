@@ -45,4 +45,10 @@ public interface SettlementRepository extends JpaRepository<Settlement, Long>, J
               and ((s.payer.id = :userId and s.payee.id = :otherId) or (s.payer.id = :otherId and s.payee.id = :userId))
             """)
     boolean havePaidEachOtherOutsideGroups(@Param("userId") Long userId, @Param("otherId") Long otherId);
+
+    @Query("select distinct s.payee from Settlement s where s.group is null and s.payer.id = :userId")
+    List<com.splitwise.domain.User> findNonGroupPayees(@Param("userId") Long userId);
+
+    @Query("select distinct s.payer from Settlement s where s.group is null and s.payee.id = :userId")
+    List<com.splitwise.domain.User> findNonGroupPayers(@Param("userId") Long userId);
 }

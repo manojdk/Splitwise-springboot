@@ -41,4 +41,8 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
             order by g.id
             """)
     List<Group> findAllForMember(@Param("userId") Long userId);
+
+    /** Everyone who is in a group with the user now. */
+    @Query("select distinct m from Group g join g.members me join g.members m where me.id = :userId and m.id <> :userId")
+    List<com.splitwise.domain.User> findCoMembers(@Param("userId") Long userId);
 }

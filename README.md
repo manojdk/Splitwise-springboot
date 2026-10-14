@@ -37,7 +37,8 @@ docs in Swagger UI.
   - Expenses can belong to a group, or sit outside any group (for example, two friends sharing a cab).
     Outside groups you can only split or settle with your contacts: people you share a group with or have
     split with before. Otherwise anyone could put a debt on any account by guessing its id; a stranger and an
-    id with no account get the same `403`, so ids cannot be probed.
+    id with no account get the same `403`, so ids cannot be probed. `GET /api/users/me/contacts` lists who those are, and
+    `GET /api/users/me/expenses?with={id}` lists the expenses shared with one person (a friend's page).
 - **Edit, delete and restore**: any group member can fix a group expense (as in Splitwise); for non-group
   expenses, anyone involved. Edits use **optimistic locking**: the client sends the `version` it read, and an
   edit based on an older version gets `409` instead of silently overwriting someone else's change. Deletes
