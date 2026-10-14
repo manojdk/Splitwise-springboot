@@ -42,11 +42,12 @@ backend needs no CORS setup.
 | Sign in / Create account | Validation as strict as the API's; server errors shown where they belong |
 | Dashboard | What you are owed and what you owe, **per currency** (never added together); friends with each balance and where it comes from; settle up with a friend after confirming the payments it records; your balance in each group |
 | Groups | Your groups with members and your balance; new group with a currency and people to add by email (people without an account are listed, the group is kept) |
-| Group | Expenses with search, category, payer and date filters (kept in the address) and paging; balances; the fewest payments to settle, recordable by the people involved; members (add, remove, leave) |
-| Activity | Everything that happened, newest first, with exactly what changed in each edit; "Show more" pages back; also per group |
+| Group | Expenses with search, category, payer and date filters (kept in the address) and paging; balances; the fewest payments to settle, recordable by the people involved (with a date and a note); the payments already recorded, each deletable with Undo; members (add, remove, leave); settings: rename, and delete for the creator while the group is empty |
+| Activity | Everything that happened, newest first, with exactly what changed in each edit; "Show more" pages back; also per group. An expense's entry opens it (deleted ones too, to restore them); a deleted payment can be restored from its entry |
 | Recurring | Rent, wifi, subscriptions: next date, how often, stopped ones with the reason; set one up in a group with the same live split form; stop with a confirmation |
 | Report (group tab) | Spending by category (a CSS donut, no chart library) and paid / share / net per member, for any date range; CSV export of the same range |
 | Add / edit expense | All five split types with **each person's share shown live, to the paisa**; edits open in the terms they were entered (2 : 1 : 1 shares, 50 %); a concurrent edit is caught (409) and the other version offered; delete with Undo |
+| Expense | Its own address (`/groups/12?expense=34`), so it can be linked to; who owes what; its history (who added it, each edit with what changed); a deleted expense says so and offers Restore |
 
 ## The split calculator matches the API
 

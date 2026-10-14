@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-query'
 import { api } from './client'
 import type {
+  Activity,
   ActivityPage,
   CreateExpenseRequest,
   CreateRecurringExpenseRequest,
@@ -21,6 +22,7 @@ import type {
   Group,
   MemberBalance,
   Settlement,
+  SettlementPage,
   SettleUpResult,
   Transfer,
   UpdateExpenseRequest,
@@ -39,6 +41,9 @@ export const keys = {
   groupDebts: (id: number) => ['groups', id, 'debts'] as const,
   groupActivity: (id: number) => ['groups', id, 'activity'] as const,
   groupReport: (id: number, from?: string, to?: string) => ['groups', id, 'report', { from, to }] as const,
+  groupSettlements: (id: number) => ['groups', id, 'settlements'] as const,
+  expense: (id: number) => ['expenses', id] as const,
+  expenseHistory: (id: number) => ['expenses', id, 'history'] as const,
   myActivity: ['activity'] as const,
   recurring: ['recurring'] as const,
 }
@@ -54,11 +59,22 @@ export type ExpenseFilters = {
 
 export const PAGE_SIZE = 20
 
-/** After any change of money: balances, reports and activity anywhere may have moved. */
+/** After any change of money: balances, reports, activity and open expenses anywhere may have moved. */
 function moneyChanged(queryClient: QueryClient) {
   return Promise.all([
     queryClient.invalidateQueries({ queryKey: keys.friends }),
     queryClient.invalidateQueries({ queryKey: keys.groups }),
+    queryClient.invalidateQueries({ queryKey: keys.myActivity }),
+    queryClient.invalidateQueries({ queryKey: ['expenses'] }),
+  ])
+}
+
+/** After a change to a group's members or name: the group, the lists that show it, and the feeds. */
+function groupChanged(queryClient: QueryClient, group: Group) {
+  queryClient.setQueryData(keys.group(group.id), group)
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: keys.groups, exact: true }),
+    queryClient.invalidateQueries({ queryKey: keys.groupActivity(group.id) }),
     queryClient.invalidateQueries({ queryKey: keys.myActivity }),
   ])
 }
@@ -150,6 +166,75 @@ export function useSimplifiedDebts(groupId: number) {
   })
 }
 
+/** One expense by id, deleted ones included (flagged), starting from what a list already showed. */
+export function useExpense(id: number, initial?: Expense) {
+  return useQuery({
+    queryKey: keys.expense(id),
+    queryFn: ({ signal }) => api<Expense>(`/expenses/${id}`, { signal }),
+    initialData: initial,
+    // A list's copy is a good first paint, but check for edits by others straight away
+    initialDataUpdatedAt: 0,
+  })
+}
+
+/** What happened to one expense, newest first: added, each edit with its changes, deleted, restored. */
+export function useExpenseHistory(id: number) {
+  return useQuery({
+    queryKey: keys.expenseHistory(id),
+    queryFn: ({ signal }) => api<Activity[]>(`/expenses/${id}/activity`, { signal }),
+  })
+}
+
+/** A group's recorded payments, newest first, page by page. */
+export function useGroupSettlements(groupId: number) {
+  return useInfiniteQuery({
+    queryKey: keys.groupSettlements(groupId),
+    queryFn: ({ pageParam, signal }) =>
+      api<SettlementPage>(`/groups/${groupId}/settlements?page=${pageParam}&size=${PAGE_SIZE}`, { signal }),
+    initialPageParam: 0,
+    getNextPageParam: (last) => (last.last ? undefined : last.page + 1),
+  })
+}
+
+export function useDeleteSettlement() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => api<void>(`/settlements/${id}`, { method: 'DELETE' }),
+    onSuccess: () => moneyChanged(queryClient),
+  })
+}
+
+export function useRestoreSettlement() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => api<Settlement>(`/settlements/${id}/restore`, { method: 'POST' }),
+    onSuccess: () => moneyChanged(queryClient),
+  })
+}
+
+export function useRenameGroup(groupId: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (name: string) => api<Group>(`/groups/${groupId}`, { method: 'PUT', body: { name } }),
+    onSuccess: (group) => groupChanged(queryClient, group),
+  })
+}
+
+/** Only the creator, and only a group with no expenses or payments (deleted ones count). */
+export function useDeleteGroup(groupId: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => api<void>(`/groups/${groupId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: keys.group(groupId) })
+      return Promise.all([
+        queryClient.invalidateQueries({ queryKey: keys.groups, exact: true }),
+        queryClient.invalidateQueries({ queryKey: keys.myActivity }),
+      ])
+    },
+  })
+}
+
 export function useSaveExpense() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -233,10 +318,7 @@ export function useAddMember(groupId: number) {
   return useMutation({
     mutationFn: (email: string) =>
       api<Group>(`/groups/${groupId}/members`, { method: 'POST', body: { email } }),
-    onSuccess: (group) => {
-      queryClient.setQueryData(keys.group(groupId), group)
-      return queryClient.invalidateQueries({ queryKey: keys.groups, exact: true })
-    },
+    onSuccess: (group) => groupChanged(queryClient, group),
   })
 }
 
@@ -244,12 +326,7 @@ export function useRemoveMember(groupId: number) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (userId: number) => api<Group>(`/groups/${groupId}/members/${userId}`, { method: 'DELETE' }),
-    onSuccess: (group) => {
-      queryClient.setQueryData(keys.group(groupId), group)
-      return Promise.all([
-        queryClient.invalidateQueries({ queryKey: keys.groups, exact: true }),
-        queryClient.invalidateQueries({ queryKey: keys.friends }),
-      ])
-    },
+    onSuccess: (group) =>
+      Promise.all([groupChanged(queryClient, group), queryClient.invalidateQueries({ queryKey: keys.friends })]),
   })
 }

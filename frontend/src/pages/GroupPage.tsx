@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { z } from 'zod'
 import { ApiError } from '../api/client'
-import { useAddMember, useGroup, useRemoveMember } from '../api/queries'
+import { useAddMember, useDeleteGroup, useGroup, useRemoveMember, useRenameGroup } from '../api/queries'
 import type { Expense, Group, User } from '../api/types'
 import { useAuth } from '../auth/AuthProvider'
 import { Modal } from '../components/Modal'
@@ -56,12 +56,35 @@ function GroupContent({ group }: { group: Group }) {
   const [params, setParams] = useSearchParams()
   const tab = (TABS.find((t) => t.id === params.get('tab'))?.id ?? 'expenses') as Tab
   const [adding, setAdding] = useState(false)
-  const [viewing, setViewing] = useState<Expense | null>(null)
+  const [settings, setSettings] = useState(false)
   const [editing, setEditing] = useState<Expense | null>(null)
+  // The open expense is in the address (?expense=12), so it can be linked to, from Activity for example
+  const viewingId = Number(params.get('expense')) || null
+  const [listCopy, setListCopy] = useState<Expense | null>(null)
 
   function selectTab(next: Tab) {
     // Filters belong to the expenses tab; switching tabs starts clean
     setParams(next === 'expenses' ? {} : { tab: next }, { replace: true })
+  }
+
+  function openExpense(expense: Expense) {
+    setListCopy(expense)
+    setParams((current) => {
+      const next = new URLSearchParams(current)
+      next.set('expense', String(expense.id))
+      return next
+    })
+  }
+
+  function closeExpense() {
+    setParams(
+      (current) => {
+        const next = new URLSearchParams(current)
+        next.delete('expense')
+        return next
+      },
+      { replace: true },
+    )
   }
 
   return (
@@ -73,9 +96,14 @@ function GroupContent({ group }: { group: Group }) {
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <h1 className="m-0 text-2xl">{group.name}</h1>
           <span className="rounded-full border border-line px-2 py-0.5 text-xs font-bold text-muted">{group.currency}</span>
-          <button type="button" className="btn btn-accent ml-auto" onClick={() => setAdding(true)}>
-            + Add expense
-          </button>
+          <span className="ml-auto flex gap-2">
+            <button type="button" className="btn btn-ghost" onClick={() => setSettings(true)}>
+              Settings
+            </button>
+            <button type="button" className="btn btn-accent" onClick={() => setAdding(true)}>
+              + Add expense
+            </button>
+          </span>
         </div>
       </div>
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
@@ -98,7 +126,7 @@ function GroupContent({ group }: { group: Group }) {
             ))}
           </div>
           <div role="tabpanel">
-            {tab === 'expenses' && <ExpenseList group={group} onOpen={setViewing} />}
+            {tab === 'expenses' && <ExpenseList group={group} onOpen={openExpense} />}
             {tab === 'balances' && <GroupBalances group={group} />}
             {tab === 'settle' && <SettleUpPanel group={group} />}
             {tab === 'activity' && <ActivityFeed groupId={group.id} />}
@@ -109,18 +137,125 @@ function GroupContent({ group }: { group: Group }) {
       </div>
 
       {adding && <ExpenseForm group={group} onClose={() => setAdding(false)} />}
-      {viewing && (
+      {viewingId !== null && (
         <ExpenseDetail
-          expense={viewing}
-          onClose={() => setViewing(null)}
-          onEdit={() => {
-            setEditing(viewing)
-            setViewing(null)
+          expenseId={viewingId}
+          initial={listCopy?.id === viewingId ? listCopy : undefined}
+          groupId={group.id}
+          onClose={closeExpense}
+          onEdit={(expense) => {
+            setEditing(expense)
+            closeExpense()
           }}
         />
       )}
       {editing && <ExpenseForm group={group} expense={editing} onClose={() => setEditing(null)} />}
+      {settings && <GroupSettingsDialog group={group} onClose={() => setSettings(false)} />}
     </div>
+  )
+}
+
+const nameSchema = z.object({
+  name: z.string().trim().min(1, 'Give the group a name').max(100, 'Use at most 100 characters'),
+})
+
+/** Rename the group (any member); delete it (the creator, and only while it has no expenses or payments). */
+function GroupSettingsDialog({ group, onClose }: { group: Group; onClose: () => void }) {
+  const { user } = useAuth()
+  const toast = useToast()
+  const navigate = useNavigate()
+  const rename = useRenameGroup(group.id)
+  const remove = useDeleteGroup(group.id)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const isCreator = user?.id === group.createdById
+  const creator = group.members.find((m) => m.id === group.createdById)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isDirty },
+  } = useForm<z.infer<typeof nameSchema>>({ resolver: zodResolver(nameSchema), defaultValues: { name: group.name } })
+
+  const onRename = handleSubmit(async ({ name }) => {
+    try {
+      await rename.mutateAsync(name)
+      toast.show(`Renamed to ${name}`)
+      onClose()
+    } catch {
+      // Shown below from rename.error
+    }
+  })
+
+  async function onDelete() {
+    try {
+      await remove.mutateAsync()
+      toast.show(`${group.name} deleted`)
+      navigate('/groups')
+    } catch {
+      // Shown below from remove.error
+    }
+  }
+
+  const busy = rename.isPending || remove.isPending
+  const error = rename.error ?? remove.error
+
+  return (
+    <Modal title="Group settings" onClose={onClose} busy={busy}>
+      <form noValidate onSubmit={onRename} className="grid gap-2">
+        <label htmlFor="group-name" className="label">
+          Name
+        </label>
+        <div className="flex gap-2">
+          <input
+            id="group-name"
+            className="input"
+            aria-invalid={errors.name ? true : undefined}
+            aria-describedby={errors.name ? 'group-name-error' : undefined}
+            {...register('name')}
+          />
+          <button type="submit" className="btn shrink-0" disabled={busy || !isDirty}>
+            {rename.isPending ? 'Saving...' : 'Save'}
+          </button>
+        </div>
+        {errors.name && (
+          <p id="group-name-error" role="alert" className="m-0 text-sm font-semibold text-negative">
+            {errors.name.message}
+          </p>
+        )}
+      </form>
+      <p className="mt-2 mb-0 text-xs text-muted">The currency ({group.currency}) cannot be changed once the group exists.</p>
+
+      <h3 className="mt-6 mb-1 border-t border-line pt-4 text-sm">Delete the group</h3>
+      {isCreator ? (
+        <>
+          <p className="mt-0 text-sm text-muted">
+            Only a group with no expenses or payments can be deleted (deleted ones count too, since they can still be
+            restored).
+          </p>
+          {confirmingDelete ? (
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-sm font-semibold">Delete {group.name} for everyone?</span>
+              <button type="button" className="btn btn-ghost" onClick={() => setConfirmingDelete(false)} disabled={busy}>
+                Keep it
+              </button>
+              <button type="button" className="btn btn-accent" onClick={onDelete} disabled={busy}>
+                {remove.isPending ? 'Deleting...' : 'Yes, delete'}
+              </button>
+            </div>
+          ) : (
+            <button type="button" className="btn btn-ghost" onClick={() => setConfirmingDelete(true)} disabled={busy}>
+              Delete group
+            </button>
+          )}
+        </>
+      ) : (
+        <p className="mt-0 text-sm text-muted">Only {creator?.name ?? 'the person who created it'} can delete this group.</p>
+      )}
+      {error && (
+        <p role="alert" className="alert alert-error">
+          {error instanceof ApiError ? error.message : 'Something went wrong. Please try again.'}
+        </p>
+      )}
+    </Modal>
   )
 }
 

@@ -62,6 +62,13 @@ export function ExpenseList({ group, onOpen }: { group: Group; onOpen: (expense:
 
   const filtered = Boolean(filters.q || filters.category || filters.paidBy || filters.from || filters.to)
 
+  // Deleting the last expense on a later page would leave an empty page with no way back: go to the last real page
+  const emptiedPage = !expenses.isPlaceholderData && expenses.data?.content.length === 0 && filters.page > 0
+  const lastPage = Math.max(0, (expenses.data?.totalPages ?? 1) - 1)
+  useEffect(() => {
+    if (emptiedPage) setFilters({ page: lastPage })
+  })
+
   return (
     <div className="grid gap-4">
       <div className="grid gap-2 sm:grid-cols-[2fr_1fr_1fr]">

@@ -1,13 +1,20 @@
 import { useState } from 'react'
 import { ApiError } from '../../api/client'
-import { useGroupBalances, useRecordPayment, useSimplifiedDebts } from '../../api/queries'
-import type { Group, Transfer } from '../../api/types'
+import {
+  useDeleteSettlement,
+  useGroupBalances,
+  useGroupSettlements,
+  useRecordPayment,
+  useRestoreSettlement,
+  useSimplifiedDebts,
+} from '../../api/queries'
+import type { Group, Settlement, Transfer } from '../../api/types'
 import { useAuth } from '../../auth/AuthProvider'
 import { Modal } from '../../components/Modal'
 import { Money } from '../../components/Money'
 import { Avatar, ErrorState, Loading } from '../../components/States'
 import { useToast } from '../../components/Toast'
-import { today } from '../../lib/dates'
+import { formatDate, today } from '../../lib/dates'
 import { formatMoney, isZero } from '../../lib/money'
 
 /** Each member's net balance in the group, as bars either side of zero. */
@@ -48,8 +55,18 @@ export function GroupBalances({ group }: { group: Group }) {
   )
 }
 
-/** The fewest payments that settle the group; the people involved can record one as made. */
+/** What is left to pay, then the payments already recorded (each can be deleted, with Undo). */
 export function SettleUpPanel({ group }: { group: Group }) {
+  return (
+    <div className="grid gap-6">
+      <SuggestedPayments group={group} />
+      <RecordedPayments group={group} />
+    </div>
+  )
+}
+
+/** The fewest payments that settle the group; the people involved can record one as made. */
+function SuggestedPayments({ group }: { group: Group }) {
   const { user } = useAuth()
   const debts = useSimplifiedDebts(group.id)
   const [recording, setRecording] = useState<Transfer | null>(null)
@@ -90,20 +107,101 @@ export function SettleUpPanel({ group }: { group: Group }) {
   )
 }
 
+/** Payments recorded in the group, newest first. A mistake can be deleted, and the toast offers Undo. */
+function RecordedPayments({ group }: { group: Group }) {
+  const { user } = useAuth()
+  const toast = useToast()
+  const payments = useGroupSettlements(group.id)
+  const remove = useDeleteSettlement()
+  const restore = useRestoreSettlement()
+
+  if (payments.isPending) return <Loading label="Loading recorded payments" rows={2} />
+  if (payments.isError) return <ErrorState error={payments.error} onRetry={() => void payments.refetch()} />
+  const items = payments.data.pages.flatMap((page) => page.content)
+
+  const name = (id: number, fallback: string) => (id === user?.id ? 'you' : fallback)
+  const describe = (p: Settlement) =>
+    `${p.fromUserId === user?.id ? 'You' : p.fromName} paid ${name(p.toUserId, p.toName)} ${formatMoney(p.amount, p.currency)}`
+
+  function onDelete(payment: Settlement) {
+    remove
+      .mutateAsync(payment.id)
+      .then(() =>
+        toast.show('Payment deleted', {
+          label: 'Undo',
+          onClick: () =>
+            restore
+              .mutateAsync(payment.id)
+              .then(() => toast.show('Payment restored'))
+              .catch((error: unknown) => toast.show(error instanceof ApiError ? error.message : 'Could not restore the payment')),
+        }),
+      )
+      .catch((error: unknown) => toast.show(error instanceof ApiError ? error.message : 'Could not delete the payment'))
+  }
+
+  return (
+    <section aria-labelledby="recorded-heading" className="grid gap-2">
+      <h3 id="recorded-heading" className="m-0 text-sm">
+        Recorded payments
+      </h3>
+      {items.length === 0 ? (
+        <p className="m-0 text-sm text-muted">No payments recorded yet.</p>
+      ) : (
+        <ul className="m-0 list-none p-0">
+          {items.map((payment) => (
+            <li key={payment.id} className="flex flex-wrap items-center gap-3 border-b border-line py-2.5 last:border-0">
+              <Avatar name={payment.fromName} size="sm" />
+              <span className="min-w-0 flex-1">
+                <span className="font-semibold">{describe(payment)}</span>
+                <span className="block text-xs text-muted">
+                  {formatDate(payment.date)}
+                  {payment.note && <> {'·'} {payment.note}</>}
+                </span>
+              </span>
+              <button
+                type="button"
+                className="btn btn-ghost px-3 py-1.5 text-xs"
+                aria-label={`Delete payment: ${describe(payment)}`}
+                onClick={() => onDelete(payment)}
+                disabled={remove.isPending}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {payments.hasNextPage && (
+        <button
+          type="button"
+          className="btn btn-ghost justify-self-start"
+          onClick={() => void payments.fetchNextPage()}
+          disabled={payments.isFetchingNextPage}
+        >
+          {payments.isFetchingNextPage ? 'Loading...' : 'Show more'}
+        </button>
+      )}
+    </section>
+  )
+}
+
 function RecordPaymentDialog({ group, transfer, onClose }: { group: Group; transfer: Transfer; onClose: () => void }) {
   const { user } = useAuth()
   const toast = useToast()
   const record = useRecordPayment()
   const [amount, setAmount] = useState(transfer.amount.toFixed(2))
   const [date, setDate] = useState(today())
+  const [note, setNote] = useState('')
   const [touched, setTouched] = useState(false)
 
   const amountError = !/^\d+(\.\d{1,2})?$/.test(amount.trim()) || Number(amount) <= 0 ? 'Enter an amount, like 500 or 99.50' : null
+  const dateError = date ? null : 'Pick the date of the payment'
+  const noteError = note.length > 255 ? 'Use at most 255 characters' : null
   const who = transfer.fromUserId === user?.id ? `You paid ${transfer.toName}` : `${transfer.fromName} paid you`
 
   async function confirm() {
     setTouched(true)
-    if (amountError) return
+    if (amountError || dateError || noteError) return
     try {
       await record.mutateAsync({
         fromUserId: transfer.fromUserId,
@@ -111,6 +209,7 @@ function RecordPaymentDialog({ group, transfer, onClose }: { group: Group; trans
         amount: Number(amount),
         groupId: group.id,
         date,
+        ...(note.trim() ? { note: note.trim() } : {}),
       })
       toast.show(`Payment of ${formatMoney(Number(amount), transfer.currency)} recorded`)
       onClose()
@@ -135,12 +234,29 @@ function RecordPaymentDialog({ group, transfer, onClose }: { group: Group; trans
         </label>
         <label className="flex flex-col gap-1.5">
           <span className="label">Date</span>
-          <input type="date" className="input" value={date} onChange={(e) => setDate(e.target.value)} />
+          <input
+            type="date"
+            className="input"
+            value={date}
+            max={today()}
+            aria-invalid={touched && dateError ? true : undefined}
+            onChange={(e) => setDate(e.target.value)}
+          />
+        </label>
+        <label className="flex flex-col gap-1.5 sm:col-span-2">
+          <span className="label">Note (optional)</span>
+          <input
+            className="input"
+            value={note}
+            placeholder="Bank transfer, cash, UPI..."
+            aria-invalid={touched && noteError ? true : undefined}
+            onChange={(e) => setNote(e.target.value)}
+          />
         </label>
       </div>
-      {touched && amountError && (
+      {touched && (amountError ?? dateError ?? noteError) && (
         <p role="alert" className="mb-0 text-sm font-semibold text-negative">
-          {amountError}
+          {amountError ?? dateError ?? noteError}
         </p>
       )}
       {record.error && (
