@@ -15,6 +15,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmailIgnoreCase(String email);
 
+    /** The user's current token version, without loading the entity (checked on every authenticated request). */
+    @Query("select u.tokenVersion from User u where u.id = :id")
+    Optional<Integer> findTokenVersion(@Param("id") Long id);
+
     /** Loads the user and locks the row until the transaction ends (used to serialise settle-ups per pair). */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select u from User u where u.id = :id")

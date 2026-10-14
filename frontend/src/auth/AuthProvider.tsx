@@ -17,10 +17,15 @@ type AuthContextValue = {
   login: (credentials: LoginRequest) => Promise<void>
   register: (details: RegisterRequest) => Promise<void>
   logout: (notice?: string) => void
+  /** Carries on with a new token for this session (after a password change, which ends the old one). */
+  renew: (token: TokenResponse) => void
   retry: () => void
 }
 
 const SESSION_EXPIRED = 'Your session has expired. Please sign in again.'
+/** The API's answer for a session that was ended on purpose (password changed, or signed out of all devices). */
+const SIGNED_OUT_BY_API = 'You were signed out of this device; please sign in again'
+export const SIGNED_OUT = 'You were signed out of this device. This happens when the password is changed or every device is signed out. Please sign in again.'
 /** setTimeout fires immediately for delays above 2^31-1 ms (about 24.8 days). */
 const MAX_TIMEOUT = 2_147_483_647
 /** How long before the token runs out it is renewed. */
@@ -55,7 +60,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   useEffect(() => {
-    configureApi({ getToken: () => tokenRef.current, onUnauthorized: () => logout(SESSION_EXPIRED) })
+    configureApi({
+      getToken: () => tokenRef.current,
+      onUnauthorized: (message) => logout(message === SIGNED_OUT_BY_API ? SIGNED_OUT : SESSION_EXPIRED),
+    })
   }, [logout])
 
   // Renew the token a few minutes before it runs out, so someone using the app is not signed out every hour. When
@@ -114,8 +122,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const retry = useCallback(() => void refetch(), [refetch])
 
   const value = useMemo<AuthContextValue>(
-    () => ({ status, user: me.data ?? null, notice, endsAt, login, register, logout, retry }),
-    [status, me.data, notice, endsAt, login, register, logout, retry],
+    () => ({ status, user: me.data ?? null, notice, endsAt, login, register, logout, renew: start, retry }),
+    [status, me.data, notice, endsAt, login, register, logout, start, retry],
   )
 
   return <AuthContext value={value}>{children}</AuthContext>

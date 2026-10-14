@@ -1,5 +1,6 @@
 package com.splitwise.web.dto;
 
+import com.splitwise.web.validation.Password;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -7,5 +8,5 @@ import jakarta.validation.constraints.Size;
 public record RegisterRequest(
         @NotBlank @Size(max = 100) String name,
         @NotBlank @Email @Size(max = 255) String email,
-        @NotBlank @Size(min = 8, max = 72, message = "must be between 8 and 72 characters") String password) {
+        @NotBlank @Password String password) {
 }

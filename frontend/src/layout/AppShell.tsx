@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useNavigation } from 'react-router'
+import { Link, NavLink, Outlet, useNavigation } from 'react-router'
 import { useAuth } from '../auth/AuthProvider'
 import { initials } from '../lib/initials'
 import { ThemeSwitch } from '../theme/ThemeSwitch'
@@ -49,10 +49,12 @@ export function AppShell() {
           <ThemeSwitch />
           {user && (
             <div className="flex items-center gap-3">
-              <div className="avatar" aria-hidden="true">
-                {initials(user.name)}
-              </div>
-              <span className="hidden font-semibold lg:inline">{user.name}</span>
+              <Link to="/settings" aria-label="Account settings" title="Account settings" className="flex items-center gap-3 rounded-lg">
+                <span className="avatar" aria-hidden="true">
+                  {initials(user.name)}
+                </span>
+                <span className="hidden font-semibold lg:inline">{user.name}</span>
+              </Link>
               <button type="button" className="btn btn-ghost px-3 py-2 text-sm" onClick={() => logout()}>
                 Sign out
               </button>
