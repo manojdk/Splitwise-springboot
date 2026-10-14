@@ -79,7 +79,10 @@ describe('dashboard', () => {
     const { user } = renderApp('/')
 
     await user.click(await screen.findByRole('button', { name: 'Settle up with Dan Brown' }))
-    expect(within(screen.getByRole('dialog')).getByText('You pay Dan')).toBeInTheDocument()
+    // "You pay" already says which way the money goes: the amount carries no minus sign
+    const payment = within(screen.getByRole('dialog')).getByText('You pay Dan').closest('li')!
+    expect(payment).toHaveTextContent('$10.00')
+    expect(payment).not.toHaveTextContent('-$10.00')
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()

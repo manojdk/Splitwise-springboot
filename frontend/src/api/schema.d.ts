@@ -580,7 +580,6 @@ export interface components {
         };
         CreateGroupRequest: {
             currency?: string;
-            memberIds?: number[];
             name: string;
         };
         CreateRecurringExpenseRequest: {

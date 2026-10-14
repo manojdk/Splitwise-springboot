@@ -38,7 +38,7 @@ public final class CurrencyRules {
     public static String resolve(String requested, Group group) {
         if (group != null) {
             if (requested != null && !requested.isBlank() && !requested.equals(group.getCurrency())) {
-                throw new BadRequestException("Group " + group.getId() + " uses " + group.getCurrency()
+                throw new BadRequestException("This group uses " + group.getCurrency()
                         + "; everything in it must be in " + group.getCurrency());
             }
             return group.getCurrency();

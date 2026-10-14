@@ -37,4 +37,12 @@ public interface SettlementRepository extends JpaRepository<Settlement, Long>, J
     /** The settlement's group id (empty for a non-group or unknown settlement), read without loading it. */
     @Query("select s.group.id from Settlement s where s.id = :id and s.group is not null")
     Optional<Long> findGroupIdById(@Param("id") Long id);
+
+    /** Whether one of the two users has paid the other outside groups, deleted payments included. */
+    @Query("""
+            select count(s) > 0 from Settlement s
+            where s.group is null
+              and ((s.payer.id = :userId and s.payee.id = :otherId) or (s.payer.id = :otherId and s.payee.id = :userId))
+            """)
+    boolean havePaidEachOtherOutsideGroups(@Param("userId") Long userId, @Param("otherId") Long otherId);
 }

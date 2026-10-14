@@ -151,13 +151,6 @@
             "pattern" : "[A-Z]{3}",
             "type" : "string"
           },
-          "memberIds" : {
-            "items" : {
-              "format" : "int64",
-              "type" : "integer"
-            },
-            "type" : "array"
-          },
           "name" : {
             "maxLength" : 100,
             "minLength" : 0,

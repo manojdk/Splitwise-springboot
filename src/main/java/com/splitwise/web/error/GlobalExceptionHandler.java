@@ -1,12 +1,14 @@
 package com.splitwise.web.error;
 
 import com.splitwise.exception.ApiException;
+import com.splitwise.exception.TooManyRequestsException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -30,6 +32,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ApiException.class)
     ResponseEntity<ErrorResponse> handleApi(ApiException ex, HttpServletRequest request) {
         return build(ex.getStatus(), ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(TooManyRequestsException.class)
+    ResponseEntity<ErrorResponse> handleTooMany(TooManyRequestsException ex, HttpServletRequest request) {
+        // Whole seconds, rounded up, so a client that waits exactly this long gets in
+        long seconds = Math.max(1, (ex.getRetryAfter().toMillis() + 999) / 1000);
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .header(HttpHeaders.RETRY_AFTER, String.valueOf(seconds))
+                .body(ErrorResponse.of(HttpStatus.TOO_MANY_REQUESTS, ex.getMessage(), request.getRequestURI()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

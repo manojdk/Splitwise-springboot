@@ -119,6 +119,7 @@ class ExpenseLifecycleIntegrationTest extends ApiTestSupport {
         Session alice = user("Alice");
         Session bob = user("Bob");
         Session carol = user("Carol");
+        contacts(alice, bob, carol);
         long id = read(addExpense(alice, expenseBody(null, alice, "50.00", "EQUAL", Share.of(alice), Share.of(bob)))
                 .andExpect(status().isCreated())).get("id").asLong();
 
@@ -188,6 +189,6 @@ class ExpenseLifecycleIntegrationTest extends ApiTestSupport {
 
         call(alice, post("/api/expenses/" + id + "/restore"))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message", containsString("no longer a member")));
+                .andExpect(jsonPath("$.message", containsString("Bob, who has left the group")));
     }
 }

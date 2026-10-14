@@ -120,11 +120,13 @@ class ActivityFeedIntegrationTest extends ApiTestSupport {
         Session alice = user("Alice");
         Session bob = user("Bob");
         Session outsider = user("Mallory");
+        contacts(alice, bob);
         addExpense(alice, expenseBody(null, alice, "20.00", "EQUAL", Share.of(alice), Share.of(bob)))
                 .andExpect(status().isCreated());
 
+        // Newest first; the entries before it are about the group that made them contacts
         assertThat(summaries(read(call(bob, get("/api/users/me/activity")))))
-                .containsExactly("Alice added \"Dinner\" (INR 20.00)");
+                .first().isEqualTo("Alice added \"Dinner\" (INR 20.00)");
         call(outsider, get("/api/users/me/activity")).andExpect(jsonPath("$.totalElements").value(0));
     }
 

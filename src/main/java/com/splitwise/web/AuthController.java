@@ -8,6 +8,7 @@ import com.splitwise.web.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,13 +32,13 @@ public class AuthController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create an account")
-    public UserResponse register(@Valid @RequestBody RegisterRequest request) {
-        return authService.register(request);
+    public UserResponse register(@Valid @RequestBody RegisterRequest request, HttpServletRequest http) {
+        return authService.register(request, http.getRemoteAddr());
     }
 
     @PostMapping("/login")
     @Operation(summary = "Exchange email + password for a JWT access token")
-    public TokenResponse login(@Valid @RequestBody LoginRequest request) {
-        return authService.login(request);
+    public TokenResponse login(@Valid @RequestBody LoginRequest request, HttpServletRequest http) {
+        return authService.login(request, http.getRemoteAddr());
     }
 }

@@ -40,4 +40,15 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>, JpaSpec
     /** The expense's group id (empty for a non-group or unknown expense), read without loading the expense. */
     @Query("select e.group.id from Expense e where e.id = :id and e.group is not null")
     Optional<Long> findGroupIdById(@Param("id") Long id);
+
+    /** Whether the two users are both in some non-group expense (as payer or participant), deleted ones included. */
+    @Query("""
+            select count(e) > 0 from Expense e
+            where e.group is null
+              and (e.paidBy.id = :userId
+                   or exists (select s from ExpenseShare s where s.expense = e and s.user.id = :userId))
+              and (e.paidBy.id = :otherId
+                   or exists (select s from ExpenseShare s where s.expense = e and s.user.id = :otherId))
+            """)
+    boolean haveNonGroupExpenseTogether(@Param("userId") Long userId, @Param("otherId") Long otherId);
 }

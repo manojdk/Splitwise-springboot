@@ -51,7 +51,7 @@ public class GroupService {
         Group group = groupRepository.findWithMembersById(groupId)
                 .orElseThrow(() -> new NotFoundException("Group " + groupId + " not found"));
         if (!group.hasMember(callerId)) {
-            throw new ForbiddenException("You are not a member of group " + groupId);
+            throw new ForbiddenException("You are not a member of this group");
         }
         return group;
     }
@@ -66,7 +66,7 @@ public class GroupService {
         Group group = groupRepository.findByIdForUpdate(groupId)
                 .orElseThrow(() -> new NotFoundException("Group " + groupId + " not found"));
         if (!group.hasMember(callerId)) {
-            throw new ForbiddenException("You are not a member of group " + groupId);
+            throw new ForbiddenException("You are not a member of this group");
         }
         return group;
     }
@@ -77,9 +77,6 @@ public class GroupService {
         String currency = request.currency() == null ? Money.DEFAULT_CURRENCY
                 : CurrencyRules.requireValid(request.currency());
         Group group = new Group(request.name().trim(), creator, currency);
-        if (request.memberIds() != null && !request.memberIds().isEmpty()) {
-            userService.getAllById(request.memberIds()).values().forEach(group::addMember);
-        }
         Group saved = groupRepository.save(group);
         activity.groupCreated(callerId, saved);
         return GroupResponse.from(saved);
@@ -136,17 +133,18 @@ public class GroupService {
             throw new ConflictException("The group creator cannot leave the group; delete the group instead");
         }
         if (!group.hasMember(memberId)) {
-            throw new NotFoundException("User " + memberId + " is not a member of group " + groupId);
+            throw new NotFoundException("That person is not a member of this group");
         }
         BigDecimal balance = BalanceCalculator.netBalances(
                         expenseRepository.findByGroupIdAndDeletedAtIsNullOrderByExpenseDateDescIdDesc(groupId),
                         settlementRepository.findByGroupIdAndDeletedAtIsNullOrderBySettledOnDescIdDesc(groupId))
                 .getOrDefault(memberId, Money.ZERO);
+        User member = userService.getById(memberId);
         if (balance.signum() != 0) {
-            throw new ConflictException("User " + memberId + " still has a balance of " + balance
+            String who = leaving ? "You still have" : member.getName() + " still has";
+            throw new ConflictException(who + " a balance of " + group.getCurrency() + " " + balance.toPlainString()
                     + " in this group; settle up first");
         }
-        User member = userService.getById(memberId);
         group.removeMember(memberId);
         activity.memberRemoved(callerId, group, member);
         return GroupResponse.from(group);
