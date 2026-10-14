@@ -38,7 +38,8 @@ export function SettleUpDialog({ friend, onClose }: { friend: FriendBalance; onC
               {item.amount > 0 ? `${first} pays you` : `You pay ${first}`}
               <span className="block text-xs text-muted">{item.groupName ?? 'Outside groups'}</span>
             </span>
-            <span className="font-head font-bold tabular-nums">{formatMoney(item.amount, item.currency)}</span>
+            {/* The words say who pays whom, so the amount is shown without a sign */}
+            <span className="font-head font-bold tabular-nums">{formatMoney(Math.abs(item.amount), item.currency)}</span>
           </li>
         ))}
       </ul>

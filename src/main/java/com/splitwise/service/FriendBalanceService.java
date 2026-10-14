@@ -130,7 +130,7 @@ public class FriendBalanceService {
         requireFriend(userId, friendId, ledger);
         List<Item> items = itemsWith(userId, friendId, ledger);
         if (items.isEmpty()) {
-            throw new ConflictException("You and user " + friendId + " are already settled up");
+            throw new ConflictException("You and " + userService.getById(friendId).getName() + " are already settled up");
         }
 
         List<SettlementResponse> recorded = new ArrayList<>();

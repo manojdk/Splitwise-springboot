@@ -6,6 +6,7 @@ import com.splitwise.web.dto.PageResponse;
 import com.splitwise.query.SettlementSpecs;
 import com.splitwise.query.Paging;
 import com.splitwise.activity.ActivityRecorder;
+import com.splitwise.balance.BalanceEffect;
 import com.splitwise.domain.Group;
 import com.splitwise.domain.Settlement;
 import com.splitwise.domain.User;
@@ -37,14 +38,17 @@ public class SettlementService {
     private final UserService userService;
     private final Clock clock;
     private final ActivityRecorder activity;
+    private final ContactService contacts;
 
     public SettlementService(SettlementRepository settlementRepository, GroupService groupService,
-                             UserService userService, Clock clock, ActivityRecorder activity) {
+                             UserService userService, Clock clock, ActivityRecorder activity,
+                             ContactService contacts) {
         this.settlementRepository = settlementRepository;
         this.groupService = groupService;
         this.userService = userService;
         this.clock = clock;
         this.activity = activity;
+        this.contacts = contacts;
     }
 
     @Transactional
@@ -55,12 +59,15 @@ public class SettlementService {
         if (!callerId.equals(request.fromUserId()) && !callerId.equals(request.toUserId())) {
             throw new ForbiddenException("You can only record settlements you paid or received");
         }
+        if (request.groupId() == null) {
+            contacts.requireContacts(callerId, List.of(request.fromUserId(), request.toUserId()));
+        }
         Group group = null;
         if (request.groupId() != null) {
             group = groupService.lockMemberGroup(request.groupId(), callerId);
             for (Long userId : List.of(request.fromUserId(), request.toUserId())) {
                 if (!group.hasMember(userId)) {
-                    throw new BadRequestException("User " + userId + " is not a member of group " + group.getId());
+                    throw new BadRequestException(ExpenseService.NOT_ALL_MEMBERS);
                 }
             }
         }
@@ -108,6 +115,8 @@ public class SettlementService {
     public void delete(Long callerId, Long settlementId) {
         Settlement settlement = requireAccessibleForWrite(callerId, settlementId);
         if (!settlement.isDeleted()) {
+            BalanceEffect.requireFormerMembersUnchanged(settlement.getGroup(), BalanceEffect.of(settlement),
+                    BalanceEffect.NONE, "delete this payment");
             settlement.markDeleted(userService.getById(callerId), Instant.now(clock));
             activity.settlementDeleted(callerId, settlement);
         }
@@ -120,15 +129,8 @@ public class SettlementService {
         if (!settlement.isDeleted()) {
             throw new ConflictException("Settlement " + settlementId + " is not deleted");
         }
-        Group group = settlement.getGroup();
-        if (group != null) {
-            for (Long userId : List.of(settlement.getPayer().getId(), settlement.getPayee().getId())) {
-                if (!group.hasMember(userId)) {
-                    throw new ConflictException("Cannot restore: user " + userId + " is no longer a member of group "
-                            + group.getId());
-                }
-            }
-        }
+        BalanceEffect.requireFormerMembersUnchanged(settlement.getGroup(), BalanceEffect.NONE,
+                BalanceEffect.of(settlement), "restore this payment");
         settlement.restore();
         activity.settlementRestored(callerId, settlement);
         return SettlementResponse.from(settlementRepository.saveAndFlush(settlement));

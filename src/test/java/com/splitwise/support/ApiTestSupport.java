@@ -103,6 +103,13 @@ public abstract class ApiTestSupport {
         return groupId;
     }
 
+    /**
+     * Makes the users contacts of each other (one shared group), which non-group expenses and payments require.
+     */
+    protected void contacts(Session first, Session... others) throws Exception {
+        group(first, others);
+    }
+
     // ------------------------------------------------------------------ expenses and settlements
 
     protected Map<String, Object> expenseBody(Long groupId, Session payer, String amount, String splitType,

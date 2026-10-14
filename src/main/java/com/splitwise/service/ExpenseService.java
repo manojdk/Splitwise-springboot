@@ -8,6 +8,7 @@ import com.splitwise.query.ExpenseSpecs;
 import com.splitwise.query.ExpenseFilter;
 import com.splitwise.domain.RecurringExpense;
 import com.splitwise.activity.ExpenseSnapshot;
+import com.splitwise.balance.BalanceEffect;
 import com.splitwise.activity.ActivityRecorder;
 import com.splitwise.domain.Expense;
 import com.splitwise.domain.Group;
@@ -61,16 +62,21 @@ public class ExpenseService {
     private final SplitStrategyResolver splitStrategies;
     private final Clock clock;
     private final ActivityRecorder activity;
+    private final ContactService contacts;
+
+    /** Says who without naming anyone: the id may belong to someone the caller has never met. */
+    static final String NOT_ALL_MEMBERS = "Someone in it is not a member of this group (they may have just left)";
 
     public ExpenseService(ExpenseRepository expenseRepository, GroupService groupService,
                           UserService userService, SplitStrategyResolver splitStrategies, Clock clock,
-                          ActivityRecorder activity) {
+                          ActivityRecorder activity, ContactService contacts) {
         this.expenseRepository = expenseRepository;
         this.groupService = groupService;
         this.userService = userService;
         this.splitStrategies = splitStrategies;
         this.clock = clock;
         this.activity = activity;
+        this.contacts = contacts;
     }
 
     /**
@@ -84,7 +90,7 @@ public class ExpenseService {
 
         // 2-3. input, split arithmetic and the users involved
         ValidatedSplit split = validate(callerId, group, request.paidById(), request.currency(), request.amount(),
-                request.splitType(), request.shares());
+                request.splitType(), request.shares(), Set.of());
 
         User caller = userService.getById(callerId);
         Expense expense = new Expense(request.description().trim(), request.amount(), split.currency(),
@@ -110,8 +116,11 @@ public class ExpenseService {
             throw new ConflictException("Expense " + expenseId + " was changed by someone else (now version "
                     + expense.getVersion() + "); reload it and try again");
         }
+        // People who have left may stay in an expense they were already part of, as long as their balance stays
         ValidatedSplit split = validate(callerId, expense.getGroup(), request.paidById(), request.currency(),
-                request.amount(), request.splitType(), request.shares());
+                request.amount(), request.splitType(), request.shares(), expense.involvedUserIds());
+        BalanceEffect.requireFormerMembersUnchanged(expense.getGroup(), BalanceEffect.of(expense),
+                BalanceEffect.of(split.payer(), request.amount(), split.shares()), "change who pays or owes");
         ExpenseSnapshot before = ExpenseSnapshot.of(expense);
 
         expense.update(request.description().trim(), request.amount(), split.currency(), split.payer(),
@@ -129,14 +138,16 @@ public class ExpenseService {
     public void deleteExpense(Long callerId, Long expenseId) {
         Expense expense = requireAccessibleForWrite(callerId, expenseId);
         if (!expense.isDeleted()) {
+            BalanceEffect.requireFormerMembersUnchanged(expense.getGroup(), BalanceEffect.of(expense),
+                    BalanceEffect.NONE, "delete this expense");
             expense.markDeleted(userService.getById(callerId), Instant.now(clock));
             activity.expenseDeleted(callerId, expense);
         }
     }
 
     /**
-     * Brings a deleted expense back into the balances. Everyone involved must still be in the group: an expense
-     * involving someone who has left would give them a balance in a group they are no longer part of.
+     * Brings a deleted expense back into the balances, unless that would give someone who has left the group a
+     * balance there.
      */
     @Transactional
     public ExpenseResponse restoreExpense(Long callerId, Long expenseId) {
@@ -144,15 +155,8 @@ public class ExpenseService {
         if (!expense.isDeleted()) {
             throw new ConflictException("Expense " + expenseId + " is not deleted");
         }
-        Group group = expense.getGroup();
-        if (group != null) {
-            for (Long userId : expense.involvedUserIds()) {
-                if (!group.hasMember(userId)) {
-                    throw new ConflictException("Cannot restore: user " + userId + " is no longer a member of group "
-                            + group.getId());
-                }
-            }
-        }
+        BalanceEffect.requireFormerMembersUnchanged(expense.getGroup(), BalanceEffect.NONE, BalanceEffect.of(expense),
+                "restore this expense");
         expense.restore();
         activity.expenseRestored(callerId, expense);
         return ExpenseResponse.from(expenseRepository.saveAndFlush(expense));
@@ -164,7 +168,7 @@ public class ExpenseService {
      */
     public void checkDraft(Long callerId, Group group, Long paidById, String currency, BigDecimal amount,
                            SplitType splitType, List<ShareRequest> shares) {
-        validate(callerId, group, paidById, currency, amount, splitType, shares);
+        validate(callerId, group, paidById, currency, amount, splitType, shares, Set.of());
     }
 
     /**
@@ -178,7 +182,7 @@ public class ExpenseService {
                 .toList();
         Long creatorId = template.getCreatedBy().getId();
         ValidatedSplit split = validate(creatorId, template.getGroup(), template.getPaidBy().getId(),
-                template.getCurrency(), template.getAmount(), template.getSplitType(), shareRequests);
+                template.getCurrency(), template.getAmount(), template.getSplitType(), shareRequests, Set.of());
         Expense expense = new Expense(template.getDescription(), template.getAmount(), split.currency(),
                 split.payer(), template.getGroup(), occurrence, template.getSplitType(), template.getCreatedBy());
         expense.describe(template.getCategory(), template.getNotes());
@@ -231,9 +235,13 @@ public class ExpenseService {
     /**
      * Checks currency, split arithmetic and the users involved, in that order (400 before 404), and returns the
      * resolved payer and the owed amount per user. Shared by create and edit, so both apply identical rules.
+     *
+     * @param formerMembersAllowed people who may be in the split without being members now (on an edit, those
+     *                             already in the expense; the caller then checks their balance does not move)
      */
     private ValidatedSplit validate(Long callerId, Group group, Long paidById, String requestedCurrency,
-                                    BigDecimal amount, SplitType splitType, List<ShareRequest> shareRequests) {
+                                    BigDecimal amount, SplitType splitType, List<ShareRequest> shareRequests,
+                                    Set<Long> formerMembersAllowed) {
         Set<Long> involved = shareRequests.stream().map(ShareRequest::userId).collect(Collectors.toSet());
         involved.add(paidById);
         if (group == null && !involved.contains(callerId)) {
@@ -246,11 +254,15 @@ public class ExpenseService {
                 .toList();
         Map<Long, BigDecimal> owed = splitStrategies.forType(splitType).split(amount, participants);
 
+        // After the input checks (400), before loading users: strangers and unknown ids get the same 403
+        if (group == null) {
+            contacts.requireContacts(callerId, involved);
+        }
         Map<Long, User> users = userService.getAllById(involved);
         if (group != null) {
             for (Long userId : involved) {
-                if (!group.hasMember(userId)) {
-                    throw new BadRequestException("User " + userId + " is not a member of group " + group.getId());
+                if (!group.hasMember(userId) && !formerMembersAllowed.contains(userId)) {
+                    throw new BadRequestException(NOT_ALL_MEMBERS);
                 }
             }
         }

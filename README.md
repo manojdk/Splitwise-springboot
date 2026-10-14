@@ -10,6 +10,10 @@ docs in Swagger UI.
 ## Features
 
 - **Accounts**: register and log in; passwords hashed with BCrypt; stateless JWT (HS256) access tokens.
+  Password guessing is slowed down: after 5 wrong passwords in 15 minutes an account's sign-in is paused
+  (`429` with `Retry-After`), and one address gets at most 30 sign-in/sign-up requests a minute. An unknown
+  email gets the same answer as a wrong password, after the same bcrypt work, so sign-in does not reveal who
+  has an account.
 - **Groups**: create, rename, delete (creator only, and only while empty), add members by email,
   **leave or remove members** - only with a zero balance in the group, so nobody walks away owing money or
   being owed. Members can leave; only the creator removes others; the creator cannot leave.
@@ -25,12 +29,17 @@ docs in Swagger UI.
   - Each expense has a **category** (`GENERAL`, `FOOD_AND_DRINK`, `GROCERIES`, `RENT`, `UTILITIES`,
     `TRANSPORT`, `TRAVEL`, `ENTERTAINMENT`, `SHOPPING`, `HEALTH`; default `GENERAL`) and optional **notes**.
   - Expenses can belong to a group, or sit outside any group (for example, two friends sharing a cab).
+    Outside groups you can only split or settle with your contacts: people you share a group with or have
+    split with before. Otherwise anyone could put a debt on any account by guessing its id; a stranger and an
+    id with no account get the same `403`, so ids cannot be probed.
 - **Edit, delete and restore**: any group member can fix a group expense (as in Splitwise); for non-group
   expenses, anyone involved. Edits use **optimistic locking**: the client sends the `version` it read, and an
   edit based on an older version gets `409` instead of silently overwriting someone else's change. Deletes
-  are soft - the expense leaves lists and balances, stays visible by id (`deleted: true`) and can be restored
-  (only while everyone in it is still in the group). Settlements recorded by mistake can be undone and
-  restored the same way.
+  are soft - the expense leaves lists and balances, stays visible by id (`deleted: true`) and can be restored.
+  Settlements recorded by mistake can be undone and restored the same way. Someone who has left a group can
+  neither see its balances nor pay in it, so no delete, restore or re-split may change what they owe there
+  (renaming or re-describing an expense they were in is fine); leaving needs a zero balance and this keeps it
+  zero. Error messages name only people the caller already knows.
 - **Balances**: net balance per member of a group, plus each user's overall balance.
 - **Friends**: the Splitwise home screen - everyone you have an open balance with ("you owe Bob 40",
   "Carol owes you 30"), with a per-group breakdown and totals that always equal your overall balance. Group
@@ -206,6 +215,11 @@ export JWT_SECRET=$(openssl rand -base64 48)
 | `JWT_SECRET` | yes, at least 32 bytes | (none); the app refuses to start without it |
 | `JWT_EXPIRATION` | no | `PT1H` |
 | `RECURRING_CRON` | no | `0 5 * * * *` (hourly at minute 5) |
+
+Behind a reverse proxy or a hosting platform's load balancer, also set
+`SERVER_FORWARD_HEADERS_STRATEGY=native` (or `framework`), so the sign-in limit counts each visitor's own
+address instead of the proxy's. Do not set it when clients reach the app directly: they could then fake
+their address.
 
 ### The frontend
 

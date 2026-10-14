@@ -123,7 +123,7 @@ describe('a group page', () => {
 
     await user.click(await screen.findByRole('button', { name: `Remove ${CAROL.name}` }))
     await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Remove' }))
-    expect(await within(screen.getByRole('dialog')).findByRole('alert')).toHaveTextContent('still has a balance')
+    expect(await within(screen.getByRole('dialog')).findByRole('alert')).toHaveTextContent(`${CAROL.name} still has a balance`)
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
 
     await user.click(screen.getByRole('button', { name: 'Remove Dan Brown' }))
@@ -160,7 +160,7 @@ describe('a group page', () => {
     first.unmount()
 
     renderApp('/groups/13')
-    expect(await screen.findByText('You are not a member of group 13')).toBeInTheDocument()
+    expect(await screen.findByText('You are not a member of this group')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Try again' })).toBeInTheDocument()
   })
 

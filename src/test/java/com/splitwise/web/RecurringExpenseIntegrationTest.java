@@ -172,6 +172,7 @@ class RecurringExpenseIntegrationTest extends ApiTestSupport {
         Session alice = user("Alice");
         Session bob = user("Bob");
         Session outsider = user("Mallory");
+        contacts(alice, bob);
         Map<String, Object> body = expenseBody(null, alice, "500.00", "EQUAL", Share.of(alice), Share.of(bob));
         body.put("description", "Netflix");
         body.put("frequency", "MONTHLY");

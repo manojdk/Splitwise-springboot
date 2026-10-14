@@ -1,11 +1,13 @@
 package com.splitwise.web;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.splitwise.support.ApiTestSupport;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -98,6 +100,174 @@ class MembershipAndSettlementIntegrationTest extends ApiTestSupport {
         call(alice, postJson("/api/groups/" + groupId + "/members", java.util.Map.of("email", bob.email())))
                 .andExpect(status().isOk());
         assertThat(balances(alice, groupId)).containsEntry(bob.id(), money("0.00"));
+    }
+
+    @Test
+    void messagesNamePeopleTheCallerKnowsButNeverWhoAnArbitraryIdBelongsTo() throws Exception {
+        Session alice = user("Alice");
+        Session bob = user("Bob");
+        Session stranger = user("Zed");
+        long groupId = group(alice, bob);
+        equalExpense(alice, groupId, alice, "100.00", alice, bob);
+
+        removeMember(alice, groupId, bob)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("Bob still has a balance of INR -50.00 in this group; "
+                        + "settle up first"));
+        removeMember(bob, groupId, bob)
+                .andExpect(jsonPath("$.message").value("You still have a balance of INR -50.00 in this group; "
+                        + "settle up first"));
+        call(stranger, get("/api/groups/" + groupId))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("You are not a member of this group"));
+        // The stranger's id in a group expense: refused without saying who that id is
+        addExpense(alice, expenseBody(groupId, alice, "10.00", "EQUAL", Share.of(alice), Share.of(stranger)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", not(containsString("Zed"))))
+                .andExpect(jsonPath("$.message", containsString("not a member of this group")));
+        settle(alice, groupId, alice, stranger, "5.00")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", not(containsString("Zed"))));
+
+        settle(bob, groupId, bob, alice, "50.00").andExpect(status().isCreated());
+        call(alice, post("/api/users/me/friends/" + bob.id() + "/settle-up"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("You and Bob are already settled up"));
+    }
+
+    @Test
+    void creatingAGroupCannotPullInOtherUsersByIdOrRevealTheirEmails() throws Exception {
+        Session alice = user("Alice");
+        Session mallory = user("Mallory");
+
+        long groupId = read(call(mallory, postJson("/api/groups",
+                java.util.Map.of("name", "Harvest", "memberIds", java.util.List.of(alice.id()))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.members", hasSize(1)))
+                .andExpect(jsonPath("$.members[0].id").value(mallory.id())))
+                .get("id").asLong();
+
+        call(alice, get("/api/groups")).andExpect(jsonPath("$[?(@.id == " + groupId + ")]").isEmpty());
+    }
+
+    @Test
+    void aStrangerCannotPutADebtOnSomeoneOutsideGroupsOrFindOutWhoHasAnAccount() throws Exception {
+        Session alice = user("Alice");
+        Session mallory = user("Mallory");
+        String refused = "Outside groups you can only split or settle with people you share a group with";
+
+        settle(mallory, null, mallory, alice, "5000.00")
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", containsString(refused)));
+        addExpense(mallory, expenseBody(null, mallory, "100.00", "EQUAL", Share.of(mallory), Share.of(alice)))
+                .andExpect(status().isForbidden());
+        // An id with no account gets the same answer, so ids cannot be probed
+        call(mallory, postJson("/api/settlements", java.util.Map.of("fromUserId", mallory.id(),
+                "toUserId", 999_999_999L, "amount", 5)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", containsString(refused)));
+        assertThat(myOverallBalance(alice)).isEqualByComparingTo("0");
+
+        // Once they share a group, splitting outside it is allowed, and stays allowed after leaving
+        long groupId = group(alice, mallory);
+        settle(mallory, null, mallory, alice, "10.00").andExpect(status().isCreated());
+        removeMember(mallory, groupId, mallory).andExpect(status().isOk());
+        settle(alice, null, alice, mallory, "10.00").andExpect(status().isCreated());
+    }
+
+    // ------------------------------------------------------------------ after someone leaves
+
+    // Someone who left can neither see the group's balances nor record a payment in it, so nothing may change
+    // what they owe or are owed there.
+
+    @Test
+    void deletingAPaymentOfSomeoneWhoLeftIsRefusedSoTheyAreNotLeftWithAnInvisibleDebt() throws Exception {
+        Session alice = user("Alice");
+        Session bob = user("Bob");
+        long groupId = group(alice, bob);
+        equalExpense(alice, groupId, alice, "100.00", alice, bob);
+        long paymentId = read(settle(bob, groupId, bob, alice, "50.00").andExpect(status().isCreated()))
+                .get("id").asLong();
+        removeMember(bob, groupId, bob).andExpect(status().isOk());
+
+        call(alice, delete("/api/settlements/" + paymentId))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message", containsString("Bob, who has left the group")));
+
+        assertThat(myOverallBalance(bob)).isEqualByComparingTo("0");
+        assertThat(balances(alice, groupId)).containsEntry(alice.id(), money("0.00"));
+    }
+
+    @Test
+    void deletingAnExpenseThatMovesWhatSomeoneWhoLeftOwesIsRefused() throws Exception {
+        Session alice = user("Alice");
+        Session bob = user("Bob");
+        Session carol = user("Carol");
+        long groupId = group(alice, bob, carol);
+        long expenseId = equalExpense(carol, groupId, carol, "90.00", alice, bob, carol).get("id").asLong();
+        settle(bob, groupId, bob, carol, "30.00").andExpect(status().isCreated());
+        removeMember(bob, groupId, bob).andExpect(status().isOk());
+
+        call(alice, delete("/api/expenses/" + expenseId))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message", containsString("Bob, who has left the group")));
+        assertThat(myOverallBalance(bob)).isEqualByComparingTo("0");
+    }
+
+    @Test
+    void anExpenseInvolvingSomeoneWhoLeftCanStillBeRenamedButNotResplit() throws Exception {
+        Session alice = user("Alice");
+        Session bob = user("Bob");
+        Session carol = user("Carol");
+        long groupId = group(alice, bob, carol);
+        JsonNode expense = equalExpense(carol, groupId, carol, "90.00", alice, bob, carol);
+        settle(bob, groupId, bob, carol, "30.00").andExpect(status().isCreated());
+        removeMember(bob, groupId, bob).andExpect(status().isOk());
+
+        // Taking Bob out of the split would give him money back in a group he cannot see
+        updateExpense(alice, expense.get("id").asLong(), updateBody(expense.get("version").asLong(), carol, "90.00",
+                "EQUAL", Share.of(alice), Share.of(carol)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message", containsString("Bob, who has left the group")));
+
+        // Same people, same amounts, new description: nobody's balance moves
+        updateExpense(alice, expense.get("id").asLong(), updateBody(expense.get("version").asLong(), carol, "90.00",
+                "EQUAL", Share.of(alice), Share.of(bob), Share.of(carol)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.description").value("Dinner (edited)"));
+        assertThat(myOverallBalance(bob)).isEqualByComparingTo("0");
+    }
+
+    @Test
+    void expensesThatDoNotInvolveSomeoneWhoLeftCanStillBeDeletedAndRestored() throws Exception {
+        Session alice = user("Alice");
+        Session bob = user("Bob");
+        Session carol = user("Carol");
+        long groupId = group(alice, bob, carol);
+        long expenseId = equalExpense(alice, groupId, alice, "100.00", alice, bob).get("id").asLong();
+        removeMember(carol, groupId, carol).andExpect(status().isOk());
+
+        call(alice, delete("/api/expenses/" + expenseId)).andExpect(status().isNoContent());
+        call(alice, post("/api/expenses/" + expenseId + "/restore")).andExpect(status().isOk());
+    }
+
+    @Test
+    void aDeletedPaymentOfSomeoneWhoLeftCannotBeRestoredAndTheMessageNamesThem() throws Exception {
+        Session alice = user("Alice");
+        Session bob = user("Bob");
+        long groupId = group(alice, bob);
+        equalExpense(alice, groupId, alice, "100.00", alice, bob);
+        long paymentId = read(settle(bob, groupId, bob, alice, "50.00").andExpect(status().isCreated()))
+                .get("id").asLong();
+        long refundId = read(settle(alice, groupId, alice, bob, "50.00").andExpect(status().isCreated()))
+                .get("id").asLong();
+        call(alice, delete("/api/settlements/" + refundId)).andExpect(status().isNoContent());
+        removeMember(bob, groupId, bob).andExpect(status().isOk());
+
+        call(alice, post("/api/settlements/" + refundId + "/restore"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message", containsString("Bob, who has left the group")));
+        assertThat(paymentId).isPositive();
     }
 
     // ------------------------------------------------------------------ settlements

@@ -208,7 +208,7 @@ function memberGroup(id: number, path: string) {
   const group = db.groups.find((g) => g.id === id)
   if (!group) return { error: errorBody(404, `Group ${id} not found`, path) }
   if (!group.members.some((m) => m.id === ALICE.id)) {
-    return { error: errorBody(403, `You are not a member of group ${id}`, path) }
+    return { error: errorBody(403, 'You are not a member of this group', path) }
   }
   return { group }
 }
@@ -300,7 +300,9 @@ export const handlers = [
     if (error) return error
     const userId = Number(params.userId)
     const owes = db.friends.some((f) => f.userId === userId && f.breakdown.some((i) => i.groupId === group.id))
-    if (owes) return errorBody(409, `User ${userId} still has a balance in this group`, '/api/groups/members')
+    if (owes) {
+      return errorBody(409, `${nameOf(userId)} still has a balance of ${group.currency} 3000.00 in this group; settle up first`, '/api/groups/members')
+    }
     group.members = group.members.filter((m) => m.id !== userId)
     return HttpResponse.json(group)
   }),

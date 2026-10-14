@@ -26,6 +26,10 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query("select g.id from Group g join g.members m where m.id = :userId")
     List<Long> findIdsForMember(@Param("userId") Long userId);
 
+    /** Whether both users are members of at least one group. */
+    @Query("select count(g) > 0 from Group g join g.members a join g.members b where a.id = :userId and b.id = :otherId")
+    boolean shareAGroup(@Param("userId") Long userId, @Param("otherId") Long otherId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select g from Group g where g.id = :id")
     Optional<Group> findByIdForUpdate(@Param("id") Long id);

@@ -45,6 +45,7 @@ class FriendSettleUpConcurrencyTest extends ApiTestSupport {
     void simultaneousSettleUpsWithoutAnyGroupPayOnlyOnce() throws Exception {
         Session alice = user("Alice");
         Session bob = user("Bob");
+        contacts(alice, bob);
         addExpense(alice, expenseBody(null, alice, "40.00", "EQUAL", Share.of(alice), Share.of(bob)))
                 .andExpect(status().isCreated());
 

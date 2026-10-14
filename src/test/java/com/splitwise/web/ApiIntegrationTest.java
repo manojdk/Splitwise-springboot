@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -91,6 +92,33 @@ class ApiIntegrationTest {
         register("Bob", email);
 
         mvc.perform(postJson("/api/auth/login", Map.of("email", email, "password", "wrong-password")))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("Invalid email or password"));
+    }
+
+    @Test
+    void afterFiveWrongPasswordsTheAccountIsLockedForAWhileEvenForTheRightOne() throws Exception {
+        String email = uniqueEmail("carol");
+        register("Carol", email);
+        for (int i = 0; i < 5; i++) {
+            mvc.perform(postJson("/api/auth/login", Map.of("email", email, "password", "guess-" + i)))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        mvc.perform(postJson("/api/auth/login", Map.of("email", email, "password", "password123")))
+                .andExpect(status().isTooManyRequests())
+                .andExpect(header().string(HttpHeaders.RETRY_AFTER, notNullValue()))
+                .andExpect(jsonPath("$.message").value("Too many wrong passwords for this account; try again later"));
+        // Other accounts are not affected
+        String other = uniqueEmail("dave");
+        register("Dave", other);
+        mvc.perform(postJson("/api/auth/login", Map.of("email", other, "password", "password123")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void anUnknownEmailGetsTheSameAnswerAsAWrongPassword() throws Exception {
+        mvc.perform(postJson("/api/auth/login", Map.of("email", uniqueEmail("nobody"), "password", "password123")))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value("Invalid email or password"));
     }
@@ -262,6 +290,8 @@ class ApiIntegrationTest {
     void nonGroupExpenseBetweenTwoFriends() throws Exception {
         Session a = registerAndLogin("Friend A");
         Session b = registerAndLogin("Friend B");
+        // Outside groups you can only split with people you know: here, from a shared group
+        addMember(a, createGroup(a, "Flat"), b.email()).andExpect(status().isOk());
 
         mvc.perform(auth(postJson("/api/expenses", Map.of(
                         "description", "Cab", "amount", "100.01", "paidById", a.id, "splitType", "EQUAL",
