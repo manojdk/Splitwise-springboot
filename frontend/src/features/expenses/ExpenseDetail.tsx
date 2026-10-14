@@ -13,8 +13,11 @@ type Props = {
   expenseId: number
   /** The list's copy, shown at once while the latest version loads. */
   initial?: Expense
-  /** The group the screen is showing: Edit is offered only for its own expenses (a link may point elsewhere). */
-  groupId: number
+  /**
+   * The group the screen is showing (null: a screen of non-group expenses). Edit is offered only for expenses that
+   * belong there, since a link may point elsewhere.
+   */
+  groupId: number | null
   onEdit: (expense: Expense) => void
   onClose: () => void
 }

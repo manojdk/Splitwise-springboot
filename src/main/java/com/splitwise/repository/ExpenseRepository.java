@@ -51,4 +51,21 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>, JpaSpec
                    or exists (select s from ExpenseShare s where s.expense = e and s.user.id = :otherId))
             """)
     boolean haveNonGroupExpenseTogether(@Param("userId") Long userId, @Param("otherId") Long otherId);
+
+    /** People sharing a non-group expense with the user (the user paid it or shares it too). */
+    @Query("""
+            select distinct s.user from ExpenseShare s
+            where s.expense.group is null and s.user.id <> :userId
+              and (s.expense.paidBy.id = :userId
+                   or exists (select s2 from ExpenseShare s2 where s2.expense = s.expense and s2.user.id = :userId))
+            """)
+    List<com.splitwise.domain.User> findNonGroupSharers(@Param("userId") Long userId);
+
+    /** People who paid a non-group expense the user shares. */
+    @Query("""
+            select distinct e.paidBy from Expense e
+            where e.group is null and e.paidBy.id <> :userId
+              and exists (select s from ExpenseShare s where s.expense = e and s.user.id = :userId)
+            """)
+    List<com.splitwise.domain.User> findNonGroupPayers(@Param("userId") Long userId);
 }

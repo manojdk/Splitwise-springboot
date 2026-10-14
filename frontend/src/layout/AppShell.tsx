@@ -8,6 +8,7 @@ type NavEntry = { to: string; label: string; icon: string; end?: boolean }
 const NAV: NavEntry[] = [
   { to: '/', label: 'Dashboard', icon: '◇', end: true },
   { to: '/groups', label: 'Groups', icon: '▦' },
+  { to: '/expenses', label: 'Expenses', icon: '≡' },
   { to: '/activity', label: 'Activity', icon: '↻' },
   { to: '/recurring', label: 'Recurring', icon: '∞' },
 ]

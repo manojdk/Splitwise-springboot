@@ -7,6 +7,7 @@ import { Modal } from '../../components/Modal'
 import { Avatar } from '../../components/States'
 import { useToast } from '../../components/Toast'
 import { CATEGORIES } from '../../lib/categories'
+import { CURRENCIES } from '../../lib/currencies'
 import { today } from '../../lib/dates'
 import { formatMoney } from '../../lib/money'
 import type { SplitType } from '../../lib/split'
@@ -35,16 +36,23 @@ const FREQUENCIES: { value: Frequency; label: string }[] = [
 ]
 
 /**
- * Add or edit an expense in a group, with each person's share shown live as the split is typed. With
- * recurring, it sets up an expense that repeats instead (same split, plus how often and from when).
+ * Add or edit an expense, with each person's share shown live as the split is typed. In a group, the group's
+ * members share it in the group's currency. Outside groups (group null), it is split with the user's contacts,
+ * in any currency. With recurring (groups only), it sets up an expense that repeats instead.
  */
 export function ExpenseForm({
   group,
+  contacts = [],
+  withIds = [],
   expense,
   recurring = false,
   onClose,
 }: {
-  group: Group
+  group: Group | null
+  /** Outside groups: who can be in the split. */
+  contacts?: User[]
+  /** Outside groups: who is in the split from the start (a friend's page passes the friend). */
+  withIds?: number[]
   expense?: Expense
   recurring?: boolean
   onClose: () => void
@@ -55,7 +63,13 @@ export function ExpenseForm({
   const createRecurring = useCreateRecurring()
   const save = recurring ? createRecurring : saveExpense
   const formId = useId()
-  const [draft, setDraft] = useState<ExpenseDraft>(() => (expense ? draftFromExpense(expense) : newDraft(group, user!.id)))
+  const me: User = user!
+  // Who can be in it: the group's members, or outside groups the user and their contacts
+  const members = useMemo(() => (group ? group.members : [me, ...contacts.filter((c) => c.id !== me.id)]), [group, contacts, me])
+  const [currency, setCurrency] = useState(group?.currency ?? expense?.currency ?? 'INR')
+  const [draft, setDraft] = useState<ExpenseDraft>(() =>
+    expense ? draftFromExpense(expense) : newDraft(members, me.id, group ? undefined : [me.id, ...withIds]),
+  )
   const [version, setVersion] = useState(expense?.version)
   const [submitted, setSubmitted] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
@@ -65,11 +79,11 @@ export function ExpenseForm({
   const people: User[] = useMemo(() => {
     const involved = [...(expense?.shares ?? []).map((s) => ({ id: s.userId, name: s.name })), ...(expense ? [expense.paidBy] : [])]
     const extra = involved
-      .filter((p, i) => !group.members.some((m) => m.id === p.id) && involved.findIndex((q) => q.id === p.id) === i)
+      .filter((p, i) => !members.some((m) => m.id === p.id) && involved.findIndex((q) => q.id === p.id) === i)
       .map((p) => ({ id: p.id, name: p.name, email: '' }))
-    return [...group.members, ...extra]
-  }, [group.members, expense])
-  const isMember = (id: number) => group.members.some((m) => m.id === id)
+    return [...members, ...extra]
+  }, [members, expense])
+  const isMember = (id: number) => group === null || group.members.some((m) => m.id === id)
   const ids = people.map((p) => p.id)
 
   const split = previewSplit(draft, people)
@@ -104,7 +118,7 @@ export function ExpenseForm({
     if (!valid) return
     try {
       if (recurring) {
-        const template = await createRecurring.mutateAsync(toRecurringRequest(draft, ids, group.id))
+        const template = await createRecurring.mutateAsync(toRecurringRequest(draft, ids, group!.id))
         const how = FREQUENCIES.find((f) => f.value === template.frequency)!.label.toLowerCase()
         toast.show(`"${template.description}" will repeat ${how}`)
         onClose()
@@ -112,8 +126,8 @@ export function ExpenseForm({
       }
       const saved = await saveExpense.mutateAsync(
         expense
-          ? { id: expense.id, body: toUpdateRequest(draft, ids, version!) }
-          : { body: toCreateRequest(draft, ids, group.id) },
+          ? { id: expense.id, body: toUpdateRequest(draft, ids, version!, group ? undefined : currency) }
+          : { body: toCreateRequest(draft, ids, group?.id ?? null, currency) },
       )
       toast.show(expense ? `"${saved.description}" updated` : `"${saved.description}" added`)
       onClose()
@@ -143,7 +157,9 @@ export function ExpenseForm({
 
   return (
     <Modal
-      title={recurring ? `New recurring expense · ${group.name}` : expense ? 'Edit expense' : `Add expense · ${group.name}`}
+      title={
+        recurring ? `New recurring expense · ${group!.name}` : expense ? 'Edit expense' : `Add expense · ${group?.name ?? 'No group'}`
+      }
       onClose={onClose}
       busy={save.isPending}
       size="lg"
@@ -174,7 +190,7 @@ export function ExpenseForm({
               aria-invalid={show(descriptionError) ? true : undefined}
             />
           </Field>
-          <Field id={`${formId}-amount`} label={`Amount (${group.currency})`}>
+          <Field id={`${formId}-amount`} label={`Amount (${currency})`}>
             <input
               id={`${formId}-amount`}
               className="input font-head tabular-nums"
@@ -185,6 +201,18 @@ export function ExpenseForm({
             />
           </Field>
         </div>
+
+        {group === null && (
+          <Field id={`${formId}-currency`} label="Currency">
+            <select id={`${formId}-currency`} className="input" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+              {[...new Set([currency, ...CURRENCIES])].map((code) => (
+                <option key={code} value={code}>
+                  {code}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
 
         <div className="grid gap-3 sm:grid-cols-3">
           <Field id={`${formId}-paid`} label="Paid by">
@@ -316,12 +344,12 @@ export function ExpenseForm({
                         onChange={(e) => update({ values: { ...draft.values, [person.id]: e.target.value } })}
                       />
                       <span className="w-12 text-xs text-muted" aria-hidden="true">
-                        {current.unit.replace('currency', group.currency)}
+                        {current.unit.replace('currency', currency)}
                       </span>
                     </span>
                   )}
                   <output className="w-28 text-right font-head font-bold tabular-nums" aria-label={`${firstName} owes`}>
-                    {on && owed !== undefined ? formatMoney(Number(owed) / 100, group.currency) : '–'}
+                    {on && owed !== undefined ? formatMoney(Number(owed) / 100, currency) : '–'}
                   </output>
                 </li>
               )
@@ -335,7 +363,7 @@ export function ExpenseForm({
           ) : (
             <p id={`${formId}-status`} role="status" className={`alert m-0 ${split.ok ? 'alert-info' : 'alert-error'}`}>
               {split.ok
-                ? `Adds up to ${formatMoney(Number([...split.owed.values()].reduce((a, b) => a + b, 0n)) / 100, group.currency)} exactly`
+                ? `Adds up to ${formatMoney(Number([...split.owed.values()].reduce((a, b) => a + b, 0n)) / 100, currency)} exactly`
                 : split.error}
             </p>
           )}

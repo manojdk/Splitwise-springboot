@@ -206,10 +206,17 @@ public class ExpenseService {
                 ExpenseResponse::from);
     }
 
-    /** Every expense the user paid for or shares in, across groups, newest first, filtered and paged. */
-    public PageResponse<ExpenseResponse> listForUser(Long callerId, ExpenseFilter filter, int page, int size) {
+    /**
+     * Every expense the user paid for or shares in, across groups, newest first, filtered and paged; with
+     * {@code withUserId}, only those that person is in too (a friend's page).
+     */
+    public PageResponse<ExpenseResponse> listForUser(Long callerId, ExpenseFilter filter, Long withUserId, int page,
+                                                     int size) {
         Specification<Expense> spec = ExpenseSpecs.notDeleted().and(ExpenseSpecs.involving(callerId))
                 .and(ExpenseSpecs.matching(filter));
+        if (withUserId != null) {
+            spec = spec.and(ExpenseSpecs.involving(withUserId));
+        }
         return PageResponse.of(expenseRepository.findAll(spec, Paging.of(page, size, NEWEST_FIRST)),
                 ExpenseResponse::from);
     }

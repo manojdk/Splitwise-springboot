@@ -1,6 +1,7 @@
 package com.splitwise.web;
 
 import java.time.LocalDate;
+import java.util.List;
 import com.splitwise.query.ExpenseFilter;
 import com.splitwise.domain.Category;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +18,7 @@ import com.splitwise.web.dto.FriendBalanceResponse;
 import com.splitwise.service.FriendBalanceService;
 import com.splitwise.security.CurrentUser;
 import com.splitwise.service.BalanceService;
+import com.splitwise.service.ContactService;
 import com.splitwise.service.ExpenseService;
 import com.splitwise.service.SettlementService;
 import com.splitwise.service.UserService;
@@ -44,16 +46,19 @@ public class UserController {
     private final BalanceService balanceService;
     private final FriendBalanceService friendBalanceService;
     private final ActivityService activityService;
+    private final ContactService contactService;
 
     public UserController(UserService userService, ExpenseService expenseService,
                           SettlementService settlementService, BalanceService balanceService,
-                          FriendBalanceService friendBalanceService, ActivityService activityService) {
+                          FriendBalanceService friendBalanceService, ActivityService activityService,
+                          ContactService contactService) {
         this.userService = userService;
         this.expenseService = expenseService;
         this.settlementService = settlementService;
         this.balanceService = balanceService;
         this.friendBalanceService = friendBalanceService;
         this.activityService = activityService;
+        this.contactService = contactService;
     }
 
     @GetMapping("/activity")
@@ -79,9 +84,17 @@ public class UserController {
                                                 @RequestParam(required = false) LocalDate to,
                                                 @RequestParam(required = false) Category category,
                                                 @RequestParam(required = false) Long paidBy,
-                                                @RequestParam(required = false) String q) {
+                                                @RequestParam(required = false) String q,
+                                                @RequestParam(name = "with", required = false) Long withUserId) {
         return expenseService.listForUser(CurrentUser.id(jwt), new ExpenseFilter(from, to, category, paidBy, q),
-                page, size);
+                withUserId, page, size);
+    }
+
+    @GetMapping("/contacts")
+    @Operation(summary = "People the user can split or settle with outside groups: shared groups or earlier "
+            + "non-group expenses and payments")
+    public List<UserResponse> contacts(@AuthenticationPrincipal Jwt jwt) {
+        return contactService.list(CurrentUser.id(jwt));
     }
 
     @GetMapping("/settlements")
