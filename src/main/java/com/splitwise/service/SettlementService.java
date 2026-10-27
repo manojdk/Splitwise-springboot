@@ -144,11 +144,16 @@ public class SettlementService {
                 .orElseThrow(() -> new NotFoundException("Settlement " + settlementId + " not found"));
     }
 
-    /** Group settlements lock the group row first, like expenses. */
+    /**
+     * Lock first, read after, like expenses: a group settlement locks the group row, a non-group one its payer and
+     * payee (the lock a friend settle-up takes).
+     */
     private Settlement requireAccessibleForWrite(Long callerId, Long settlementId) {
         Long groupId = settlementRepository.findGroupIdById(settlementId).orElse(null);
         if (groupId != null) {
             groupService.lockMemberGroup(groupId, callerId);
+        } else {
+            userService.lockExisting(settlementRepository.findNonGroupUserIdsById(settlementId));
         }
         Settlement settlement = findSettlement(settlementId);
         requireAccess(settlement, callerId);

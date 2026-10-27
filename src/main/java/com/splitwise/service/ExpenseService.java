@@ -34,6 +34,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,8 @@ import java.util.stream.Collectors;
  * the group can fix a mistake); for a non-group expense, anyone involved (the payer or a participant).
  *
  * <p>Concurrency: writes to a group expense first lock the group row (see {@link GroupService#lockMemberGroup}),
- * so membership cannot change underneath them. Edits carry the version the client last saw; a stale version is
+ * so membership cannot change underneath them. Writes to a non-group expense first lock everyone involved (before
+ * and after an edit), the lock a friend settle-up takes, so a settle-up never pays a balance that is changing. Edits carry the version the client last saw; a stale version is
  * a 409, and JPA's {@code @Version} check catches the remaining race at commit.
  */
 @Service
@@ -111,7 +113,9 @@ public class ExpenseService {
      */
     @Transactional
     public ExpenseResponse updateExpense(Long callerId, Long expenseId, UpdateExpenseRequest request) {
-        Expense expense = requireAccessibleForWrite(callerId, expenseId);
+        Set<Long> newlyInvolved = request.shares().stream().map(ShareRequest::userId).collect(Collectors.toSet());
+        newlyInvolved.add(request.paidById());
+        Expense expense = requireAccessibleForWrite(callerId, expenseId, newlyInvolved);
         if (expense.isDeleted()) {
             throw new ConflictException("Expense " + expenseId + " is deleted; restore it before editing");
         }
@@ -139,7 +143,7 @@ public class ExpenseService {
     /** Soft delete: the expense leaves lists and balances but can be restored. Deleting twice is a no-op. */
     @Transactional
     public void deleteExpense(Long callerId, Long expenseId) {
-        Expense expense = requireAccessibleForWrite(callerId, expenseId);
+        Expense expense = requireAccessibleForWrite(callerId, expenseId, Set.of());
         if (!expense.isDeleted()) {
             BalanceEffect.requireFormerMembersUnchanged(expense.getGroup(), BalanceEffect.of(expense),
                     BalanceEffect.NONE, "delete this expense");
@@ -154,7 +158,7 @@ public class ExpenseService {
      */
     @Transactional
     public ExpenseResponse restoreExpense(Long callerId, Long expenseId) {
-        Expense expense = requireAccessibleForWrite(callerId, expenseId);
+        Expense expense = requireAccessibleForWrite(callerId, expenseId, Set.of());
         if (!expense.isDeleted()) {
             throw new ConflictException("Expense " + expenseId + " is not deleted");
         }
@@ -268,7 +272,8 @@ public class ExpenseService {
         if (group == null) {
             contacts.requireContacts(callerId, involved);
         }
-        Map<Long, User> users = userService.getAllById(involved);
+        // Non-group: lock everyone involved (the lock a friend settle-up takes); an edit already holds these
+        Map<Long, User> users = group == null ? userService.lockAll(involved) : userService.getAllById(involved);
         if (group != null) {
             for (Long userId : involved) {
                 if (!group.hasMember(userId) && !formerMembersAllowed.contains(userId)) {
@@ -291,13 +296,20 @@ public class ExpenseService {
     }
 
     /**
-     * Loads the expense for a write. For a group expense the group row is locked first, so the membership checks
-     * below and any membership change cannot interleave.
+     * Loads the expense for a write, locking first and reading after. For a group expense the group row is locked,
+     * so the membership checks below and any membership change cannot interleave. For a non-group expense the
+     * people in it and {@code alsoInvolved} (those an edit brings in) are locked together, in one id order.
      */
-    private Expense requireAccessibleForWrite(Long callerId, Long expenseId) {
+    private Expense requireAccessibleForWrite(Long callerId, Long expenseId, Set<Long> alsoInvolved) {
         Long groupId = expenseRepository.findGroupIdById(expenseId).orElse(null);
         if (groupId != null) {
             groupService.lockMemberGroup(groupId, callerId);
+        } else {
+            Set<Long> involved = new HashSet<>(expenseRepository.findNonGroupUserIdsById(expenseId));
+            if (!involved.isEmpty()) {
+                involved.addAll(alsoInvolved);
+                userService.lockExisting(involved);
+            }
         }
         Expense expense = findExpense(expenseId);
         requireAccess(expense, callerId);
