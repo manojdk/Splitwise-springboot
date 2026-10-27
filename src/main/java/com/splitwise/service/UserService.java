@@ -47,6 +47,15 @@ public class UserService {
         return locked;
     }
 
+    /**
+     * Like {@link #lockAll}, but skips ids that do not exist, for a caller that reports unknown ids itself after
+     * its own checks (so a stranger's id and a made-up one still get the same answer).
+     */
+    @Transactional
+    public void lockExisting(Collection<Long> ids) {
+        new TreeSet<>(ids).forEach(userRepository::findByIdForUpdate);
+    }
+
     /** Loads all users by id, failing with 404 naming the first missing id. */
     public Map<Long, User> getAllById(Collection<Long> ids) {
         Set<Long> unique = new LinkedHashSet<>(ids);

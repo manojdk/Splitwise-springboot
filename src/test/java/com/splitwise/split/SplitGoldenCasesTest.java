@@ -2,6 +2,7 @@ package com.splitwise.split;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.splitwise.domain.Money;
 import com.splitwise.domain.SplitType;
 import com.splitwise.exception.InvalidSplitException;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Golden cases for the frontend's split calculator: random inputs run through the real strategies, with the
  * result (or the fact that the input was refused) written to {@code frontend/src/lib/split-golden.json}. The
  * frontend test replays every case, so the live preview in the expense form is proven to give the same paise
- * as the API.
+ * as the API. Cases for a currency without decimals (yen) carry {@code "decimals": 0}; the others use 2.
  *
  * <p>The generator is seeded, so the file only changes when a split rule changes; then this test fails until
  * the file is regenerated: {@code ./mvnw test -Dtest=SplitGoldenCasesTest -Dsplit.update=true}.
@@ -33,6 +34,7 @@ class SplitGoldenCasesTest {
 
     private static final Path FILE = Path.of("frontend", "src", "lib", "split-golden.json");
     private static final int CASES = 400;
+    private static final int WHOLE_UNIT_CASES = 100;
 
     private final Map<SplitType, SplitStrategy> strategies = Map.of(
             SplitType.EQUAL, new EqualSplitStrategy(),
@@ -48,7 +50,7 @@ class SplitGoldenCasesTest {
         int refused = 0;
         for (int i = 0; i < CASES; i++) {
             SplitType type = SplitType.values()[i % SplitType.values().length];
-            Map<String, Object> c = generate(random, type);
+            Map<String, Object> c = generate(random, type, Money.SCALE);
             if (c.get("result") == null) {
                 refused++;
             }
@@ -56,7 +58,19 @@ class SplitGoldenCasesTest {
         }
         // Both outcomes must be well represented, or the replay proves little
         assertThat(refused).isBetween(CASES / 8, CASES / 2);
-        EDGE_CASES.forEach(e -> cases.add(run(e.type(), e.total(), e.ids(), e.values())));
+        EDGE_CASES.forEach(e -> cases.add(run(e.type(), e.total(), e.ids(), e.values(), Money.SCALE)));
+
+        // Whole yen: a separate seed, so the cases above stay as they were
+        Random yen = new Random(20261027);
+        int yenRefused = 0;
+        for (int i = 0; i < WHOLE_UNIT_CASES; i++) {
+            Map<String, Object> c = generate(yen, SplitType.values()[i % SplitType.values().length], 0);
+            if (c.get("result") == null) {
+                yenRefused++;
+            }
+            cases.add(c);
+        }
+        assertThat(yenRefused).isBetween(WHOLE_UNIT_CASES / 8, WHOLE_UNIT_CASES / 2);
 
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         String text = mapper.writeValueAsString(cases).replace("\r\n", "\n") + "\n";
@@ -97,7 +111,8 @@ class SplitGoldenCasesTest {
             new Edge(SplitType.EQUAL, "999999999.99", List.of(1L, 2L, 3L, 4L, 5L, 6L, 7L),
                     Arrays.asList(null, null, null, null, null, null, null)));
 
-    private Map<String, Object> generate(Random random, SplitType type) {
+    /** @param decimals 2 for cents, 0 for whole yen: totals, exact amounts and adjustments are in that unit */
+    private Map<String, Object> generate(Random random, SplitType type, int decimals) {
         int people = 1 + random.nextInt(6);
         List<Long> ids = new ArrayList<>();
         while (ids.size() < people) {
@@ -112,24 +127,25 @@ class SplitGoldenCasesTest {
             case 2 -> 1 + random.nextInt(10_000_000);
             default -> 1 + (long) (random.nextDouble() * 99_999_999_999L);
         };
-        String total = BigDecimal.valueOf(totalCents, 2).toPlainString();
+        String total = BigDecimal.valueOf(totalCents, decimals).toPlainString();
         if (random.nextInt(25) == 0) {
-            total = random.nextBoolean() ? "0.00" : total + "5"; // zero, or three decimals
+            // zero, or one decimal too many
+            total = random.nextBoolean() ? "0.00" : total + (decimals == 0 ? ".5" : "5");
         }
 
         List<String> values = switch (type) {
             case EQUAL -> Collections.nCopies(people, null);
-            case EXACT -> exactValues(random, totalCents, people);
+            case EXACT -> exactValues(random, totalCents, people, decimals);
             case PERCENTAGE -> percentValues(random, people);
             case SHARES -> shareValues(random, people);
-            case ADJUSTMENT -> adjustmentValues(random, totalCents, people);
+            case ADJUSTMENT -> adjustmentValues(random, totalCents, people, decimals);
         };
 
-        return run(type, total, ids, values);
+        return run(type, total, ids, values, decimals);
     }
 
     /** Runs the real strategy; the result is null when the API would refuse the input. */
-    private Map<String, Object> run(SplitType type, String total, List<Long> ids, List<String> values) {
+    private Map<String, Object> run(SplitType type, String total, List<Long> ids, List<String> values, int decimals) {
         List<SplitParticipant> participants = new ArrayList<>();
         List<Map<String, Object>> shown = new ArrayList<>();
         for (int i = 0; i < ids.size(); i++) {
@@ -144,7 +160,7 @@ class SplitGoldenCasesTest {
         Map<String, Object> result = null;
         try {
             Map<String, Object> owed = new LinkedHashMap<>();
-            strategies.get(type).split(new BigDecimal(total), participants)
+            strategies.get(type).split(new BigDecimal(total), participants, decimals)
                     .forEach((userId, amount) -> owed.put(String.valueOf(userId), amount.toPlainString()));
             result = owed;
         } catch (InvalidSplitException refusedInput) {
@@ -153,19 +169,23 @@ class SplitGoldenCasesTest {
 
         Map<String, Object> c = new LinkedHashMap<>();
         c.put("type", type.name());
+        if (decimals != Money.SCALE) {
+            c.put("decimals", decimals);
+        }
         c.put("total", total);
         c.put("participants", shown);
         c.put("result", result);
         return c;
     }
 
-    /** Usually an exact partition of the total; sometimes off by a cent, or with three decimals. */
-    private static List<String> exactValues(Random random, long totalCents, int people) {
+    /** Usually an exact partition of the total; sometimes off by one unit, or with one decimal too many. */
+    private static List<String> exactValues(Random random, long totalCents, int people, int decimals) {
         List<Long> parts = partition(random, totalCents, people);
-        List<String> values = new ArrayList<>(parts.stream().map(c -> BigDecimal.valueOf(c, 2).toPlainString()).toList());
+        List<String> values = new ArrayList<>(parts.stream()
+                .map(c -> BigDecimal.valueOf(c, decimals).toPlainString()).toList());
         switch (random.nextInt(6)) {
-            case 0 -> values.set(0, BigDecimal.valueOf(parts.get(0) + 1, 2).toPlainString());
-            case 1 -> values.set(0, values.get(0) + "1");
+            case 0 -> values.set(0, BigDecimal.valueOf(parts.get(0) + 1, decimals).toPlainString());
+            case 1 -> values.set(0, values.get(0) + (decimals == 0 ? ".5" : "1"));
             default -> {
             }
         }
@@ -208,7 +228,7 @@ class SplitGoldenCasesTest {
     }
 
     /** Empty (null) or a part of the total; sometimes adding up to more than the total. */
-    private static List<String> adjustmentValues(Random random, long totalCents, int people) {
+    private static List<String> adjustmentValues(Random random, long totalCents, int people, int decimals) {
         boolean tooMuch = random.nextInt(6) == 0;
         List<String> values = new ArrayList<>();
         for (int i = 0; i < people; i++) {
@@ -216,7 +236,7 @@ class SplitGoldenCasesTest {
                 values.add(null);
             } else {
                 long cents = tooMuch ? totalCents : random.nextLong(Math.max(1, totalCents / people) + 1);
-                values.add(BigDecimal.valueOf(cents, 2).toPlainString());
+                values.add(BigDecimal.valueOf(cents, decimals).toPlainString());
             }
         }
         return values;

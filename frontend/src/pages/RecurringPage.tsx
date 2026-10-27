@@ -1,18 +1,18 @@
 import { useState } from 'react'
 import { ApiError } from '../api/client'
-import { useGroups, useRecurringExpenses, useStopRecurring } from '../api/queries'
+import { useGroups, useRecurringExpenses, useResumeRecurring, useStopRecurring } from '../api/queries'
 import type { Group, RecurringExpense } from '../api/types'
 import { Modal } from '../components/Modal'
 import { ErrorState, Loading } from '../components/States'
 import { useToast } from '../components/Toast'
 import { ExpenseForm } from '../features/expenses/ExpenseForm'
 import { categoryOf } from '../lib/categories'
-import { formatDate } from '../lib/dates'
+import { formatDate, today } from '../lib/dates'
 import { formatMoney } from '../lib/money'
 
 const EVERY: Record<RecurringExpense['frequency'], string> = { WEEKLY: 'Weekly', MONTHLY: 'Monthly', YEARLY: 'Yearly' }
 
-/** Expenses that repeat: what, how much, how often and when next; stop one, or set up a new one. */
+/** Expenses that repeat: what, how much, how often and when next; stop or resume one, or set up a new one. */
 export function RecurringPage() {
   const templates = useRecurringExpenses()
   const groups = useGroups()
@@ -82,6 +82,8 @@ export function RecurringPage() {
                   Stop
                 </button>
               )}
+              {/* One whose end date has passed cannot run again; the API would refuse it */}
+              {!t.active && !(t.endDate && t.endDate < today()) && <ResumeButton template={t} />}
             </li>
           ))}
         </ul>
@@ -134,6 +136,45 @@ function StopDialog({ template, onClose }: { template: RecurringExpense; onClose
         </button>
       </div>
     </Modal>
+  )
+}
+
+/** No confirmation needed: resuming adds nothing for the dates missed, and it can be stopped again. */
+function ResumeButton({ template }: { template: RecurringExpense }) {
+  const resume = useResumeRecurring()
+  const toast = useToast()
+
+  async function onResume() {
+    try {
+      const resumed = await resume.mutateAsync(template.id)
+      toast.show(
+        resumed.nextDate
+          ? `"${template.description}" resumed, next on ${formatDate(resumed.nextDate)}`
+          : `"${template.description}" resumed`,
+      )
+    } catch {
+      // Shown below from resume.error
+    }
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        className="btn btn-ghost mt-1 justify-self-start px-3 py-1.5 text-sm"
+        onClick={onResume}
+        disabled={resume.isPending}
+        aria-label={`Resume ${template.description}`}
+      >
+        {resume.isPending ? 'Resuming...' : 'Resume'}
+      </button>
+      {resume.error && (
+        <p role="alert" className="alert alert-error m-0 text-sm">
+          {resume.error instanceof ApiError ? resume.error.message : 'Could not resume it. Please try again.'}
+        </p>
+      )}
+      <p className="m-0 text-xs text-muted">Carries on from the next date; the dates missed are not added.</p>
+    </>
   )
 }
 

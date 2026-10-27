@@ -51,6 +51,13 @@ public class RecurringExpenseController {
         return recurringExpenseService.get(CurrentUser.id(jwt), id);
     }
 
+    @PostMapping("/{id}/resume")
+    @Operation(summary = "Start a stopped or paused one again, from its next date on or after today (missed dates"
+            + " are skipped)")
+    public RecurringExpenseResponse resume(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
+        return recurringExpenseService.resume(CurrentUser.id(jwt), id);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Stop future occurrences (expenses already created stay)")

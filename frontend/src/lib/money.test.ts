@@ -8,6 +8,11 @@ describe('formatMoney', () => {
     expect(formatMoney(45.5, 'EUR')).toBe('€45.50')
   })
 
+  it('shows yen without decimals, but never rounds one saved with them', () => {
+    expect(formatMoney(1200, 'JPY')).toBe('¥1,200')
+    expect(formatMoney(100.5, 'JPY')).toBe('¥100.5')
+  })
+
   it('shows a sign only when asked, and never on zero', () => {
     expect(formatMoney(10, 'USD', { signed: true })).toBe('+$10.00')
     expect(formatMoney(-10, 'USD', { signed: true })).toBe('-$10.00')

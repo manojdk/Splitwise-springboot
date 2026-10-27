@@ -5,6 +5,7 @@ import com.splitwise.domain.Category;
 import com.splitwise.domain.Group;
 import com.splitwise.domain.RecurringExpense;
 import com.splitwise.exception.BadRequestException;
+import com.splitwise.exception.ConflictException;
 import com.splitwise.exception.ForbiddenException;
 import com.splitwise.exception.NotFoundException;
 import com.splitwise.repository.GroupRepository;
@@ -12,6 +13,7 @@ import com.splitwise.repository.RecurringExpenseRepository;
 import com.splitwise.web.CallerToday;
 import com.splitwise.web.dto.CreateRecurringExpenseRequest;
 import com.splitwise.web.dto.RecurringExpenseResponse;
+import com.splitwise.web.dto.ShareRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,8 @@ import java.util.TreeSet;
 public class RecurringExpenseService {
 
     static final int MAX_CATCH_UP = 60;
+    /** How far the end date may be from the start: long enough for any lease or loan, short enough to catch typos. */
+    static final int MAX_YEARS = 50;
     private static final Logger log = LoggerFactory.getLogger(RecurringExpenseService.class);
 
     private final RecurringExpenseRepository recurringRepository;
@@ -83,6 +87,9 @@ public class RecurringExpenseService {
         }
         if (request.endDate() != null && request.endDate().isBefore(request.startDate())) {
             throw new BadRequestException("endDate cannot be before startDate");
+        }
+        if (request.endDate() != null && request.endDate().isAfter(request.startDate().plusYears(MAX_YEARS))) {
+            throw new BadRequestException("endDate cannot be more than " + MAX_YEARS + " years after startDate");
         }
         expenseService.checkDraft(callerId, group, request.paidById(), request.currency(), request.amount(),
                 request.splitType(), request.shares());
@@ -134,6 +141,41 @@ public class RecurringExpenseService {
             template.finish("Stopped by " + userService.getById(callerId).getName());
             activity.recurringStopped(callerId, template);
         }
+    }
+
+    /**
+     * Starts a stopped or paused template again, from its next date on or after the caller's today (the dates
+     * missed meanwhile are skipped). Refused (409) if someone in it has left the group or the end date has passed.
+     * If the next date is today, its expense is created at once. Resuming a running template changes nothing.
+     */
+    @Transactional
+    public RecurringExpenseResponse resume(Long callerId, Long id) {
+        Long groupId = recurringRepository.findGroupIdById(id).orElse(null);
+        // Lock order as in the scheduler: group, then template
+        Group group = groupId == null ? null : groupService.lockMemberGroup(groupId, callerId);
+        RecurringExpense template = recurringRepository.findByIdForUpdate(id)
+                .orElseThrow(() -> new NotFoundException("Recurring expense " + id + " not found"));
+        requireAccess(template, callerId);
+        if (template.isActive()) {
+            return RecurringExpenseResponse.from(template);
+        }
+        String missing = missingMember(template, group);
+        if (missing != null) {
+            throw new ConflictException(missing + " is no longer a member of the group; add them back first, or set"
+                    + " up a new recurring expense without them");
+        }
+        // The rest of the checks its expenses will meet (people still contacts outside groups, and so on)
+        expenseService.checkDraft(template.getCreatedBy().getId(), group, template.getPaidBy().getId(),
+                template.getCurrency(), template.getAmount(), template.getSplitType(), template.getShares().entrySet()
+                        .stream().map(e -> new ShareRequest(e.getKey(), e.getValue())).toList());
+        LocalDate today = callerToday.get();
+        if (!template.resumeFrom(today)) {
+            throw new ConflictException("It ended on " + template.getEndDate()
+                    + "; set up a new recurring expense instead");
+        }
+        activity.recurringResumed(callerId, template);
+        createDueOccurrences(template, group, today);
+        return RecurringExpenseResponse.from(template);
     }
 
     /** Ids of templates with an occurrence due today or earlier. */

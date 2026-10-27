@@ -28,7 +28,7 @@ public class PercentageSplitStrategy extends AbstractSplitStrategy {
     }
 
     @Override
-    protected Map<Long, BigDecimal> allocate(BigDecimal total, List<SplitParticipant> participants) {
+    protected Map<Long, BigDecimal> allocate(BigDecimal total, List<SplitParticipant> participants, int decimals) {
         BigDecimal percentSum = BigDecimal.ZERO;
         for (SplitParticipant p : participants) {
             BigDecimal pct = requireValue(p, "Percentage");
@@ -45,6 +45,6 @@ public class PercentageSplitStrategy extends AbstractSplitStrategy {
                     + " but must add up to 100");
         }
         return Allocation.proportional(total, participants.stream().map(SplitParticipant::userId).toList(),
-                participants.stream().map(SplitParticipant::value).toList());
+                participants.stream().map(SplitParticipant::value).toList(), decimals);
     }
 }

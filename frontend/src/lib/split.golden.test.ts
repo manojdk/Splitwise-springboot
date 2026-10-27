@@ -6,6 +6,8 @@ type GoldenCase = {
   type: SplitType
   total: string
   participants: { userId: number; value: string | null }[]
+  /** 0 for a currency without decimals; absent means 2 */
+  decimals?: 0
   result: Record<string, string> | null
 }
 
@@ -15,7 +17,7 @@ type GoldenCase = {
  */
 describe('split calculator matches the API', () => {
   it.each((cases as GoldenCase[]).map((c, i) => [i, c] as const))('case %i', (_, c) => {
-    const result = computeSplit(c.type, c.total, c.participants)
+    const result = computeSplit(c.type, c.total, c.participants, undefined, c.decimals ?? 2)
 
     if (c.result === null) {
       expect(result.ok, `the API refuses this ${c.type} split`).toBe(false)
@@ -33,5 +35,8 @@ describe('split calculator matches the API', () => {
       expect(seen).toContain(`${type}:ok`)
       expect(seen).toContain(`${type}:refused`)
     }
+    // And whole-yen cases for every type too
+    const yen = new Set((cases as GoldenCase[]).filter((c) => c.decimals === 0).map((c) => c.type))
+    expect(yen.size).toBe(5)
   })
 })

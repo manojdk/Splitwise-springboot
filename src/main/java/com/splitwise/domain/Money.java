@@ -25,6 +25,16 @@ public final class Money {
 
     /** True if the value has at most 2 significant decimal places (10.50 yes, 10.005 no). */
     public static boolean hasValidScale(BigDecimal value) {
-        return value.stripTrailingZeros().scale() <= SCALE;
+        return hasValidScale(value, SCALE);
+    }
+
+    /** True if the value has at most {@code decimals} significant decimal places (with 0: 100.00 yes, 100.5 no). */
+    public static boolean hasValidScale(BigDecimal value, int decimals) {
+        return value.stripTrailingZeros().scale() <= decimals;
+    }
+
+    /** The rule on decimals as a message ends: "must be a whole number", "must have at most 2 decimal places". */
+    public static String decimalsRule(int decimals) {
+        return decimals == 0 ? "must be a whole number" : "must have at most " + decimals + " decimal places";
     }
 }

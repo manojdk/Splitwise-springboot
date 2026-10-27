@@ -1,8 +1,8 @@
 /**
  * The expense split rules, mirrored from the API (com.splitwise.split) so the expense form can show each
- * person's share while it is typed. Everything is done in whole paise with BigInt, never with floating point,
- * so the preview always matches what the API will save. split.golden.test.ts replays 400 cases produced by the
- * real backend to prove it.
+ * person's share while it is typed. Everything is done in whole units with BigInt (paise, or whole yen for a
+ * currency without decimals), never with floating point, so the preview always matches what the API will save.
+ * split.golden.test.ts replays 520 cases produced by the real backend, 100 of them in yen, to prove it.
  *
  * Inputs are the raw text from the form; an empty value means "not entered".
  */
@@ -57,10 +57,6 @@ function add(a: Decimal, b: Decimal): Decimal {
   return strip({ units: rescale(a, scale) + rescale(b, scale), scale })
 }
 
-/** Only for values already known to have at most 2 decimals. */
-function toPaise(d: Decimal): bigint {
-  return rescale(d, 2)
-}
 
 export function paiseToString(paise: bigint): string {
   const negative = paise < 0n
@@ -77,7 +73,7 @@ function decimalToString(d: Decimal): string {
   return negative ? `-${text}` : text
 }
 
-/** Equal parts; leftover paise go one each to the first ids in order (100.00 / 3 = 33.34, 33.33, 33.33). */
+/** Equal parts (in whole units); leftover units go one each to the first ids in order (100.00 / 3 = 33.34, 33.33, 33.33). */
 function equal(total: bigint, ids: number[]): Map<number, bigint> {
   const n = BigInt(ids.length)
   const base = total / n
@@ -112,16 +108,33 @@ type Named = (userId: number) => string
 const defaultName: Named = (id) => `user ${id}`
 
 /** Computes what each person owes, or why the input would be refused by the API. */
+/**
+ * Computes what each person owes (always in paise, hundredths, whatever the currency), or why the input would be
+ * refused by the API.
+ *
+ * @param decimals 2, or 0 for a currency without decimals (yen): the amount, exact amounts, adjustments and every
+ *                 part are then whole numbers, as in the API
+ */
 export function computeSplit(
   type: SplitType,
   totalText: string,
   participants: SplitInput[],
   nameOf: Named = defaultName,
+  decimals: 0 | 2 = 2,
 ): SplitResult {
+  /** Whole units (paise, or yen) of a value known to have at most `decimals` decimals. */
+  const toUnits = (d: Decimal) => rescale(d, decimals)
+  const toPaise = (units: bigint) => units * 10n ** BigInt(2 - decimals)
+  const unitsText = (units: bigint) => paiseToString(toPaise(units))
+  /** How an error about decimals ends: "must be a whole number", "can have at most 2 decimal places". */
+  const decimalsRule = decimals === 0 ? 'must be a whole number' : 'can have at most 2 decimal places'
+
   const total = parse(totalText)
-  if (!total) return { ok: false, error: 'Enter the amount, like 1200 or 99.50' }
+  if (!total) return { ok: false, error: decimals === 0 ? 'Enter the amount, like 1200' : 'Enter the amount, like 1200 or 99.50' }
   if (total.units <= 0n) return { ok: false, error: 'The amount must be more than zero' }
-  if (total.scale > 2) return { ok: false, error: 'The amount can have at most 2 decimal places' }
+  if (total.scale > decimals) {
+    return { ok: false, error: decimals === 0 ? 'The amount must be a whole number (this currency has no decimals)' : 'The amount can have at most 2 decimal places' }
+  }
   if (participants.length === 0) return { ok: false, error: 'Pick at least one person to split with' }
   const seen = new Set<number>()
   for (const p of participants) {
@@ -131,7 +144,8 @@ export function computeSplit(
 
   const sorted = [...participants].sort((a, b) => a.userId - b.userId)
   const ids = sorted.map((p) => p.userId)
-  const totalPaise = toPaise(total)
+  const totalUnits = toUnits(total)
+  const inPaise = (owed: Map<number, bigint>) => new Map([...owed].map(([id, units]) => [id, toPaise(units)]))
 
   /** A value that must be present and not negative; otherwise the error to show. */
   function required(p: SplitInput, what: string): Decimal | SplitResult {
@@ -147,7 +161,7 @@ export function computeSplit(
 
   switch (type) {
     case 'EQUAL':
-      return { ok: true, owed: equal(totalPaise, ids) }
+      return { ok: true, owed: inPaise(equal(totalUnits, ids)) }
 
     case 'EXACT': {
       const owed = new Map<number, bigint>()
@@ -155,22 +169,22 @@ export function computeSplit(
       for (const p of sorted) {
         const value = required(p, 'an amount')
         if (!isDecimal(value)) return value
-        if (value.scale > 2) {
-          return { ok: false, error: `The amount for ${nameOf(p.userId)} can have at most 2 decimal places`, userId: p.userId }
+        if (value.scale > decimals) {
+          return { ok: false, error: `The amount for ${nameOf(p.userId)} ${decimalsRule}`, userId: p.userId }
         }
-        owed.set(p.userId, toPaise(value))
-        sum += toPaise(value)
+        owed.set(p.userId, toUnits(value))
+        sum += toUnits(value)
       }
-      if (sum !== totalPaise) {
-        const gap = totalPaise - sum
+      if (sum !== totalUnits) {
+        const gap = totalUnits - sum
         return {
           ok: false,
           error: gap > 0n
-            ? `${paiseToString(gap)} still to assign (the amounts add up to ${paiseToString(sum)})`
-            : `${paiseToString(-gap)} too much (the amounts add up to ${paiseToString(sum)})`,
+            ? `${unitsText(gap)} still to assign (the amounts add up to ${unitsText(sum)})`
+            : `${unitsText(-gap)} too much (the amounts add up to ${unitsText(sum)})`,
         }
       }
-      return { ok: true, owed }
+      return { ok: true, owed: inPaise(owed) }
     }
 
     case 'PERCENTAGE': {
@@ -191,7 +205,7 @@ export function computeSplit(
       if (compare(sum, HUNDRED) !== 0) {
         return { ok: false, error: `The percentages add up to ${decimalToString(sum)}%, they must add up to 100%` }
       }
-      return { ok: true, owed: proportional(totalPaise, ids, weights) }
+      return { ok: true, owed: inPaise(proportional(totalUnits, ids, weights)) }
     }
 
     case 'SHARES': {
@@ -210,35 +224,35 @@ export function computeSplit(
         weights.push(value)
       }
       if (sum.units === 0n) return { ok: false, error: 'Give at least one person more than 0 shares' }
-      return { ok: true, owed: proportional(totalPaise, ids, weights) }
+      return { ok: true, owed: inPaise(proportional(totalUnits, ids, weights)) }
     }
 
     case 'ADJUSTMENT': {
       const adjustments = new Map<number, bigint>()
       let sum = 0n
       for (const p of sorted) {
-        let paise = 0n
+        let units = 0n
         if ((p.value?.trim() ?? '') !== '') {
           const value = required(p, 'an adjustment')
           if (!isDecimal(value)) return value
-          if (value.scale > 2) {
-            return { ok: false, error: `The adjustment for ${nameOf(p.userId)} can have at most 2 decimal places`, userId: p.userId }
+          if (value.scale > decimals) {
+            return { ok: false, error: `The adjustment for ${nameOf(p.userId)} ${decimalsRule}`, userId: p.userId }
           }
-          paise = toPaise(value)
+          units = toUnits(value)
         }
-        adjustments.set(p.userId, paise)
-        sum += paise
+        adjustments.set(p.userId, units)
+        sum += units
       }
-      if (sum > totalPaise) {
+      if (sum > totalUnits) {
         return {
           ok: false,
-          error: `The adjustments add up to ${paiseToString(sum)}, more than the amount (${paiseToString(totalPaise)})`,
+          error: `The adjustments add up to ${unitsText(sum)}, more than the amount (${unitsText(totalUnits)})`,
         }
       }
-      const rest = totalPaise - sum
-      if (rest === 0n) return { ok: true, owed: adjustments }
+      const rest = totalUnits - sum
+      if (rest === 0n) return { ok: true, owed: inPaise(adjustments) }
       const parts = equal(rest, ids)
-      return { ok: true, owed: new Map(ids.map((id) => [id, parts.get(id)! + adjustments.get(id)!])) }
+      return { ok: true, owed: inPaise(new Map(ids.map((id) => [id, parts.get(id)! + adjustments.get(id)!]))) }
     }
   }
 }

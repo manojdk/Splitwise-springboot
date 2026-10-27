@@ -20,7 +20,7 @@ public class EqualSplitStrategy extends AbstractSplitStrategy {
     }
 
     @Override
-    protected Map<Long, BigDecimal> allocate(BigDecimal total, List<SplitParticipant> participants) {
-        return Allocation.equal(total, participants.stream().map(SplitParticipant::userId).toList());
+    protected Map<Long, BigDecimal> allocate(BigDecimal total, List<SplitParticipant> participants, int decimals) {
+        return Allocation.equal(total, participants.stream().map(SplitParticipant::userId).toList(), decimals);
     }
 }

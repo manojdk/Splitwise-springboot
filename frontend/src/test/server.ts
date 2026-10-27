@@ -565,6 +565,13 @@ handlers.push(
     return new HttpResponse(null, { status: 204 })
   }),
 
+  http.post('*/api/recurring-expenses/:id/resume', ({ params }) => {
+    const template = db.recurring.find((r) => r.id === Number(params.id))
+    if (!template) return errorBody(404, `Recurring expense ${params.id} not found`, '/api/recurring-expenses')
+    Object.assign(template, { active: true, nextDate: '2026-11-05', stoppedReason: null })
+    return HttpResponse.json(template)
+  }),
+
   http.get('*/api/groups/:groupId/report', ({ params, request }) => {
     const { group, error } = memberGroup(Number(params.groupId), '/api/groups/report')
     if (error) return error

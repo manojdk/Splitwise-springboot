@@ -7,8 +7,8 @@ import { Modal } from '../../components/Modal'
 import { Avatar } from '../../components/States'
 import { useToast } from '../../components/Toast'
 import { CATEGORIES } from '../../lib/categories'
-import { CURRENCIES } from '../../lib/currencies'
-import { today } from '../../lib/dates'
+import { CURRENCIES, currencyDecimals } from '../../lib/currencies'
+import { addYears, dateWindowError, EARLIEST_DATE, latestDate, MAX_RECURRING_YEARS, today } from '../../lib/dates'
 import { formatMoney } from '../../lib/money'
 import type { SplitType } from '../../lib/split'
 import {
@@ -86,7 +86,7 @@ export function ExpenseForm({
   const isMember = (id: number) => group === null || group.members.some((m) => m.id === id)
   const ids = people.map((p) => p.id)
 
-  const split = previewSplit(draft, people)
+  const split = previewSplit(draft, people, currency)
   const descriptionError = !draft.description.trim()
     ? 'Describe the expense'
     : draft.description.trim().length > 255
@@ -97,8 +97,14 @@ export function ExpenseForm({
     ? 'Pick a date'
     : recurring && draft.date < today()
       ? 'The first one cannot be in the past'
-      : null
-  const endError = recurring && draft.endDate && draft.endDate < draft.date ? 'The end must be on or after the start' : null
+      : dateWindowError(draft.date)
+  const endError = !recurring || !draft.endDate
+    ? null
+    : draft.endDate < draft.date
+      ? 'The end must be on or after the start'
+      : draft.date && draft.endDate > addYears(draft.date, MAX_RECURRING_YEARS)
+        ? `The end can be at most ${MAX_RECURRING_YEARS} years after the start`
+        : null
   const valid = split.ok && !descriptionError && !notesError && !dateError && !endError
 
   function update(patch: Partial<ExpenseDraft>) {
@@ -235,7 +241,8 @@ export function ExpenseForm({
               type="date"
               className="input"
               value={draft.date}
-              min={recurring ? today() : undefined}
+              min={recurring ? today() : EARLIEST_DATE}
+              max={latestDate()}
               onChange={(e) => update({ date: e.target.value })}
             />
           </Field>
@@ -303,7 +310,11 @@ export function ExpenseForm({
               </button>
             ))}
           </div>
-          <p className="m-0 text-sm text-muted">{current.hint}</p>
+          <p className="m-0 text-sm text-muted">
+            {current.type === 'EQUAL' && currencyDecimals(currency) === 0
+              ? `Everyone pays the same, in whole ${currency} (it has no decimals). Any left over go one each to the first people.`
+              : current.hint}
+          </p>
           {draft.convertedToExact && (
             <p className="alert alert-info m-0 text-sm">
               This expense was saved before split details were kept, so it is shown as exact amounts.

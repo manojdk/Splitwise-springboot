@@ -27,13 +27,13 @@ public class AdjustmentSplitStrategy extends AbstractSplitStrategy {
     }
 
     @Override
-    protected Map<Long, BigDecimal> allocate(BigDecimal total, List<SplitParticipant> participants) {
+    protected Map<Long, BigDecimal> allocate(BigDecimal total, List<SplitParticipant> participants, int decimals) {
         Map<Long, BigDecimal> adjustments = new LinkedHashMap<>();
         BigDecimal adjustmentSum = Money.ZERO;
         for (SplitParticipant p : participants) {
             BigDecimal adjustment = p.value() == null ? Money.ZERO : requireValue(p, "Adjustment");
-            if (!Money.hasValidScale(adjustment)) {
-                throw new InvalidSplitException("Adjustment for user " + p.userId() + " must have at most 2 decimal places");
+            if (!Money.hasValidScale(adjustment, decimals)) {
+                throw new InvalidSplitException("Adjustment for user " + p.userId() + " " + Money.decimalsRule(decimals));
             }
             adjustments.put(p.userId(), Money.of(adjustment));
             adjustmentSum = adjustmentSum.add(Money.of(adjustment));
@@ -48,7 +48,7 @@ public class AdjustmentSplitStrategy extends AbstractSplitStrategy {
             owed.putAll(adjustments);
             return owed;
         }
-        Allocation.equal(rest, List.copyOf(adjustments.keySet()))
+        Allocation.equal(rest, List.copyOf(adjustments.keySet()), decimals)
                 .forEach((userId, part) -> owed.put(userId, part.add(adjustments.get(userId))));
         return owed;
     }

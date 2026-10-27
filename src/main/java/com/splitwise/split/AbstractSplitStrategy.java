@@ -14,12 +14,12 @@ import java.util.Set;
 abstract class AbstractSplitStrategy implements SplitStrategy {
 
     @Override
-    public final Map<Long, BigDecimal> split(BigDecimal total, List<SplitParticipant> participants) {
+    public final Map<Long, BigDecimal> split(BigDecimal total, List<SplitParticipant> participants, int decimals) {
         if (total == null || total.signum() <= 0) {
             throw new InvalidSplitException("Expense amount must be greater than zero");
         }
-        if (!Money.hasValidScale(total)) {
-            throw new InvalidSplitException("Expense amount must have at most 2 decimal places");
+        if (!Money.hasValidScale(total, decimals)) {
+            throw new InvalidSplitException("Expense amount " + Money.decimalsRule(decimals));
         }
         if (participants == null || participants.isEmpty()) {
             throw new InvalidSplitException("An expense needs at least one participant");
@@ -36,14 +36,16 @@ abstract class AbstractSplitStrategy implements SplitStrategy {
         List<SplitParticipant> sorted = participants.stream()
                 .sorted(Comparator.comparing(SplitParticipant::userId))
                 .toList();
-        return allocate(Money.of(total), sorted);
+        return allocate(Money.of(total), sorted, decimals);
     }
 
     /**
      * @param total        positive amount with scale 2
      * @param participants non-empty, unique, sorted by user id
+     * @param decimals     decimal places of the currency's smallest unit (2, or 0); the total is a whole number of it
      */
-    protected abstract Map<Long, BigDecimal> allocate(BigDecimal total, List<SplitParticipant> participants);
+    protected abstract Map<Long, BigDecimal> allocate(BigDecimal total, List<SplitParticipant> participants,
+                                                      int decimals);
 
     protected static BigDecimal requireValue(SplitParticipant p, String what) {
         if (p.value() == null) {

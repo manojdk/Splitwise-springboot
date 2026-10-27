@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Cent-exact ways of dividing an amount. Everything is done in whole cents with integer arithmetic, so there is
- * no rounding drift: the parts always add up to the total exactly.
+ * Exact ways of dividing an amount. Everything is done in whole units of the currency (cents, or whole yen when
+ * {@code decimals} is 0) with integer arithmetic, so there is no rounding drift: the parts always add up to the
+ * total exactly. Results have the app's scale of 2 either way (34 yen is 34.00).
  */
 final class Allocation {
 
@@ -23,13 +24,13 @@ final class Allocation {
      * Equal parts. Leftover cents (total mod n) go one each to the first ids in the given order, so
      * 100.00 / 3 = 33.34, 33.33, 33.33 every time.
      */
-    static Map<Long, BigDecimal> equal(BigDecimal total, List<Long> userIds) {
-        BigInteger[] divRem = cents(total).divideAndRemainder(BigInteger.valueOf(userIds.size()));
+    static Map<Long, BigDecimal> equal(BigDecimal total, List<Long> userIds, int decimals) {
+        BigInteger[] divRem = units(total, decimals).divideAndRemainder(BigInteger.valueOf(userIds.size()));
         int remainder = divRem[1].intValueExact();
         Map<Long, BigDecimal> result = new LinkedHashMap<>();
         for (int i = 0; i < userIds.size(); i++) {
             BigInteger share = i < remainder ? divRem[0].add(BigInteger.ONE) : divRem[0];
-            result.put(userIds.get(i), new BigDecimal(share, Money.SCALE));
+            result.put(userIds.get(i), amount(share, decimals));
         }
         return result;
     }
@@ -45,11 +46,12 @@ final class Allocation {
      *
      * @param weights non-negative, same order as {@code userIds}, sum greater than zero
      */
-    static Map<Long, BigDecimal> proportional(BigDecimal total, List<Long> userIds, List<BigDecimal> weights) {
+    static Map<Long, BigDecimal> proportional(BigDecimal total, List<Long> userIds, List<BigDecimal> weights,
+                                              int decimals) {
         int scale = weights.stream().mapToInt(w -> Math.max(0, w.stripTrailingZeros().scale())).max().orElse(0);
         List<BigInteger> intWeights = weights.stream().map(w -> w.movePointRight(scale).toBigIntegerExact()).toList();
         BigInteger weightSum = intWeights.stream().reduce(BigInteger.ZERO, BigInteger::add);
-        BigInteger totalCents = cents(total);
+        BigInteger totalCents = units(total, decimals);
 
         record Part(int index, BigInteger floor, BigInteger remainder) {
         }
@@ -71,12 +73,17 @@ final class Allocation {
         }
         Map<Long, BigDecimal> owed = new LinkedHashMap<>();
         for (int i = 0; i < userIds.size(); i++) {
-            owed.put(userIds.get(i), new BigDecimal(result[i], Money.SCALE));
+            owed.put(userIds.get(i), amount(result[i], decimals));
         }
         return owed;
     }
 
-    private static BigInteger cents(BigDecimal amount) {
-        return Money.of(amount).unscaledValue();
+    /** The amount in whole units (cents, or yen); the caller has checked it has no finer part. */
+    private static BigInteger units(BigDecimal amount, int decimals) {
+        return amount.movePointRight(decimals).toBigIntegerExact();
+    }
+
+    private static BigDecimal amount(BigInteger units, int decimals) {
+        return new BigDecimal(units, decimals).setScale(Money.SCALE);
     }
 }
