@@ -263,10 +263,12 @@ public class ExpenseService {
         }
 
         String currency = CurrencyRules.resolve(requestedCurrency, group);
+        CurrencyRules.requireFits(amount, currency);
         List<SplitParticipant> participants = shareRequests.stream()
                 .map(s -> new SplitParticipant(s.userId(), s.value()))
                 .toList();
-        Map<Long, BigDecimal> owed = splitStrategies.forType(splitType).split(amount, participants);
+        Map<Long, BigDecimal> owed = splitStrategies.forType(splitType).split(amount, participants,
+                CurrencyRules.decimals(currency));
 
         // After the input checks (400), before loading users: strangers and unknown ids get the same 403
         if (group == null) {

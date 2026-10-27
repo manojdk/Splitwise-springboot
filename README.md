@@ -78,7 +78,8 @@ docs in Swagger UI.
   share, net). CSV export with one column per person (like Splitwise), properly quoted, with a UTF-8 BOM for
   Excel, and protected against CSV / formula injection (an expense called `=HYPERLINK(...)` is written as text).
 - **Multiple currencies**: one currency per group (EUR for a Paris trip), any currency outside groups,
-  balances and settle-ups kept per currency and never added together.
+  balances and settle-ups kept per currency and never added together. Currencies without a smaller unit (JPY,
+  KRW, VND...) take whole amounts only and split into whole units: 100 yen among three is 34 + 33 + 33.
 - **Paged, filterable lists**: expenses by date range, category, payer and text search (with LIKE wildcards
   escaped, so the search is literal); settlements by date range. Pages load their rows' shares, payers and
   groups in batches, a fixed handful of queries per page instead of one per expense (tested).
@@ -294,6 +295,7 @@ All endpoints except register, login, the API docs and `/actuator/health` need
 | GET | `/api/users/me/activity` | My feed: my groups plus everything I was involved in |
 | POST / GET | `/api/recurring-expenses` | Set up a recurring expense / list mine |
 | GET / DELETE | `/api/recurring-expenses/{id}` | Get, or stop, a recurring expense (past expenses stay) |
+| POST | `/api/recurring-expenses/{id}/resume` | Start a stopped or paused one again from its next date (missed dates are skipped) |
 | GET | `/api/groups/{id}/report` | Spending summary (`?from=2026-09-01&to=2026-09-30`, both optional) |
 | GET | `/api/groups/{id}/expenses.csv` | The group's expenses as a CSV download (same optional range) |
 | PUT | `/api/expenses/{id}` | Edit an expense; body as for create (without `groupId`) plus `version` |
@@ -333,6 +335,16 @@ default INR). Group expenses and payments are in that currency: leave `currency`
 another code is a `400`. Outside groups any ISO 4217 code works (default INR). Balances are kept per currency
 and never added together: `/users/me/balance` and the friends screen return one figure per currency, and
 settling up with a friend records one payment per group plus one per currency outside groups.
+
+**Decimals.** Amounts have at most 2 decimals. In a currency without a smaller unit (Java's
+`Currency.getDefaultFractionDigits()` is 0: JPY, KRW, VND, CLP, ISK...) they must be whole numbers
+(`"JPY amounts have no decimals"`), exact amounts and adjustments too, and every split part is a whole number.
+The few currencies with three decimals (KWD, BHD, OMR...) stay at two: a thousandth of a dinar is too small to
+matter, and amounts already saved keep their meaning.
+
+**Dates.** Expense and payment dates must fall between 2000-01-01 and a year from the caller's today (in their
+time zone, `X-Time-Zone`), which catches typos like 2099. A recurring expense starts within a year and ends at
+most 50 years after its start. An expense has at most 100 people.
 
 **Lists** (group and personal expenses, settlements) are paged and filterable:
 

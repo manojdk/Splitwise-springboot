@@ -7,7 +7,7 @@ import { Modal } from '../../components/Modal'
 import { Avatar } from '../../components/States'
 import { useToast } from '../../components/Toast'
 import { CATEGORIES } from '../../lib/categories'
-import { CURRENCIES } from '../../lib/currencies'
+import { CURRENCIES, currencyDecimals } from '../../lib/currencies'
 import { addYears, dateWindowError, EARLIEST_DATE, latestDate, MAX_RECURRING_YEARS, today } from '../../lib/dates'
 import { formatMoney } from '../../lib/money'
 import type { SplitType } from '../../lib/split'
@@ -86,7 +86,7 @@ export function ExpenseForm({
   const isMember = (id: number) => group === null || group.members.some((m) => m.id === id)
   const ids = people.map((p) => p.id)
 
-  const split = previewSplit(draft, people)
+  const split = previewSplit(draft, people, currency)
   const descriptionError = !draft.description.trim()
     ? 'Describe the expense'
     : draft.description.trim().length > 255
@@ -310,7 +310,11 @@ export function ExpenseForm({
               </button>
             ))}
           </div>
-          <p className="m-0 text-sm text-muted">{current.hint}</p>
+          <p className="m-0 text-sm text-muted">
+            {current.type === 'EQUAL' && currencyDecimals(currency) === 0
+              ? `Everyone pays the same, in whole ${currency} (it has no decimals). Any left over go one each to the first people.`
+              : current.hint}
+          </p>
           {draft.convertedToExact && (
             <p className="alert alert-info m-0 text-sm">
               This expense was saved before split details were kept, so it is shown as exact amounts.

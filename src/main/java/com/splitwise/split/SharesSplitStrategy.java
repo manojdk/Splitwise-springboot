@@ -25,7 +25,7 @@ public class SharesSplitStrategy extends AbstractSplitStrategy {
     }
 
     @Override
-    protected Map<Long, BigDecimal> allocate(BigDecimal total, List<SplitParticipant> participants) {
+    protected Map<Long, BigDecimal> allocate(BigDecimal total, List<SplitParticipant> participants, int decimals) {
         BigDecimal sum = BigDecimal.ZERO;
         for (SplitParticipant p : participants) {
             BigDecimal shares = requireValue(p, "Shares");
@@ -41,6 +41,6 @@ public class SharesSplitStrategy extends AbstractSplitStrategy {
             throw new InvalidSplitException("At least one participant needs more than 0 shares");
         }
         return Allocation.proportional(total, participants.stream().map(SplitParticipant::userId).toList(),
-                participants.stream().map(SplitParticipant::value).toList());
+                participants.stream().map(SplitParticipant::value).toList(), decimals);
     }
 }

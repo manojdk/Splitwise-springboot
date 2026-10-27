@@ -20,13 +20,13 @@ public class ExactSplitStrategy extends AbstractSplitStrategy {
     }
 
     @Override
-    protected Map<Long, BigDecimal> allocate(BigDecimal total, List<SplitParticipant> participants) {
+    protected Map<Long, BigDecimal> allocate(BigDecimal total, List<SplitParticipant> participants, int decimals) {
         Map<Long, BigDecimal> result = new LinkedHashMap<>();
         BigDecimal sum = Money.ZERO;
         for (SplitParticipant p : participants) {
             BigDecimal value = requireValue(p, "Amount");
-            if (!Money.hasValidScale(value)) {
-                throw new InvalidSplitException("Amount for user " + p.userId() + " must have at most 2 decimal places");
+            if (!Money.hasValidScale(value, decimals)) {
+                throw new InvalidSplitException("Amount for user " + p.userId() + " " + Money.decimalsRule(decimals));
             }
             BigDecimal amount = Money.of(value);
             result.put(p.userId(), amount);

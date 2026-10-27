@@ -10,6 +10,15 @@ function formatter(currency: string): Intl.NumberFormat {
   let format = formatters.get(currency)
   if (!format) {
     format = new Intl.NumberFormat(undefined, { style: 'currency', currency, currencyDisplay: 'narrowSymbol' })
+    // Yen shows no decimals, but one saved before amounts had to be whole (100.50) must not show as 101
+    if (format.resolvedOptions().maximumFractionDigits === 0) {
+      format = new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency,
+        currencyDisplay: 'narrowSymbol',
+        maximumFractionDigits: 2,
+      })
+    }
     formatters.set(currency, format)
   }
   return format

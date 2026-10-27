@@ -56,6 +56,19 @@ public class SettlementService {
 
     @Transactional
     public SettlementResponse create(Long callerId, CreateSettlementRequest request) {
+        return create(callerId, request, true);
+    }
+
+    /**
+     * For a friend settle-up, which pays off balances exactly as they are: a yen balance from before amounts had
+     * to be whole (100.50) is paid as it is, so it can still be cleared.
+     */
+    @Transactional
+    SettlementResponse createSettleUp(Long callerId, CreateSettlementRequest request) {
+        return create(callerId, request, false);
+    }
+
+    private SettlementResponse create(Long callerId, CreateSettlementRequest request, boolean amountMustFit) {
         if (request.fromUserId().equals(request.toUserId())) {
             throw new BadRequestException("A settlement needs two different users");
         }
@@ -78,9 +91,13 @@ public class SettlementService {
         Map<Long, User> users = group == null
                 ? userService.lockAll(Set.of(request.fromUserId(), request.toUserId()))
                 : userService.getAllById(Set.of(request.fromUserId(), request.toUserId()));
+        String currency = CurrencyRules.resolve(request.currency(), group);
+        if (amountMustFit) {
+            CurrencyRules.requireFits(request.amount(), currency);
+        }
         LocalDate date = request.date() != null ? request.date() : today.get();
         Settlement settlement = new Settlement(users.get(request.fromUserId()), users.get(request.toUserId()),
-                request.amount(), CurrencyRules.resolve(request.currency(), group), group, date,
+                request.amount(), currency, group, date,
                 request.note() == null ? null : request.note().trim(), users.get(callerId));
         Settlement saved = settlementRepository.save(settlement);
         activity.settlementAdded(callerId, saved);

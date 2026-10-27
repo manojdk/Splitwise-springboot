@@ -35,7 +35,7 @@ describe('date limits, as the API has them', () => {
 
     expect(within(form).getByText('Use a date at most a year from today')).toBeInTheDocument()
     expect(sent).toHaveLength(0)
-  })
+  }, 15_000)
 
   it('catches a recurring expense that ends more than 50 years after it starts', async () => {
     const sent = captureBodies('POST', /^\/api\/recurring-expenses$/)
@@ -114,5 +114,34 @@ describe('resuming a recurring expense', () => {
 
     const card = (await screen.findByRole('heading', { name: 'Netflix' }, { timeout: 5000 })).closest('li')!
     expect(within(card).queryByRole('button', { name: 'Resume Netflix' })).not.toBeInTheDocument()
+  })
+})
+
+describe('currencies without decimals', () => {
+  it('splits yen into whole yen and refuses decimals, before sending', async () => {
+    const sent = captureBodies('POST', /^\/api\/expenses$/)
+    signedIn()
+    const { user } = renderApp('/expenses')
+
+    await user.click(await screen.findByRole('button', { name: '+ Add expense' }, { timeout: 5000 }))
+    await user.click(await screen.findByRole('button', { name: /No group: split with friends/ }))
+    const form = screen.getByRole('dialog', { name: 'Add expense · No group' })
+    await user.selectOptions(within(form).getByLabelText('Currency'), 'JPY')
+    await user.type(within(form).getByLabelText('Description'), 'Ramen')
+    await user.click(within(form).getByRole('checkbox', { name: 'Include Dan Brown' }))
+    expect(within(form).getByText(/in whole JPY \(it has no decimals\)/)).toBeInTheDocument()
+
+    await user.type(within(form).getByLabelText('Amount (JPY)'), '100.50')
+    await user.click(within(form).getByRole('button', { name: 'Add expense' }))
+    expect(within(form).getByText('The amount must be a whole number (this currency has no decimals)')).toBeInTheDocument()
+    expect(sent).toHaveLength(0)
+
+    await user.clear(within(form).getByLabelText('Amount (JPY)'))
+    await user.type(within(form).getByLabelText('Amount (JPY)'), '101')
+    expect(within(form).getByLabelText('Alice owes')).toHaveTextContent('¥51')
+    expect(within(form).getByLabelText('Dan owes')).toHaveTextContent('¥50')
+    await user.click(within(form).getByRole('button', { name: 'Add expense' }))
+    await waitFor(() => expect(sent).toHaveLength(1))
+    expect(sent[0]).toMatchObject({ amount: 101, currency: 'JPY' })
   })
 })

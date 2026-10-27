@@ -136,7 +136,7 @@ public class FriendBalanceService {
         List<SettlementResponse> recorded = new ArrayList<>();
         for (Item item : items) {
             boolean friendPays = item.amount().signum() > 0;
-            recorded.add(settlementService.create(userId, new CreateSettlementRequest(
+            recorded.add(settlementService.createSettleUp(userId, new CreateSettlementRequest(
                     friendPays ? friendId : userId,
                     friendPays ? userId : friendId,
                     item.amount().abs(),

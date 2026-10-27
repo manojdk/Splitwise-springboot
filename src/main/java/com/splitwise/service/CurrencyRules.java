@@ -4,6 +4,7 @@ import com.splitwise.domain.Group;
 import com.splitwise.domain.Money;
 import com.splitwise.exception.BadRequestException;
 
+import java.math.BigDecimal;
 import java.util.Currency;
 
 /**
@@ -32,6 +33,22 @@ public final class CurrencyRules {
             throw new BadRequestException("Unknown currency: " + code);
         }
         return code;
+    }
+
+    /**
+     * The decimal places amounts in this currency may have: 0 for those without a smaller unit (JPY, KRW, VND...),
+     * otherwise 2. The few with three (KWD, BHD) stay at 2, as before: a thousandth of a dinar is worth too little to
+     * matter, and amounts already saved keep their meaning.
+     */
+    public static int decimals(String code) {
+        return Currency.getInstance(code).getDefaultFractionDigits() == 0 ? 0 : Money.SCALE;
+    }
+
+    /** 400 unless the amount fits the currency: "JPY amounts have no decimals" for 100.50 yen. */
+    public static void requireFits(BigDecimal amount, String code) {
+        if (decimals(code) == 0 && !Money.hasValidScale(amount, 0)) {
+            throw new BadRequestException(code + " amounts have no decimals");
+        }
     }
 
     /** The currency for something recorded in {@code group} (null = outside groups). */

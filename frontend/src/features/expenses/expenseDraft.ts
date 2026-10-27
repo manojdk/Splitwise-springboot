@@ -7,6 +7,7 @@ import type {
   UpdateExpenseRequest,
   User,
 } from '../../api/types'
+import { currencyDecimals } from '../../lib/currencies'
 import { today } from '../../lib/dates'
 import { computeSplit, paiseToString, type SplitResult, type SplitType } from '../../lib/split'
 
@@ -55,9 +56,10 @@ export function newDraft(people: User[], me: number, included?: number[]): Expen
  */
 export function draftFromExpense(expense: Expense): ExpenseDraft {
   const included = Object.fromEntries(expense.shares.map((s) => [s.userId, true]))
+  const decimals = currencyDecimals(expense.currency)
   const base = {
     description: expense.description,
-    amount: expense.amount.toFixed(2),
+    amount: amountText(expense.amount, expense.currency),
     date: expense.date,
     paidById: expense.paidBy.id,
     category: expense.category,
@@ -72,14 +74,20 @@ export function draftFromExpense(expense: Expense): ExpenseDraft {
     values: Object.fromEntries(expense.shares.map((s) => [s.userId, s.value === null ? '' : String(s.value)])),
     convertedToExact: false,
   }
-  const check = computeSplit(asEntered.splitType, asEntered.amount, participants(asEntered, Object.keys(included).map(Number)))
+  const check = computeSplit(
+    asEntered.splitType,
+    asEntered.amount,
+    participants(asEntered, Object.keys(included).map(Number)),
+    undefined,
+    decimals,
+  )
   const reproduces =
     check.ok && expense.shares.every((s) => paiseToString(check.owed.get(s.userId) ?? -1n) === s.amount.toFixed(2))
   if (reproduces) return asEntered
   return {
     ...base,
     splitType: 'EXACT',
-    values: Object.fromEntries(expense.shares.map((s) => [s.userId, s.amount.toFixed(2)])),
+    values: Object.fromEntries(expense.shares.map((s) => [s.userId, amountText(s.amount, expense.currency)])),
     convertedToExact: expense.splitType !== 'EXACT',
   }
 }
@@ -91,14 +99,23 @@ export function participants(draft: ExpenseDraft, people: number[]) {
     .map((id) => ({ userId: id, value: draft.splitType === 'EQUAL' ? null : (draft.values[id] ?? '') }))
 }
 
-export function previewSplit(draft: ExpenseDraft, people: User[]): SplitResult {
+export function previewSplit(draft: ExpenseDraft, people: User[], currency: string): SplitResult {
   const names = new Map(people.map((p) => [p.id, p.name.split(/\s+/)[0] ?? p.name]))
   return computeSplit(
     draft.splitType,
     draft.amount,
     participants(draft, people.map((p) => p.id)),
     (id) => names.get(id) ?? `user ${id}`,
+    currencyDecimals(currency),
   )
+}
+
+/**
+ * An amount as it is typed into the form: "1200.00", or "1200" in yen. A yen amount saved with decimals before
+ * they were refused keeps them, so it is never silently rounded.
+ */
+export function amountText(amount: number, currency: string): string {
+  return currencyDecimals(currency) === 0 && Number.isInteger(amount) ? String(amount) : amount.toFixed(2)
 }
 
 /**
