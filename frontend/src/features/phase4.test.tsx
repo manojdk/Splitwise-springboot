@@ -54,7 +54,8 @@ describe('recurring expenses', () => {
     const netflix = screen.getByRole('heading', { name: 'Netflix' }).closest('li')!
     expect(netflix).toHaveTextContent('Stopped')
     expect(netflix).toHaveTextContent('Stopped by Carol White')
-    expect(within(netflix).queryByRole('button')).not.toBeInTheDocument()
+    // A stopped one can only be resumed
+    expect(within(netflix).getAllByRole('button').map((b) => b.getAttribute('aria-label'))).toEqual(['Resume Netflix'])
     const cards = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
     expect(cards.indexOf('Rent')).toBeLessThan(cards.indexOf('Netflix'))
   })

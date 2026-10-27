@@ -140,6 +140,15 @@ export function useStopRecurring() {
   })
 }
 
+/** Starts a stopped or paused one again; if its next date is today, that expense is added at once. */
+export function useResumeRecurring() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => api<RecurringExpense>(`/recurring-expenses/${id}/resume`, { method: 'POST' }),
+    onSuccess: () => Promise.all([queryClient.invalidateQueries({ queryKey: keys.recurring }), moneyChanged(queryClient)]),
+  })
+}
+
 export function useGroupReport(groupId: number, from?: string, to?: string) {
   return useQuery({
     queryKey: keys.groupReport(groupId, from, to),

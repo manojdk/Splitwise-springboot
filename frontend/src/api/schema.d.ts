@@ -366,6 +366,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/recurring-expenses/{id}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start a stopped or paused one again, from its next date on or after today (missed dates are skipped) */
+        post: operations["resume"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/settlements": {
         parameters: {
             query?: never;
@@ -610,7 +627,7 @@ export interface components {
             settlementId: number | null;
             summary: string;
             /** @enum {string} */
-            type: "GROUP_CREATED" | "GROUP_RENAMED" | "GROUP_DELETED" | "MEMBER_ADDED" | "MEMBER_REMOVED" | "MEMBER_LEFT" | "EXPENSE_ADDED" | "EXPENSE_UPDATED" | "EXPENSE_DELETED" | "EXPENSE_RESTORED" | "SETTLEMENT_ADDED" | "SETTLEMENT_DELETED" | "SETTLEMENT_RESTORED" | "RECURRING_CREATED" | "RECURRING_STOPPED" | "RECURRING_PAUSED";
+            type: "GROUP_CREATED" | "GROUP_RENAMED" | "GROUP_DELETED" | "MEMBER_ADDED" | "MEMBER_REMOVED" | "MEMBER_LEFT" | "EXPENSE_ADDED" | "EXPENSE_UPDATED" | "EXPENSE_DELETED" | "EXPENSE_RESTORED" | "SETTLEMENT_ADDED" | "SETTLEMENT_DELETED" | "SETTLEMENT_RESTORED" | "RECURRING_CREATED" | "RECURRING_STOPPED" | "RECURRING_PAUSED" | "RECURRING_RESUMED";
         };
         AddMemberRequest: {
             /** Format: email */
@@ -1601,6 +1618,28 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    resume: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RecurringExpenseResponse"];
+                };
             };
         };
     };

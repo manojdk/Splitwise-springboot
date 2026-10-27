@@ -40,7 +40,7 @@
             "type" : "string"
           },
           "type" : {
-            "enum" : [ "GROUP_CREATED", "GROUP_RENAMED", "GROUP_DELETED", "MEMBER_ADDED", "MEMBER_REMOVED", "MEMBER_LEFT", "EXPENSE_ADDED", "EXPENSE_UPDATED", "EXPENSE_DELETED", "EXPENSE_RESTORED", "SETTLEMENT_ADDED", "SETTLEMENT_DELETED", "SETTLEMENT_RESTORED", "RECURRING_CREATED", "RECURRING_STOPPED", "RECURRING_PAUSED" ],
+            "enum" : [ "GROUP_CREATED", "GROUP_RENAMED", "GROUP_DELETED", "MEMBER_ADDED", "MEMBER_REMOVED", "MEMBER_LEFT", "EXPENSE_ADDED", "EXPENSE_UPDATED", "EXPENSE_DELETED", "EXPENSE_RESTORED", "SETTLEMENT_ADDED", "SETTLEMENT_DELETED", "SETTLEMENT_RESTORED", "RECURRING_CREATED", "RECURRING_STOPPED", "RECURRING_PAUSED", "RECURRING_RESUMED" ],
             "type" : "string"
           }
         },
@@ -1913,6 +1913,34 @@
             "description" : "OK"
           }
         },
+        "tags" : [ "Recurring expenses" ]
+      }
+    },
+    "/api/recurring-expenses/{id}/resume" : {
+      "post" : {
+        "operationId" : "resume",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RecurringExpenseResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Start a stopped or paused one again, from its next date on or after today (missed dates are skipped)",
         "tags" : [ "Recurring expenses" ]
       }
     },

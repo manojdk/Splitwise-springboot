@@ -162,6 +162,12 @@ public class ActivityRecorder {
                 actor.getName() + " stopped the recurring \"" + r.getDescription() + "\"");
     }
 
+    public void recurringResumed(Long actorId, RecurringExpense r) {
+        User actor = userService.getById(actorId);
+        saveRecurring(ActivityType.RECURRING_RESUMED, actor, r,
+                actor.getName() + " resumed the recurring \"" + r.getDescription() + "\"");
+    }
+
     /** The scheduler could not create an occurrence; recorded in the name of the template's creator. */
     public void recurringPaused(RecurringExpense r, String reason) {
         saveRecurring(ActivityType.RECURRING_PAUSED, r.getCreatedBy(), r,

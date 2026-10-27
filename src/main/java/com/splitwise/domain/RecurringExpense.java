@@ -151,6 +151,25 @@ public class RecurringExpense {
         }
     }
 
+    /**
+     * Runs again after a stop or a pause, from the first date on or after {@code today}: the dates missed in
+     * between are skipped, not created late. Returns false, changing nothing, if no date is left before the end.
+     */
+    public boolean resumeFrom(LocalDate today) {
+        int next = nextOccurrence;
+        while (Schedule.occurrence(startDate, frequency, next).isBefore(today)) {
+            next++;
+        }
+        if (!withinEnd(Schedule.occurrence(startDate, frequency, next))) {
+            return false;
+        }
+        nextOccurrence = next;
+        active = true;
+        stoppedReason = null;
+        nextRunDate = nextDate();
+        return true;
+    }
+
     public void finish(String reason) {
         this.active = false;
         this.stoppedReason = reason;

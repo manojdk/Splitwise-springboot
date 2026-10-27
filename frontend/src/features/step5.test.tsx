@@ -1,8 +1,9 @@
 import { screen, waitFor, within } from '@testing-library/react'
+import { http } from 'msw'
 import { afterEach, describe, expect, it } from 'vitest'
-import { addYears, today } from '../lib/dates'
+import { addYears, formatDate, today } from '../lib/dates'
 import { renderApp, signedIn } from '../test/renderApp'
-import { server } from '../test/server'
+import { db, errorBody, server } from '../test/server'
 
 afterEach(() => server.events.removeAllListeners())
 
@@ -66,5 +67,52 @@ describe('date limits, as the API has them', () => {
 
     await waitFor(() => expect(within(dialog).getByRole('alert')).toHaveTextContent('Use a date on or after 1 Jan 2000'))
     expect(sent).toHaveLength(0)
+  })
+})
+
+describe('resuming a recurring expense', () => {
+  it('starts a stopped one again from its next date', async () => {
+    // No body to read, so count the requests
+    const sent: string[] = []
+    server.events.on('request:start', ({ request }) => {
+      if (request.method === 'POST' && new URL(request.url).pathname.endsWith('/resume')) sent.push(request.url)
+    })
+    signedIn()
+    const { user } = renderApp('/recurring')
+
+    const card = (await screen.findByRole('heading', { name: 'Netflix' }, { timeout: 5000 })).closest('li')!
+    expect(within(card).getByText('Stopped by Carol White')).toBeInTheDocument()
+    expect(within(card).getByText('Carries on from the next date; the dates missed are not added.')).toBeInTheDocument()
+    await user.click(within(card).getByRole('button', { name: 'Resume Netflix' }))
+
+    expect(await screen.findByText(`"Netflix" resumed, next on ${formatDate('2026-11-05')}`)).toBeInTheDocument()
+    expect(sent).toHaveLength(1)
+    await waitFor(() => expect(within(card).getByRole('button', { name: 'Stop Netflix' })).toBeInTheDocument())
+    expect(within(card).queryByRole('button', { name: 'Resume Netflix' })).not.toBeInTheDocument()
+  })
+
+  it('says why when it cannot resume', async () => {
+    signedIn()
+    server.use(
+      http.post('*/api/recurring-expenses/:id/resume', () =>
+        errorBody(409, 'Carol White is no longer a member of the group; add them back first, or set up a new recurring expense without them', '/api/recurring-expenses/301/resume'),
+      ),
+    )
+    const { user } = renderApp('/recurring')
+
+    const card = (await screen.findByRole('heading', { name: 'Netflix' }, { timeout: 5000 })).closest('li')!
+    await user.click(within(card).getByRole('button', { name: 'Resume Netflix' }))
+
+    expect(await within(card).findByRole('alert')).toHaveTextContent('Carol White is no longer a member of the group')
+  })
+
+  it('is not offered once the end date has passed', async () => {
+    signedIn()
+    const netflix = db.recurring.find((r) => r.id === 301)!
+    netflix.endDate = '2026-06-30'
+    renderApp('/recurring')
+
+    const card = (await screen.findByRole('heading', { name: 'Netflix' }, { timeout: 5000 })).closest('li')!
+    expect(within(card).queryByRole('button', { name: 'Resume Netflix' })).not.toBeInTheDocument()
   })
 })
