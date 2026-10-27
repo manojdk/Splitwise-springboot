@@ -8,7 +8,7 @@ import { Avatar } from '../../components/States'
 import { useToast } from '../../components/Toast'
 import { CATEGORIES } from '../../lib/categories'
 import { CURRENCIES } from '../../lib/currencies'
-import { today } from '../../lib/dates'
+import { addYears, dateWindowError, EARLIEST_DATE, latestDate, MAX_RECURRING_YEARS, today } from '../../lib/dates'
 import { formatMoney } from '../../lib/money'
 import type { SplitType } from '../../lib/split'
 import {
@@ -97,8 +97,14 @@ export function ExpenseForm({
     ? 'Pick a date'
     : recurring && draft.date < today()
       ? 'The first one cannot be in the past'
-      : null
-  const endError = recurring && draft.endDate && draft.endDate < draft.date ? 'The end must be on or after the start' : null
+      : dateWindowError(draft.date)
+  const endError = !recurring || !draft.endDate
+    ? null
+    : draft.endDate < draft.date
+      ? 'The end must be on or after the start'
+      : draft.date && draft.endDate > addYears(draft.date, MAX_RECURRING_YEARS)
+        ? `The end can be at most ${MAX_RECURRING_YEARS} years after the start`
+        : null
   const valid = split.ok && !descriptionError && !notesError && !dateError && !endError
 
   function update(patch: Partial<ExpenseDraft>) {
@@ -235,7 +241,8 @@ export function ExpenseForm({
               type="date"
               className="input"
               value={draft.date}
-              min={recurring ? today() : undefined}
+              min={recurring ? today() : EARLIEST_DATE}
+              max={latestDate()}
               onChange={(e) => update({ date: e.target.value })}
             />
           </Field>

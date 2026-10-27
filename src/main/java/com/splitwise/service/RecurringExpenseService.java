@@ -45,6 +45,8 @@ import java.util.TreeSet;
 public class RecurringExpenseService {
 
     static final int MAX_CATCH_UP = 60;
+    /** How far the end date may be from the start: long enough for any lease or loan, short enough to catch typos. */
+    static final int MAX_YEARS = 50;
     private static final Logger log = LoggerFactory.getLogger(RecurringExpenseService.class);
 
     private final RecurringExpenseRepository recurringRepository;
@@ -83,6 +85,9 @@ public class RecurringExpenseService {
         }
         if (request.endDate() != null && request.endDate().isBefore(request.startDate())) {
             throw new BadRequestException("endDate cannot be before startDate");
+        }
+        if (request.endDate() != null && request.endDate().isAfter(request.startDate().plusYears(MAX_YEARS))) {
+            throw new BadRequestException("endDate cannot be more than " + MAX_YEARS + " years after startDate");
         }
         expenseService.checkDraft(callerId, group, request.paidById(), request.currency(), request.amount(),
                 request.splitType(), request.shares());

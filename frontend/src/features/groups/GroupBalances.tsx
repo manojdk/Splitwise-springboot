@@ -14,7 +14,7 @@ import { Modal } from '../../components/Modal'
 import { Money } from '../../components/Money'
 import { Avatar, ErrorState, Loading } from '../../components/States'
 import { useToast } from '../../components/Toast'
-import { formatDate, today } from '../../lib/dates'
+import { dateWindowError, EARLIEST_DATE, formatDate, today } from '../../lib/dates'
 import { formatMoney, isZero } from '../../lib/money'
 
 /** Each member's net balance in the group, as bars either side of zero. */
@@ -195,7 +195,7 @@ function RecordPaymentDialog({ group, transfer, onClose }: { group: Group; trans
   const [touched, setTouched] = useState(false)
 
   const amountError = !/^\d+(\.\d{1,2})?$/.test(amount.trim()) || Number(amount) <= 0 ? 'Enter an amount, like 500 or 99.50' : null
-  const dateError = date ? null : 'Pick the date of the payment'
+  const dateError = date ? dateWindowError(date) : 'Pick the date of the payment'
   const noteError = note.length > 255 ? 'Use at most 255 characters' : null
   const who = transfer.fromUserId === user?.id ? `You paid ${transfer.toName}` : `${transfer.fromName} paid you`
 
@@ -238,6 +238,7 @@ function RecordPaymentDialog({ group, transfer, onClose }: { group: Group; trans
             type="date"
             className="input"
             value={date}
+            min={EARLIEST_DATE}
             max={today()}
             aria-invalid={touched && dateError ? true : undefined}
             onChange={(e) => setDate(e.target.value)}

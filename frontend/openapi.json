@@ -148,7 +148,8 @@
             "items" : {
               "$ref" : "#/components/schemas/ShareRequest"
             },
-            "minItems" : 1,
+            "maxItems" : 100,
+            "minItems" : 0,
             "type" : "array"
           },
           "splitType" : {
@@ -218,7 +219,8 @@
             "items" : {
               "$ref" : "#/components/schemas/ShareRequest"
             },
-            "minItems" : 1,
+            "maxItems" : 100,
+            "minItems" : 0,
             "type" : "array"
           },
           "splitType" : {
@@ -904,7 +906,8 @@
             "items" : {
               "$ref" : "#/components/schemas/ShareRequest"
             },
-            "minItems" : 1,
+            "maxItems" : 100,
+            "minItems" : 0,
             "type" : "array"
           },
           "splitType" : {
